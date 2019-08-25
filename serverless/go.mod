@@ -5,7 +5,6 @@ go 1.12
 require (
 	github.com/aws/aws-lambda-go v1.13.0
 	github.com/aws/aws-sdk-go v1.23.8
-	github.com/davecgh/go-spew v1.1.1 // indirect
-	golang.org/x/net v0.0.0-20190620200207-3b0461eec859 // indirect
-	golang.org/x/text v0.3.2 // indirect
+	github.com/sirupsen/logrus v1.4.2 // indirect
+	golang.org/x/crypto v0.0.0-20190820162420-60c769a6c586 // indirect
 )
