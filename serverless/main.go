@@ -21,12 +21,12 @@ func init() {
 	myObjects = result.Contents
 }
 
-func lambdaHandler() (int, error) {
+func LambdaHandler() (int, error) {
 	invokeCount = invokeCount + 1
 	log.Print(myObjects)
 	return invokeCount, nil
 }
 
 func main() {
-	lambda.Start(lambdaHandler)
+	lambda.Start(LambdaHandler)
 }
