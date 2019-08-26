@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
@@ -13,6 +13,8 @@ var invokeCount = 0
 var myObjects []*s3.Object
 
 func init() {
+	iniConfig()
+
 	svc := s3.New(session.New())
 	input := &s3.ListObjectsV2Input{
 		Bucket: aws.String("examplebucket"),
@@ -23,7 +25,7 @@ func init() {
 
 func LambdaHandler() (int, error) {
 	invokeCount = invokeCount + 1
-	log.Print(myObjects)
+	log.Info(myObjects)
 	return invokeCount, nil
 }
 
