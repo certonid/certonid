@@ -26,6 +26,22 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.certonid.yaml)")
 }
 
+func initLogging() {
+	log.SetOutput(os.Stdout)
+
+	if viper.IsSet("logger.level") {
+		var level, err = log.ParseLevel(viper.GetString("logger.level"))
+		if err == nil {
+			log.SetLevel(level)
+		} else {
+			log.Error("Invalid log level:", err)
+			log.SetLevel(log.InfoLevel)
+		}
+	} else {
+		log.SetLevel(log.InfoLevel)
+	}
+}
+
 func initConfig() {
 	viper.SetConfigType("yaml")
 	viper.SetEnvPrefix("certonid")
@@ -49,9 +65,11 @@ func initConfig() {
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
-		log.Error("Can't read config:", err)
+		fmt.Errorf("Fatal error config file: %s", err)
 		os.Exit(1)
 	}
+
+	initLogging()
 }
 
 func Execute() {

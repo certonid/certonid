@@ -1,4 +1,4 @@
-ca_key:
+ca:
   storage: aws_s3
   bucket: secretbucket
   path: ca/ca.pem
@@ -11,8 +11,7 @@ ca_key:
     content: 'AQICAHhBwiHijA5XW9EyanTVga4XbbwEVCmBLSUiWIxrCrxrUwHeOnd4YE9LeJlQHr2CwZ0LAAAAZDBiBgkqhkiG9w0BBwagVTBTAgEAME4GCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMsRaxY7GegkhvGxIYAgEQgCH/pghC/EgexphP9CwTBsOGKZXY4UqN0AN7YP9HdNNqHK8='
 
 certificates:
-  max_not_valid_before: 300
-  max_not_valid_after: 86400
+  max_valid_until: 86400
   additional_principals:
     - "ubuntu"
     - "ec2-user"
@@ -25,3 +24,5 @@ certificates:
     - "permit-pty"
     - "permit-user-rc"
 
+logging:
+  level: info
