@@ -26,7 +26,7 @@ func init() {
 }
 
 func initConfig() {
-	viper.SetConfigType("yaml")
+	viper.SetConfigType("YAML")
 	// Don't forget to read config either from cfgFile or from home directory!
 	if cfgFile != "" {
 		// Use config file from the flag.
@@ -39,7 +39,7 @@ func initConfig() {
 			os.Exit(1)
 		}
 
-		// Search config in home directory with name ".cobra" (without extension).
+		// Search config in home directory with name ".certonid" (without extension).
 		viper.AddConfigPath(home)
 		viper.AddConfigPath(".")
 		viper.SetConfigName(".certonid")
