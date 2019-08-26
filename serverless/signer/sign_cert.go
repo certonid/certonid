@@ -46,8 +46,6 @@ func setCriticalOptions(cert *ssh.Certificate) {
 				}
 
 				cert.CriticalOptions[strings.TrimSpace(opt[0])] = strings.TrimSpace(opt[1])
-			} else {
-				cert.CriticalOptions[perm] = ""
 			}
 		}
 	}
