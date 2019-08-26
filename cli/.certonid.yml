@@ -1,2 +1,1 @@
-ca_key:
-  adapter: aws_s3
+runner: aws
