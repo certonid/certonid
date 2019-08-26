@@ -33,8 +33,40 @@ type SignRequest struct {
 	ValidUntil time.Time `json:"valid_until"`
 }
 
+func setCriticalOptions(cert *ssh.Certificate) {
+	cert.CriticalOptions = make(map[string]string)
+	if len(viper.GetStringSlice("certificates.critical_options")) > 0 {
+		for _, perm := range viper.GetStringSlice("certificates.critical_options") {
+			if strings.Contains(perm, "=") || strings.Contains(perm, " ") {
+				var opt []string
+				if strings.Contains(perm, "=") {
+					opt = strings.Split(perm, "=")
+				} else {
+					opt = strings.Split(perm, " ")
+				}
+
+				cert.CriticalOptions[strings.TrimSpace(opt[0])] = strings.TrimSpace(opt[1])
+			} else {
+				cert.CriticalOptions[perm] = ""
+			}
+		}
+	}
+}
+
+func setExtensions(cert *ssh.Certificate) {
+	cert.Extensions = make(map[string]string)
+	extensions := defaultEntensions
+	if len(viper.GetStringSlice("certificates.extensions")) > 0 {
+		extensions = viper.GetStringSlice("certificates.extensions")
+	}
+
+	for _, perm := range extensions {
+		cert.Extensions[perm] = ""
+	}
+}
+
 // SignUserKey returns a signed ssh certificate.
-func (s *KeySigner) SignUserKey(req *SignRequest) (*ssh.Certificate, error) {
+func (s *KeySigner) signUserKey(req *SignRequest) (*ssh.Certificate, error) {
 	pubkey, _, _, _, err := ssh.ParseAuthorizedKey([]byte(req.Key))
 	if err != nil {
 		return nil, err
@@ -58,34 +90,25 @@ func (s *KeySigner) SignUserKey(req *SignRequest) (*ssh.Certificate, error) {
 	}
 	cert.ValidPrincipals = append(cert.ValidPrincipals, viper.GetStringSlice("certificates.additional_principals")...)
 	// critical options
-	cert.CriticalOptions = make(map[string]string)
-	if len(viper.GetStringSlice("certificates.critical_options")) > 0 {
-		for _, perm := range viper.GetStringSlice("certificates.critical_options") {
-			if strings.Contains(perm, "=") {
-				opt := strings.Split(perm, "=")
-				cert.CriticalOptions[strings.TrimSpace(opt[0])] = strings.TrimSpace(opt[1])
-			} else {
-				cert.CriticalOptions[perm] = ""
-			}
-		}
-	}
-
+	setCriticalOptions(cert)
 	// extensions
-	cert.Extensions = make(map[string]string)
-	extensions := defaultEntensions
-	if len(viper.GetStringSlice("certificates.extensions")) > 0 {
-		extensions = viper.GetStringSlice("certificates.extensions")
-	}
-
-	for _, perm := range extensions {
-		cert.Extensions[perm] = ""
-	}
+	setExtensions(cert)
 	// sign client key
 	if err := cert.SignCert(rand.Reader, s.ca); err != nil {
 		return nil, err
 	}
 	log.Info("Issued cert id: ", cert.KeyId, " principals: ", cert.ValidPrincipals, " fp: ", ssh.FingerprintSHA256(pubkey), " valid until ", time.Unix(int64(cert.ValidBefore), 0).UTC())
 	return cert, nil
+}
+
+func (s *KeySigner) SignKey(req *SignRequest) (string, error) {
+	cert, err := s.signUserKey(req)
+	if err != nil {
+		return "", err
+	}
+
+	marshaled := ssh.MarshalAuthorizedKey(cert)
+	return string(marshaled[:len(marshaled)-1]), nil
 }
 
 func New(pemBytes, passPhrase []byte) (*KeySigner, error) {

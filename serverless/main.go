@@ -8,7 +8,6 @@ import (
 	"github.com/le0pard/certonid/serverless/config"
 	"github.com/le0pard/certonid/serverless/signer"
 	log "github.com/sirupsen/logrus"
-	"golang.org/x/crypto/ssh"
 	// "github.com/aws/aws-sdk-go/aws"
 	// "github.com/aws/aws-sdk-go/aws/session"
 	// "github.com/aws/aws-sdk-go/service/s3"
@@ -30,7 +29,7 @@ func init() {
 func LambdaHandler(event SignEvent) (SignResponse, error) {
 	var err error
 
-	certData, err := ioutil.ReadFile("./ca.pem")
+	certData, err := ioutil.ReadFile("./ca")
 	if err != nil {
 		log.Error("Error to read certificate:", err)
 		return SignResponse{}, err
@@ -40,7 +39,7 @@ func LambdaHandler(event SignEvent) (SignResponse, error) {
 		log.Error("Error to init signer:", err)
 		return SignResponse{}, err
 	}
-	cert, err := certSigner.SignUserKey(&signer.SignRequest{
+	cert, err := certSigner.SignKey(&signer.SignRequest{
 		Key:        event.Key,
 		Username:   event.Username,
 		ValidUntil: time.Now().UTC().Add(12 * time.Hour),
@@ -49,9 +48,8 @@ func LambdaHandler(event SignEvent) (SignResponse, error) {
 		log.Error("Error to SignUserKey:", err)
 		return SignResponse{}, err
 	}
-	marshaled := ssh.MarshalAuthorizedKey(cert)
 	return SignResponse{
-		Cert: string(marshaled[:len(marshaled)-1]),
+		Cert: cert,
 	}, nil
 }
 
