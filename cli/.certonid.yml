@@ -1,0 +1,2 @@
+ca_key:
+  adapter: aws_s3
