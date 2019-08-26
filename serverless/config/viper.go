@@ -4,26 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
-func initLogging() {
-	log.SetOutput(os.Stdout)
-
-	if viper.IsSet("logger.level") {
-		var level, err = log.ParseLevel(viper.GetString("logger.level"))
-		if err == nil {
-			log.SetLevel(level)
-		} else {
-			log.Error("Invalid log level:", err)
-			log.SetLevel(log.InfoLevel)
-		}
-	} else {
-		log.SetLevel(log.InfoLevel)
-	}
-}
-
+// InitConfig initialize config for serverless function
 func InitConfig() {
 	viper.SetConfigType("yaml")
 	viper.SetEnvPrefix("certonid")
@@ -39,7 +23,7 @@ func InitConfig() {
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
-		fmt.Errorf("Fatal error config file: %s", err)
+		fmt.Printf("Fatal error to read config file: %s", err)
 		os.Exit(1)
 	}
 	// init logging system

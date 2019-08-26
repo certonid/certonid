@@ -27,6 +27,7 @@ type KeySigner struct {
 	ca ssh.Signer
 }
 
+// SignRequest pass information for sign
 type SignRequest struct {
 	Key        string    `json:"key"`
 	Username   string    `json:"username"`
@@ -64,7 +65,7 @@ func setExtensions(cert *ssh.Certificate) {
 }
 
 // SignUserKey returns a signed ssh certificate.
-func (s *KeySigner) signUserKey(req *SignRequest) (*ssh.Certificate, error) {
+func (s *KeySigner) SignUserKey(req *SignRequest) (*ssh.Certificate, error) {
 	pubkey, _, _, _, err := ssh.ParseAuthorizedKey([]byte(req.Key))
 	if err != nil {
 		return nil, err
@@ -95,12 +96,20 @@ func (s *KeySigner) signUserKey(req *SignRequest) (*ssh.Certificate, error) {
 	if err := cert.SignCert(rand.Reader, s.ca); err != nil {
 		return nil, err
 	}
-	log.Info("Issued cert id: ", cert.KeyId, " principals: ", cert.ValidPrincipals, " fp: ", ssh.FingerprintSHA256(pubkey), " valid until ", time.Unix(int64(cert.ValidBefore), 0).UTC())
+
+	log.WithFields(log.Fields{
+		"ID":          cert.KeyId,
+		"principals":  cert.ValidPrincipals,
+		"fingerprint": ssh.FingerprintSHA256(pubkey),
+		"valid until": time.Unix(int64(cert.ValidBefore), 0).UTC(),
+	}).Info("Successfully issued cert")
+
 	return cert, nil
 }
 
+// SignKey sign user key and return certificate as string
 func (s *KeySigner) SignKey(req *SignRequest) (string, error) {
-	cert, err := s.signUserKey(req)
+	cert, err := s.SignUserKey(req)
 	if err != nil {
 		return "", err
 	}
@@ -109,6 +118,7 @@ func (s *KeySigner) SignKey(req *SignRequest) (string, error) {
 	return string(marshaled[:len(marshaled)-1]), nil
 }
 
+// New unseal CA key by passphrase
 func New(pemBytes, passPhrase []byte) (*KeySigner, error) {
 	key, err := sshkeys.ParseEncryptedPrivateKey(pemBytes, passPhrase)
 	if err != nil {

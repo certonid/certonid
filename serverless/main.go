@@ -8,24 +8,25 @@ import (
 	"github.com/le0pard/certonid/serverless/config"
 	"github.com/le0pard/certonid/serverless/signer"
 	log "github.com/sirupsen/logrus"
-	// "github.com/aws/aws-sdk-go/aws"
-	// "github.com/aws/aws-sdk-go/aws/session"
-	// "github.com/aws/aws-sdk-go/service/s3"
 )
 
+// SignEvent used for function arguments
 type SignEvent struct {
 	Username string `json:"username"`
 	Key      string `json:"key"`
 }
 
+// SignResponse used for function response
 type SignResponse struct {
 	Cert string `json:"cert"`
 }
 
+// init function
 func init() {
 	config.InitConfig()
 }
 
+// LambdaHandler used to handle lambda call
 func LambdaHandler(event SignEvent) (SignResponse, error) {
 	var err error
 
@@ -53,6 +54,7 @@ func LambdaHandler(event SignEvent) (SignResponse, error) {
 	}, nil
 }
 
+// main function
 func main() {
 	lambda.Start(LambdaHandler)
 }
