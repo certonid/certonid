@@ -11,7 +11,7 @@ type Client struct {
 }
 
 // New init aws client session
-func New(region string) (*Client, error) {
+func New(region string) *Client {
 	sessionOptions := session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}
@@ -22,9 +22,7 @@ func New(region string) (*Client, error) {
 		}
 	}
 
-	sess := session.Must(session.NewSessionWithOptions(sessionOptions))
-
 	return &Client{
-		Session: sess,
-	}, nil
+		Session: session.Must(session.NewSessionWithOptions(sessionOptions)),
+	}
 }
