@@ -8,10 +8,11 @@ import (
 
 // SignEvent used for function arguments
 type SignEvent struct {
-	CertType  string `json:"cert_type"`
-	Key       string `json:"key"`
-	Username  string `json:"username"`
-	Hostnames string `json:"hostnames"`
+	CertType   string `json:"cert_type"`
+	Key        string `json:"key"`
+	Username   string `json:"username"`
+	Hostnames  string `json:"hostnames"`
+	ValidUntil string `json:"valid_until"`
 }
 
 // SignResponse used for function response
@@ -32,10 +33,11 @@ func LambdaHandler(event SignEvent) (SignResponse, error) {
 	)
 
 	cert, err = sshca.GenerateCetrificate(&sshca.CertificateRequest{
-		CertType:  event.CertType,
-		Key:       event.Key,
-		Username:  event.Username,
-		Hostnames: event.Hostnames,
+		CertType:   event.CertType,
+		Key:        event.Key,
+		Username:   event.Username,
+		Hostnames:  event.Hostnames,
+		ValidUntil: event.ValidUntil,
 	})
 	if err != nil {
 		return SignResponse{}, err
