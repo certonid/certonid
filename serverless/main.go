@@ -1,20 +1,17 @@
 package main
 
 import (
-	"io/ioutil"
-	"time"
-
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/le0pard/certonid/serverless/config"
-	"github.com/le0pard/certonid/serverless/signer"
-	log "github.com/sirupsen/logrus"
+	"github.com/le0pard/certonid/serverless/sshca"
 )
 
 // SignEvent used for function arguments
 type SignEvent struct {
-	CertType string `json:"cert_type"`
-	Username string `json:"username"`
-	Key      string `json:"key"`
+	CertType  string `json:"cert_type"`
+	Key       string `json:"key"`
+	Username  string `json:"username"`
+	Hostnames string `json:"hostnames"`
 }
 
 // SignResponse used for function response
@@ -29,27 +26,21 @@ func init() {
 
 // LambdaHandler used to handle lambda call
 func LambdaHandler(event SignEvent) (SignResponse, error) {
-	var err error
+	var (
+		err  error
+		cert string
+	)
 
-	certData, err := ioutil.ReadFile("./ca")
-	if err != nil {
-		log.Error("Error to read certificate:", err)
-		return SignResponse{}, err
-	}
-	certSigner, err := signer.New(certData, []byte("password"))
-	if err != nil {
-		log.Error("Error to init signer:", err)
-		return SignResponse{}, err
-	}
-	cert, err := certSigner.SignKey(&signer.SignRequest{
-		Key:        event.Key,
-		Username:   event.Username,
-		ValidUntil: time.Now().UTC().Add(12 * time.Hour),
+	cert, err = sshca.GenerateCetrificate(&sshca.CertificateRequest{
+		CertType:  event.CertType,
+		Key:       event.Key,
+		Username:  event.Username,
+		Hostnames: event.Hostnames,
 	})
 	if err != nil {
-		log.Error("Error to SignUserKey:", err)
 		return SignResponse{}, err
 	}
+
 	return SignResponse{
 		Cert: cert,
 	}, nil

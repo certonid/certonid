@@ -4,16 +4,17 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/le0pard/certonid/utils"
 	"github.com/spf13/viper"
 )
 
 // InitConfig initialize config for serverless function
 func InitConfig() {
 	viper.SetConfigType("yaml")
-	viper.SetEnvPrefix(EnvPrefix)
+	viper.SetEnvPrefix(utils.EnvPrefix)
 	viper.AutomaticEnv()
 
-	cfgFile, ok := GetENV("config")
+	cfgFile, ok := utils.GetENV("CONFIG")
 	// Don't forget to read config either from cfgFile or from home directory!
 	if ok && cfgFile != "" {
 		// Use config file from the flag.
@@ -30,6 +31,10 @@ func InitConfig() {
 	// init logging system
 	initLogging()
 
+	// ca
+	viper.SetDefault("ca.storage", "file")
+	viper.SetDefault("ca.path", "ca.pem")
+	viper.SetDefault("ca.passphrase.encryption", "symmetric")
 	// user cert
 	viper.SetDefault("certificates.user.max_valid_until", "24h")
 	viper.SetDefault("certificates.user.additional_principals", []string{})
