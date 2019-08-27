@@ -21,7 +21,7 @@ func (client *Client) KmsEncryptText(keyId string, text []byte) (string, error) 
 		return "", err
 	}
 
-	return string(result.CiphertextBlob), nil
+	return base64.StdEncoding.EncodeToString(result.CiphertextBlob), nil
 }
 
 // KmsDecryptText allow to decrypt text by AWS KMS

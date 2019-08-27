@@ -13,8 +13,8 @@ import (
 var (
 	decrType string
 
-	decryptTextCmd = &cobra.Command{
-		Use:   "decrypttext [text]",
+	decryptCmd = &cobra.Command{
+		Use:   "decrypt [text]",
 		Short: "Decrypt text",
 		Long:  `Decrypt text with symmetric or kms encryption`,
 		Run: func(cmd *cobra.Command, args []string) {
@@ -47,8 +47,8 @@ var (
 )
 
 func init() {
-	rootCmd.AddCommand(decryptTextCmd)
-	decryptTextCmd.Flags().StringVarP(&decrType, "type", "t", "symmetric", "Decryption type (symmetric, aws_kms, gcloud_kms)")
-	viper.BindPFlag("type", decryptTextCmd.PersistentFlags().Lookup("type"))
+	rootCmd.AddCommand(decryptCmd)
+	decryptCmd.Flags().StringVarP(&decrType, "type", "t", "symmetric", "Decryption type (symmetric, aws_kms, gcloud_kms)")
+	viper.BindPFlag("type", decryptCmd.PersistentFlags().Lookup("type"))
 	viper.SetDefault("type", "symmetric")
 }

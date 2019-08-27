@@ -14,8 +14,8 @@ var (
 	encType     string
 	awsKmsKeyId string
 
-	encryptTextCmd = &cobra.Command{
-		Use:   "encrypttext [text]",
+	encryptCmd = &cobra.Command{
+		Use:   "encrypt [text]",
 		Short: "Encrypt text",
 		Long:  `Encrypt text with symmetric or kms encryption`,
 		Run: func(cmd *cobra.Command, args []string) {
@@ -48,9 +48,9 @@ var (
 )
 
 func init() {
-	rootCmd.AddCommand(encryptTextCmd)
-	encryptTextCmd.Flags().StringVarP(&encType, "type", "t", "symmetric", "Encryption type (symmetric, aws_kms, gcloud_kms)")
-	encryptTextCmd.Flags().StringVarP(&awsKmsKeyId, "aws-kms-key-id", "akms-id", "", "AWS KMS Key ID")
-	viper.BindPFlag("type", encryptTextCmd.PersistentFlags().Lookup("type"))
+	rootCmd.AddCommand(encryptCmd)
+	encryptCmd.Flags().StringVarP(&encType, "type", "t", "symmetric", "Encryption type (symmetric, aws_kms, gcloud_kms)")
+	encryptCmd.Flags().StringVarP(&awsKmsKeyId, "aws-kms-key-id", "", "", "AWS KMS Key ID")
+	viper.BindPFlag("type", encryptCmd.PersistentFlags().Lookup("type"))
 	viper.SetDefault("type", "symmetric")
 }
