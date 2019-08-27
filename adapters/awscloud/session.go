@@ -1,7 +1,6 @@
 package aws
 
 import (
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
@@ -14,12 +13,7 @@ type Client struct {
 func New(region string) *Client {
 	sessionOptions := session.Options{
 		SharedConfigState: session.SharedConfigEnable,
-	}
-
-	if region != "" {
-		sessionOptions.Config = aws.Config{
-			Region: region,
-		}
+		Region:            region,
 	}
 
 	return &Client{
