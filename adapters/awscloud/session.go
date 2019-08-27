@@ -1,7 +1,6 @@
 package awscloud
 
 import (
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
@@ -11,15 +10,9 @@ type Client struct {
 }
 
 // New init aws client session
-func New(region string) *Client {
+func New() *Client {
 	sessionOptions := session.Options{
 		SharedConfigState: session.SharedConfigEnable,
-	}
-
-	if region != "" {
-		sessionOptions.Config = aws.Config{
-			Region: aws.String(region),
-		}
 	}
 
 	return &Client{
