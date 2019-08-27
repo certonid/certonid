@@ -12,6 +12,7 @@ import (
 
 // SignEvent used for function arguments
 type SignEvent struct {
+	CertType string `json:"cert_type"`
 	Username string `json:"username"`
 	Key      string `json:"key"`
 }

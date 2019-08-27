@@ -22,6 +22,11 @@ var (
 	}
 )
 
+const (
+	userCertType string = "user"
+	hostCertType string = "host"
+)
+
 // KeySigner does the work of signing a ssh public key with the CA key.
 type KeySigner struct {
 	ca ssh.Signer
@@ -29,15 +34,33 @@ type KeySigner struct {
 
 // SignRequest pass information for sign
 type SignRequest struct {
+	CertType   string    `json:"cert_type"`
 	Key        string    `json:"key"`
 	Username   string    `json:"username"`
+	Hostnames  string    `json:"hostnames"`
 	ValidUntil time.Time `json:"valid_until"`
 }
 
-func setCriticalOptions(cert *ssh.Certificate) {
+func setPrincipals(cert *ssh.Certificate, req *SignRequest) {
+	if req.CertType == hostCertType {
+		hosts := strings.Split(req.Hostnames, ",")
+		for i := range hosts {
+			hosts[i] = strings.TrimSpace(hosts[i])
+		}
+		cert.ValidPrincipals = hosts
+	} else {
+		cert.ValidPrincipals = []string{req.Username}
+	}
+	configKey := fmt.Sprintf("certificates.%s.additional_principals", req.CertType)
+	cert.ValidPrincipals = append(cert.ValidPrincipals, viper.GetStringSlice(configKey)...)
+}
+
+func setCriticalOptions(cert *ssh.Certificate, req *SignRequest) {
 	cert.CriticalOptions = make(map[string]string)
-	if len(viper.GetStringSlice("certificates.critical_options")) > 0 {
-		for _, perm := range viper.GetStringSlice("certificates.critical_options") {
+
+	configKey := fmt.Sprintf("certificates.%s.critical_options", req.CertType)
+	if len(viper.GetStringSlice(configKey)) > 0 {
+		for _, perm := range viper.GetStringSlice(configKey) {
 			if strings.Contains(perm, "=") || strings.Contains(perm, " ") {
 				var opt []string
 				if strings.Contains(perm, "=") {
@@ -52,11 +75,13 @@ func setCriticalOptions(cert *ssh.Certificate) {
 	}
 }
 
-func setExtensions(cert *ssh.Certificate) {
+func setExtensions(cert *ssh.Certificate, req *SignRequest) {
 	cert.Extensions = make(map[string]string)
 	extensions := defaultEntensions
-	if len(viper.GetStringSlice("certificates.extensions")) > 0 {
-		extensions = viper.GetStringSlice("certificates.extensions")
+
+	configKey := fmt.Sprintf("certificates.%s.extensions", req.CertType)
+	if len(viper.GetStringSlice(configKey)) > 0 {
+		extensions = viper.GetStringSlice(configKey)
 	}
 
 	for _, perm := range extensions {
@@ -64,34 +89,48 @@ func setExtensions(cert *ssh.Certificate) {
 	}
 }
 
-// SignUserKey returns a signed ssh certificate.
-func (s *KeySigner) SignUserKey(req *SignRequest) (*ssh.Certificate, error) {
+// signPublicKey returns a signed ssh certificate.
+func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
+	if req.CertType != hostCertType && req.CertType != userCertType {
+		req.CertType = userCertType // be sure we have at least user key
+	}
+	// parse public key
 	pubkey, _, _, _, err := ssh.ParseAuthorizedKey([]byte(req.Key))
 	if err != nil {
 		return nil, err
 	}
-
-	maxKeyDuration, err := time.ParseDuration(viper.GetString("certificates.max_valid_until"))
+	// check duration
+	maxTTLConfigKey := fmt.Sprintf("certificates.%s.max_valid_until", req.CertType)
+	maxKeyDuration, err := time.ParseDuration(viper.GetString(maxTTLConfigKey))
 	if err != nil {
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Warn("Invalid TTL for cert in config. Switched to max 24h")
 		maxKeyDuration = time.Duration(24) * time.Hour
 	}
 	expires := time.Now().UTC().Add(maxKeyDuration)
 	if req.ValidUntil.After(expires) {
 		req.ValidUntil = expires
 	}
-	cert := &ssh.Certificate{
-		CertType:        ssh.UserCert,
-		Key:             pubkey,
-		KeyId:           fmt.Sprintf("%s_%d", req.Username, time.Now().UTC().Unix()),
-		ValidAfter:      uint64(time.Now().UTC().Add(-5 * time.Minute).Unix()),
-		ValidBefore:     uint64(req.ValidUntil.Unix()),
-		ValidPrincipals: []string{req.Username},
+	// check cert type
+	var certType uint32 = ssh.UserCert
+	if req.CertType == hostCertType {
+		certType = ssh.HostCert
 	}
-	cert.ValidPrincipals = append(cert.ValidPrincipals, viper.GetStringSlice("certificates.additional_principals")...)
+	// init certificate
+	cert := &ssh.Certificate{
+		CertType:    certType,
+		Key:         pubkey,
+		KeyId:       fmt.Sprintf("%s_%d", req.Username, time.Now().UTC().Unix()),
+		ValidAfter:  uint64(time.Now().UTC().Add(-5 * time.Minute).Unix()),
+		ValidBefore: uint64(req.ValidUntil.Unix()),
+	}
+	// principals
+	setPrincipals(cert, req)
 	// critical options
-	setCriticalOptions(cert)
+	setCriticalOptions(cert, req)
 	// extensions
-	setExtensions(cert)
+	setExtensions(cert, req)
 	// sign client key
 	if err := cert.SignCert(rand.Reader, s.ca); err != nil {
 		return nil, err
@@ -109,7 +148,7 @@ func (s *KeySigner) SignUserKey(req *SignRequest) (*ssh.Certificate, error) {
 
 // SignKey sign user key and return certificate as string
 func (s *KeySigner) SignKey(req *SignRequest) (string, error) {
-	cert, err := s.SignUserKey(req)
+	cert, err := s.signPublicKey(req)
 	if err != nil {
 		return "", err
 	}
