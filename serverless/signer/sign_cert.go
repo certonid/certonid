@@ -105,11 +105,11 @@ func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"error": err,
-		}).Warn("Invalid TTL for cert in config. Switched to max 24h")
+		}).Warn("Invalid TTL for cert in config. Switched to TTL 24h")
 		maxKeyDuration = time.Duration(24) * time.Hour
 	}
 	expires := time.Now().UTC().Add(maxKeyDuration)
-	if req.ValidUntil.After(expires) {
+	if req.ValidUntil.After(expires) || req.ValidUntil.Before(time.Now().UTC()) {
 		req.ValidUntil = expires
 	}
 	// check cert type
