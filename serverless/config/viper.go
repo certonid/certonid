@@ -45,5 +45,4 @@ func InitConfig() {
 	viper.SetDefault("certificates.host.additional_principals", []string{})
 	viper.SetDefault("certificates.host.critical_options", []string{})
 	viper.SetDefault("certificates.host.extensions", []string{})
-
 }

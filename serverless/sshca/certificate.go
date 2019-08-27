@@ -91,7 +91,7 @@ func GenerateCetrificate(req *CertificateRequest) (string, error) {
 		Key:        req.Key,
 		Username:   req.Username,
 		Hostnames:  req.Hostnames,
-		ValidUntil: time.Now().UTC().Add(12 * time.Hour),
+		ValidUntil: time.Now().UTC().Add(48 * time.Hour),
 	})
 	if err != nil {
 		log.WithFields(log.Fields{
