@@ -7,7 +7,7 @@ import (
 
 // Client store aws info
 type Client struct {
-	Session aws.Session
+	Session session.Session
 }
 
 // New init aws client session
