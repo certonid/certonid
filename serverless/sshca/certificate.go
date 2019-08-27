@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/le0pard/certonid/adapters/aws"
+	"github.com/le0pard/certonid/adapters/awscloud"
 	"github.com/le0pard/certonid/serverless/signer"
 	"github.com/le0pard/certonid/utils"
 	log "github.com/sirupsen/logrus"
@@ -30,7 +30,7 @@ func getCAPassphrase() ([]byte, error) {
 
 	switch strings.ToLower(viper.GetString("ca.passphrase.encryption")) {
 	case "aws_kms":
-		awsClient := aws.New(viper.GetString("ca.passphrase.region"))
+		awsClient := awscloud.New(viper.GetString("ca.passphrase.region"))
 		passphrase, err = awsClient.KmsDecryptText(encryptedPassphrase)
 	default: // symmetric
 		passphrase, err = utils.SymmetricDecrypt(encryptedPassphrase)
