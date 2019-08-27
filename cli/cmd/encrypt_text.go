@@ -3,6 +3,7 @@ package cmd
 import (
 	"strings"
 
+	"github.com/le0pard/certonid/adapters/awscloud"
 	"github.com/le0pard/certonid/utils"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -10,7 +11,8 @@ import (
 )
 
 var (
-	encType string
+	encType     string
+	awsKmsKeyId string
 
 	encryptTextCmd = &cobra.Command{
 		Use:   "encrypttext [text]",
@@ -28,7 +30,8 @@ var (
 
 			switch strings.ToLower(encType) {
 			case "aws_kms":
-				// empty
+				awsClient := awscloud.New("")
+				encText, err = awsClient.KmsEncryptText(awsKmsKeyId, []byte(args[0]))
 			default: // symmetric
 				encText, err = utils.SymmetricEncrypt([]byte(args[0]))
 			}
@@ -47,6 +50,7 @@ var (
 func init() {
 	rootCmd.AddCommand(encryptTextCmd)
 	encryptTextCmd.Flags().StringVarP(&encType, "type", "t", "symmetric", "Encryption type (symmetric, aws_kms, gcloud_kms)")
+	encryptTextCmd.Flags().StringVarP(&awsKmsKeyId, "aws-kms-key-id", "akms-id", "", "AWS KMS Key ID")
 	viper.BindPFlag("type", encryptTextCmd.PersistentFlags().Lookup("type"))
 	viper.SetDefault("type", "symmetric")
 }

@@ -3,6 +3,7 @@ package cmd
 import (
 	"strings"
 
+	"github.com/le0pard/certonid/adapters/awscloud"
 	"github.com/le0pard/certonid/utils"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -28,7 +29,8 @@ var (
 
 			switch strings.ToLower(decrType) {
 			case "aws_kms":
-				// empty
+				awsClient := awscloud.New("")
+				text, err = awsClient.KmsDecryptText(args[0])
 			default: // symmetric
 				text, err = utils.SymmetricDecrypt(args[0])
 			}

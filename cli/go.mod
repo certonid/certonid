@@ -3,7 +3,8 @@ module github.com/le0pard/certonid/cli
 go 1.12
 
 require (
-	github.com/le0pard/certonid v0.0.0-20190827133007-0f6d81e77cab
+	github.com/aws/aws-sdk-go v1.23.10 // indirect
+	github.com/le0pard/certonid v0.0.0-20190827180733-bb74a3f0d109
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.5

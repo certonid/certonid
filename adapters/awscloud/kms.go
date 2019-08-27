@@ -3,10 +3,33 @@ package awscloud
 import (
 	"encoding/base64"
 
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/kms"
 )
 
-// KmsDecryptText allow to decrypt text from AWS KMS
+// KmsEncryptText allow to encrypt text by AWS KMS
+func (client *Client) KmsEncryptText(keyId string, text []byte) (string, error) {
+	blob, err := base64.StdEncoding.DecodeString(text)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	// Create KMS service client
+	svc := kms.New(client.Session)
+
+	result, err := svc.Encrypt(&kms.EncryptInput{
+		KeyId:     aws.String(keyId),
+		Plaintext: []byte(text),
+	})
+
+	if err != nil {
+		return "", err
+	}
+
+	return string(result.CiphertextBlob), nil
+}
+
+// KmsDecryptText allow to decrypt text by AWS KMS
 func (client *Client) KmsDecryptText(text string) ([]byte, error) {
 	blob, err := base64.StdEncoding.DecodeString(text)
 	if err != nil {
