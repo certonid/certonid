@@ -30,8 +30,8 @@ var (
 
 			switch strings.ToLower(decryptType) {
 			case "aws_kms":
-				awsClient := awscloud.New(decryptAwsKmsRegion)
-				text, err = awsClient.KmsDecryptText(args[0])
+				kmsClient := awscloud.New().KmsClient(decryptAwsKmsRegion)
+				text, err = kmsClient.KmsDecryptText(args[0])
 			default: // symmetric
 				text, err = utils.SymmetricDecrypt(args[0])
 			}
