@@ -21,7 +21,7 @@ func InitConfig() {
 		viper.SetConfigFile(cfgFile)
 	} else {
 		viper.AddConfigPath(".")
-		viper.SetConfigName("certonid-serverless")
+		viper.SetConfigName("certonid")
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
