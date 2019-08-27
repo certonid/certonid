@@ -42,7 +42,7 @@ var (
 			}
 
 			log.WithFields(log.Fields{
-				"password": encText,
+				"text": encText,
 			}).Info("Successfully encrypted")
 		},
 	}
