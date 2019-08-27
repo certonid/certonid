@@ -14,10 +14,11 @@ import (
 
 // CertificateRequest used for function arguments
 type CertificateRequest struct {
-	CertType  string `json:"cert_type"`
-	Key       string `json:"key"`
-	Username  string `json:"username"`
-	Hostnames string `json:"hostnames"`
+	CertType   string `json:"cert_type"`
+	Key        string `json:"key"`
+	Username   string `json:"username"`
+	Hostnames  string `json:"hostnames"`
+	ValidUntil string `json:"valid_until"`
 }
 
 func getCAPassphrase() ([]byte, error) {
@@ -65,7 +66,17 @@ func GenerateCetrificate(req *CertificateRequest) (string, error) {
 		err        error
 		certData   []byte
 		passphrase []byte
+		validUntil time.Duration
 	)
+	
+	validUntil, err = time.ParseDuration(req.ValidUntil)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"error": err,
+			"value": req.ValidUntil,
+		}).Error("Invalid ValidUntil value")
+		return "", err
+	}
 
 	certData, err = getCAFromStorage()
 	if err != nil {
@@ -99,7 +110,7 @@ func GenerateCetrificate(req *CertificateRequest) (string, error) {
 		Key:        req.Key,
 		Username:   req.Username,
 		Hostnames:  req.Hostnames,
-		ValidUntil: time.Now().UTC().Add(48 * time.Hour),
+		ValidUntil: validUntil,
 	})
 	if err != nil {
 		log.WithFields(log.Fields{
