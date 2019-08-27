@@ -1,1 +1,1 @@
-package gcloud
+package googlecloud

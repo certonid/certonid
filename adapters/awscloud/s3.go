@@ -1,1 +1,1 @@
-package aws
+package awscloud

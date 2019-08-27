@@ -1,4 +1,4 @@
-package aws
+package awscloud
 
 import (
 	"encoding/base64"
