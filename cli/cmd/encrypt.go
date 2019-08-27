@@ -11,8 +11,9 @@ import (
 )
 
 var (
-	encType     string
-	awsKmsKeyId string
+	encryptType         string
+	encryptAwsKmsKeyID  string
+	encryptAwsKmsRegion string
 
 	encryptCmd = &cobra.Command{
 		Use:   "encrypt [text]",
@@ -28,10 +29,10 @@ var (
 				er("provide text for encryption")
 			}
 
-			switch strings.ToLower(encType) {
+			switch strings.ToLower(encryptType) {
 			case "aws_kms":
-				awsClient := awscloud.New("")
-				encText, err = awsClient.KmsEncryptText(awsKmsKeyId, []byte(args[0]))
+				awsClient := awscloud.New(encryptAwsKmsRegion)
+				encText, err = awsClient.KmsEncryptText(encryptAwsKmsKeyID, []byte(args[0]))
 			default: // symmetric
 				encText, err = utils.SymmetricEncrypt([]byte(args[0]))
 			}
@@ -49,8 +50,9 @@ var (
 
 func init() {
 	rootCmd.AddCommand(encryptCmd)
-	encryptCmd.Flags().StringVarP(&encType, "type", "t", "symmetric", "Encryption type (symmetric, aws_kms, gcloud_kms)")
-	encryptCmd.Flags().StringVarP(&awsKmsKeyId, "aws-kms-key-id", "", "", "AWS KMS Key ID")
+	encryptCmd.Flags().StringVarP(&encryptType, "type", "t", "symmetric", "Encryption type (symmetric, aws_kms, gcloud_kms)")
+	encryptCmd.Flags().StringVarP(&encryptAwsKmsKeyID, "aws-kms-key-id", "", "", "AWS KMS Key ID")
+	encryptCmd.Flags().StringVarP(&encryptAwsKmsRegion, "aws-kms-region", "", "", "AWS KMS Region")
 	viper.BindPFlag("type", encryptCmd.PersistentFlags().Lookup("type"))
 	viper.SetDefault("type", "symmetric")
 }

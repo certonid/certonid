@@ -11,7 +11,8 @@ import (
 )
 
 var (
-	decrType string
+	decryptType         string
+	decryptAwsKmsRegion string
 
 	decryptCmd = &cobra.Command{
 		Use:   "decrypt [text]",
@@ -27,9 +28,9 @@ var (
 				er("provide text for decryption")
 			}
 
-			switch strings.ToLower(decrType) {
+			switch strings.ToLower(decryptType) {
 			case "aws_kms":
-				awsClient := awscloud.New("")
+				awsClient := awscloud.New(decryptAwsKmsRegion)
 				text, err = awsClient.KmsDecryptText(args[0])
 			default: // symmetric
 				text, err = utils.SymmetricDecrypt(args[0])
@@ -48,7 +49,7 @@ var (
 
 func init() {
 	rootCmd.AddCommand(decryptCmd)
-	decryptCmd.Flags().StringVarP(&decrType, "type", "t", "symmetric", "Decryption type (symmetric, aws_kms, gcloud_kms)")
+	decryptCmd.Flags().StringVarP(&decryptType, "type", "t", "symmetric", "Decryption type (symmetric, aws_kms, gcloud_kms)")
 	viper.BindPFlag("type", decryptCmd.PersistentFlags().Lookup("type"))
 	viper.SetDefault("type", "symmetric")
 }
