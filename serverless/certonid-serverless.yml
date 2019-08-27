@@ -5,7 +5,6 @@ ca:
     # encryption: symmetric
     # content: D3X/XhrBnC9DASVW50DSDv5NgkhbSUFEwxLLHysyFeT8htTq
     encryption: aws_kms
-    region: us-east-1
     content: AQICAHhBwiHijA5XW9EyanTVga4XbbwEVCmBLSUiWIxrCrxrUwGGt8JapxlfiJljay3FycLOAAAAZjBkBgkqhkiG9w0BBwagVzBVAgEAMFAGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMtZxOyGi2foFM+y9SAgEQgCOY1N4sMr5RIiyQ4/8yloRIAi6vWaK3n/jEdgPfn3bdJjrkNQ==
 
 certificates:
