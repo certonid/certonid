@@ -17,8 +17,8 @@ func New(region string) *Client {
 	}
 
 	if region != "" {
-		sessionOptions.Config = &aws.Config{
-			Region: region,
+		sessionOptions.Config = aws.Config{
+			Region: aws.String(region),
 		}
 	}
 
