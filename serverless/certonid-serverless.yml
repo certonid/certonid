@@ -2,8 +2,7 @@ ca:
   storage: file
   path: ca.pem
   passphrase:
-    adapter: aws_kms
-    region: us-east-1
+    encryption: symmetric
     content: 'AQICAHhBwiHijA5XW9EyanTVga4XbbwEVCmBLSUiWIxrCrxrUwHeOnd4YE9LeJlQHr2CwZ0LAAAAZDBiBgkqhkiG9w0BBwagVTBTAgEAME4GCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMsRaxY7GegkhvGxIYAgEQgCH/pghC/EgexphP9CwTBsOGKZXY4UqN0AN7YP9HdNNqHK8='
 
 certificates:
