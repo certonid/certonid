@@ -7,12 +7,14 @@ import (
 	"github.com/aws/aws-sdk-go/service/kms"
 )
 
-// KmsEncryptText allow to encrypt text by AWS KMS
-func (client *Client) KmsEncryptText(keyId string, text []byte) (string, error) {
-	// Create KMS service client
-	svc := kms.New(client.Session)
+// KMSClient store aws info
+type KMSClient struct {
+	Client *kms.KMS
+}
 
-	result, err := svc.Encrypt(&kms.EncryptInput{
+// KmsEncryptText allow to encrypt text by AWS KMS
+func (cl *KMSClient) KmsEncryptText(keyId string, text []byte) (string, error) {
+	result, err := cl.Client.Encrypt(&kms.EncryptInput{
 		KeyId:     aws.String(keyId),
 		Plaintext: text,
 	})
@@ -25,20 +27,24 @@ func (client *Client) KmsEncryptText(keyId string, text []byte) (string, error) 
 }
 
 // KmsDecryptText allow to decrypt text by AWS KMS
-func (client *Client) KmsDecryptText(text string) ([]byte, error) {
+func (cl *KMSClient) KmsDecryptText(text string) ([]byte, error) {
 	blob, err := base64.StdEncoding.DecodeString(text)
 	if err != nil {
 		return []byte{}, err
 	}
 
-	// Create KMS service client
-	svc := kms.New(client.Session)
-
-	result, err := svc.Decrypt(&kms.DecryptInput{CiphertextBlob: blob})
+	result, err := cl.Client.Decrypt(&kms.DecryptInput{CiphertextBlob: blob})
 
 	if err != nil {
 		return []byte{}, err
 	}
 
 	return result.Plaintext, nil
+}
+
+// KmsClient return kms client
+func (client *Client) KmsClient(region string) *KMSClient {
+	return &KMSClient{
+		Client: kms.New(client.Session, &aws.Config{Region: region})
+	}
 }
