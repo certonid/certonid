@@ -60,16 +60,8 @@ github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORN
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0 h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
-github.com/le0pard/certonid v0.0.0-20190827133007-0f6d81e77cab h1:QE7eRsDMy1wuCaXepjlj10aGl5OtIGY5AVq4zvJd6Hw=
-github.com/le0pard/certonid v0.0.0-20190827133007-0f6d81e77cab/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
-github.com/le0pard/certonid v0.0.0-20190827180733-bb74a3f0d109 h1:7k/iTlGfDAP5l2Ovs2Fqz3K4hyvpV3JyMWObOKJtue4=
-github.com/le0pard/certonid v0.0.0-20190827180733-bb74a3f0d109/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
-github.com/le0pard/certonid v0.0.0-20190827183313-49557cddaa88 h1:7Kf1jz42q3KTHOjZB7NHb7YcEPE96JyG+TLasClGLxk=
-github.com/le0pard/certonid v0.0.0-20190827183313-49557cddaa88/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
-github.com/le0pard/certonid v0.0.0-20190827183413-9912e9e0d313 h1:4ZdFvo/Fq3/dm9MVQjMPaaj9BUSfqSaOW6c11Dr//3M=
-github.com/le0pard/certonid v0.0.0-20190827183413-9912e9e0d313/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
-github.com/le0pard/certonid v0.0.0-20190827183757-a4efc9b8659d h1:MW5VbyeNie0Fc5BHP0eDm5Tzpttg2JNzOLOeYWcdtNg=
-github.com/le0pard/certonid v0.0.0-20190827183757-a4efc9b8659d/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
+github.com/le0pard/certonid v0.0.0-20190828073119-35b3edf3432b h1:aiqFVGWZeF6bi88s+QTOcVNBMhc6zfx6cFnJPhL4DaE=
+github.com/le0pard/certonid v0.0.0-20190828073119-35b3edf3432b/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
 github.com/magiconair/properties v1.8.0 h1:LLgXmsheXeRoUOBOjtwPQCWIYqM/LU1ayDtDePerRcY=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
@@ -134,6 +126,7 @@ golang.org/x/net v0.0.0-20180826012351-8a410e7b638d/go.mod h1:mL1N/T3taQHkDXs73r
 golang.org/x/net v0.0.0-20181114220301-adae6a3d119a/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/net v0.0.0-20181220203305-927f97764cc3/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/net v0.0.0-20190311183353-d8887717615a/go.mod h1:t9HGtf8HONx5eT2rtn7q6eTqICYqUVnKs3thJo3Qplg=
+golang.org/x/net v0.0.0-20190522155817-f3200d17e092 h1:4QSRKanuywn15aTZvI/mIDEgPQpswuFndXpOj3rKEco=
 golang.org/x/net v0.0.0-20190522155817-f3200d17e092/go.mod h1:HSz+uSET+XFnRR8LxR5pz3Of3rY3CfYBVs4xY44aLks=
 golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be/go.mod h1:N/0e6XlmueqKjAGxoOufVs8QHGRruUQn6yWY3a++T0U=
 golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=

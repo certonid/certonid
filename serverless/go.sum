@@ -63,14 +63,8 @@ github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORN
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0 h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
-github.com/le0pard/certonid v0.0.0-20190827180419-3dcbe27e0e15 h1:YQ8eCJAbpfPqKAaVElqUmVIuIYNzw2bYKdL9kvrbRN8=
-github.com/le0pard/certonid v0.0.0-20190827180419-3dcbe27e0e15/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
-github.com/le0pard/certonid v0.0.0-20190827210448-5276ae63beb5 h1:MitOJ5RBmRA1YxVcBWz/lPZrmpsdKW077KzqsaqbmYk=
-github.com/le0pard/certonid v0.0.0-20190827210448-5276ae63beb5/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
-github.com/le0pard/certonid v0.0.0-20190828072820-338f94e9d49c h1:0hVyohLTx0tItAEAEybvY0DAyrXsOqlVR72WpO3VtNI=
-github.com/le0pard/certonid v0.0.0-20190828072820-338f94e9d49c/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
-github.com/le0pard/certonid v0.0.0-20190828072909-345c0ec7db85 h1:AvPXURWHedQO0/Fhob5We0Dm5OOUiS8B40+eUURZFO4=
-github.com/le0pard/certonid v0.0.0-20190828072909-345c0ec7db85/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
+github.com/le0pard/certonid v0.0.0-20190828073119-35b3edf3432b h1:aiqFVGWZeF6bi88s+QTOcVNBMhc6zfx6cFnJPhL4DaE=
+github.com/le0pard/certonid v0.0.0-20190828073119-35b3edf3432b/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
 github.com/magiconair/properties v1.8.0 h1:LLgXmsheXeRoUOBOjtwPQCWIYqM/LU1ayDtDePerRcY=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=

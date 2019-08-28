@@ -7,7 +7,7 @@ import (
 )
 
 var gencertCmd = &cobra.Command{
-	Use:   "gencert",
+	Use:   "gencert [name]",
 	Short: "Generate user or host certificate",
 	Long:  `Generate user or host sertificate by involke serverless function`,
 	Run: func(cmd *cobra.Command, args []string) {
