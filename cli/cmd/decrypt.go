@@ -7,7 +7,6 @@ import (
 	"github.com/le0pard/certonid/utils"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var (
@@ -50,6 +49,5 @@ var (
 func init() {
 	rootCmd.AddCommand(decryptCmd)
 	decryptCmd.Flags().StringVarP(&decryptType, "type", "t", "symmetric", "Decryption type (symmetric, aws_kms, gcloud_kms)")
-	viper.BindPFlag("type", decryptCmd.PersistentFlags().Lookup("type"))
-	viper.SetDefault("type", "symmetric")
+	encryptCmd.Flags().StringVarP(&decryptAwsKmsRegion, "aws-kms-region", "", "", "AWS KMS Region")
 }
