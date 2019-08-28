@@ -7,7 +7,7 @@ go get github.com/mitchellh/gox
 
 source ./scripts/build/.variables
 
-echo "Building statically linked $TARGET"
+echo "Building statically linked certonid"
 export CGO_ENABLED=0
 
 gox -os="linux darwin windows" -arch="amd64" -output="certonid-{{.OS}}-{{.Arch}}" -ldflags "${LDFLAGS}" -verbose ./cli
