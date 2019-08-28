@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/le0pard/certonid/cli/version"
 	homedir "github.com/mitchellh/go-homedir"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -20,10 +21,12 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		// Do Stuff Here
 	},
+	Version: fmt.Sprintf("%s, build %s", version.Version, version.GitCommit),
 }
 
 func init() {
 	cobra.OnInitialize(initConfig)
+
 	rootCmd.SetVersionTemplate("Docker version {{.Version}}\n")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.certonid/config.yml)")
 }
