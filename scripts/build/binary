@@ -3,12 +3,12 @@
 # Build a static binary for the host OS/ARCH
 #
 
-set -eu -o pipefail
+go get github.com/mitchellh/gox
 
 source ./scripts/build/.variables
 
 echo "Building statically linked $TARGET"
 export CGO_ENABLED=0
-go build -o "${TARGET}" --ldflags "${LDFLAGS}" "${SOURCE}"
 
-ln -sf "$(basename "${TARGET}")" build/docker
+gox -os="linux darwin windows" -arch="amd64" -output="certonid-{{.OS}}-{{.Arch}}" -ldflags "${LDFLAGS}" -verbose ./cli
+gox -os="linux" -arch="amd64" -output="serverless-{{.OS}}-{{.Arch}}" -ldflags "${LDFLAGS}" -verbose ./serverless

@@ -27,7 +27,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.SetVersionTemplate("Docker version {{.Version}}\n")
+	rootCmd.SetVersionTemplate("Certonid version {{.Version}}\n")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.certonid/config.yml)")
 }
 
