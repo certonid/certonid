@@ -68,7 +68,7 @@ func GenerateCetrificate(req *CertificateRequest) (string, error) {
 		passphrase []byte
 		validUntil time.Duration
 	)
-	
+
 	validUntil, err = time.ParseDuration(req.ValidUntil)
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -110,7 +110,7 @@ func GenerateCetrificate(req *CertificateRequest) (string, error) {
 		Key:        req.Key,
 		Username:   req.Username,
 		Hostnames:  req.Hostnames,
-		ValidUntil: validUntil,
+		ValidUntil: time.Now().UTC().Add(validUntil),
 	})
 	if err != nil {
 		log.WithFields(log.Fields{
