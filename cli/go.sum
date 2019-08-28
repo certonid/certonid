@@ -67,6 +67,8 @@ github.com/le0pard/certonid v0.0.0-20190828134802-692a75427a4f h1:w3cG/e9yYsNp3b
 github.com/le0pard/certonid v0.0.0-20190828135532-0602d753090e h1:xkEwyTF7G6l8CmM9+52XXHqDoxA7BzTpcTk2XrugHyc=
 github.com/le0pard/certonid v0.0.0-20190828152512-863cadef67bf h1:tgT+C3l8DaIS/f9Um5DjXGFqO9Gb/0hSkayQgaL1zGg=
 github.com/le0pard/certonid v0.0.0-20190828152512-863cadef67bf/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
+github.com/le0pard/certonid v0.0.0-20190828155558-585c5511f97d h1:b3Rc12411R+UpGhnFArwNCGFzs/DYFPZ3PnIFAlOotc=
+github.com/le0pard/certonid v0.0.0-20190828155558-585c5511f97d/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
 github.com/magiconair/properties v1.8.0 h1:LLgXmsheXeRoUOBOjtwPQCWIYqM/LU1ayDtDePerRcY=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=

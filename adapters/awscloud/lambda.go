@@ -26,7 +26,13 @@ func (cl *LambdaClient) LambdaInvoke(funcName string, payload []byte) ([]byte, e
 
 // LambdaClient return kms client
 func (client *Client) LambdaClient(region string) *LambdaClient {
+	awsConfig := aws.Config{}
+
+	if region != "" {
+		awsConfig.Region = aws.String(region)
+	}
+
 	return &LambdaClient{
-		Client: lambda.New(client.Session, &aws.Config{Region: aws.String(region)}),
+		Client: lambda.New(client.Session, &awsConfig),
 	}
 }

@@ -11,26 +11,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type lambdaAwsResponseError struct {
-	Message string `json:"message"`
-}
-
-type lambdaAwsResponseBody struct {
-	Result string                 `json:"result"`
-	Data   proto.AwsSignResponse  `json:"data"`
-	Error  lambdaAwsResponseError `json:"error"`
-}
-
-type lambdaAwsResponseHeaders struct {
-	ContentType string `json:"Content-Type"`
-}
-
-type lambdaAwsResponse struct {
-	StatusCode int                      `json:"statusCode"`
-	Headers    lambdaAwsResponseHeaders `json:"headers"`
-	Body       lambdaAwsResponseBody    `json:"body"`
-}
-
 var (
 	genAwsLambdaRegion string
 	genCertType        string
@@ -74,7 +54,7 @@ var (
 				er(err)
 			}
 
-			var resp lambdaAwsResponse
+			var resp proto.AwsSignResponse
 
 			err = json.Unmarshal(invokePayload, &resp)
 
@@ -82,22 +62,15 @@ var (
 				er(err)
 			}
 
-			if resp.StatusCode != 200 {
+			if len(resp.Cert) == 0 {
 				log.WithFields(log.Fields{
-					"code": resp.StatusCode,
+					"response": string(invokePayload),
 				}).Error("Error to execute serverless function")
 				os.Exit(0)
 			}
 
-			if resp.Body.Result == "failure" {
-				log.WithFields(log.Fields{
-					"body": resp.Body,
-				}).Error("Failed to get results")
-				os.Exit(0)
-			}
-
 			log.WithFields(log.Fields{
-				"body": resp.Body.Data,
+				"body": resp.Cert,
 			}).Info("Result")
 
 		},
@@ -106,11 +79,11 @@ var (
 
 func init() {
 	rootCmd.AddCommand(gencertCmd)
-	gencertCmd.Flags().StringVarP(&genAwsLambdaRegion, "aws-kms-region", "", "", "AWS Lambda Region")
+	gencertCmd.Flags().StringVarP(&genAwsLambdaRegion, "aws-lambda-region", "", "", "AWS Lambda Region")
 	gencertCmd.Flags().StringVarP(&genCertType, "type", "t", "user", "Certificate type (user, host)")
 	gencertCmd.Flags().StringVarP(&genPublicKey, "public-file", "p", "", "Path to public file, which will used for certificate")
 	gencertCmd.MarkFlagRequired("public-file")
 	gencertCmd.Flags().StringVarP(&genUsername, "username", "u", "", "Username for certificate")
-	gencertCmd.Flags().StringVarP(&genHostnames, "hostnames", "h", "", "Hostnames for certificate (use , for division)")
+	gencertCmd.Flags().StringVarP(&genHostnames, "hostnames", "n", "", "Hostnames for certificate (use , for division)")
 	gencertCmd.Flags().StringVarP(&genValidUntil, "valid-until", "l", "24h", "TTL for certificate")
 }
