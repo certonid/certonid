@@ -15,13 +15,19 @@ import (
 var cfgFile string
 
 var rootCmd = &cobra.Command{
-	Use:   "certonid",
-	Short: "Certonid is a Serverless SSH Certificate Authority",
-	Long:  `Serverless SSH Certificate Authority`,
-	Run: func(cmd *cobra.Command, args []string) {
-		// Do Stuff Here
+	Use:                   "certonid [OPTIONS] COMMAND [ARG...]",
+	Short:                 "Certonid is a Serverless SSH Certificate Authority",
+	Version:               fmt.Sprintf("%s, build %s", version.Version, version.GitCommit),
+	SilenceUsage:          true,
+	SilenceErrors:         true,
+	DisableFlagsInUseLine: true,
+	TraverseChildren:      true,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if len(args) == 0 {
+			return showHelp(cmd, args)
+		}
+		return fmt.Errorf("certonid: '%s' is not a certonid command.\nSee 'certonid --help'", args[0])
 	},
-	Version: fmt.Sprintf("%s, build %s", version.Version, version.GitCommit),
 }
 
 func init() {

@@ -16,7 +16,7 @@ var (
 	encryptAwsKmsRegion string
 
 	encryptCmd = &cobra.Command{
-		Use:   "encrypt [text]",
+		Use:   "encrypt [OPTIONS] TEXT",
 		Short: "Encrypt text",
 		Long:  `Encrypt text with symmetric or kms encryption`,
 		Run: func(cmd *cobra.Command, args []string) {

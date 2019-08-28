@@ -15,7 +15,7 @@ var (
 	decryptAwsKmsRegion string
 
 	decryptCmd = &cobra.Command{
-		Use:   "decrypt [text]",
+		Use:   "decrypt [OPTIONS] TEXT",
 		Short: "Decrypt text",
 		Long:  `Decrypt text with symmetric or kms encryption`,
 		Run: func(cmd *cobra.Command, args []string) {
