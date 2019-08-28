@@ -1,7 +1,6 @@
 package awscloud
 
 import (
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
@@ -17,7 +16,7 @@ func New(profile string) *Client {
 	}
 
 	if profile != "" {
-		sessionOptions.Profile = aws.String(profile)
+		sessionOptions.Profile = profile
 	}
 
 	return &Client{
