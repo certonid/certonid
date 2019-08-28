@@ -6,6 +6,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	PlatformName = ""
+	Version      = "unknown-version"
+	GitCommit    = "unknown-commit"
+	BuildTime    = "unknown-buildtime"
+)
+
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version number of Certonid",

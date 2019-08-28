@@ -24,6 +24,7 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	rootCmd.SetVersionTemplate("Docker version {{.Version}}\n")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.certonid/config.yml)")
 }
 
@@ -35,7 +36,10 @@ func initLogging() {
 		if err == nil {
 			log.SetLevel(level)
 		} else {
-			log.Error("Invalid log level:", err)
+			log.WithFields(log.Fields{
+				"error": err,
+				"level": viper.GetString("logger.level"),
+			}).Info("Invalid log level")
 			log.SetLevel(log.InfoLevel)
 		}
 	} else {
@@ -65,8 +69,17 @@ func initConfig() {
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
-		fmt.Printf("Fatal error config file: %s", err)
-		os.Exit(1)
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			log.WithFields(log.Fields{
+				"error": err,
+			}).Error("Config not found. Continue without it")
+		} else {
+			log.WithFields(log.Fields{
+				"error": err,
+			}).Error("Fatal error in config file")
+			os.Exit(1)
+		}
+
 	}
 
 	initLogging()
