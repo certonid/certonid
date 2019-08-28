@@ -45,6 +45,6 @@ func (cl *KMSClient) KmsDecryptText(text string) ([]byte, error) {
 // KmsClient return kms client
 func (client *Client) KmsClient(region string) *KMSClient {
 	return &KMSClient{
-		Client: kms.New(client.Session, &aws.Config{Region: region}),
+		Client: kms.New(client.Session, &aws.Config{Region: aws.String(region)}),
 	}
 }
