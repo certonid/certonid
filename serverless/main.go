@@ -2,23 +2,10 @@ package main
 
 import (
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/le0pard/certonid/proto"
 	"github.com/le0pard/certonid/serverless/config"
 	"github.com/le0pard/certonid/serverless/sshca"
 )
-
-// SignEvent used for function arguments
-type SignEvent struct {
-	CertType   string `json:"cert_type"`
-	Key        string `json:"key"`
-	Username   string `json:"username"`
-	Hostnames  string `json:"hostnames"`
-	ValidUntil string `json:"valid_until"`
-}
-
-// SignResponse used for function response
-type SignResponse struct {
-	Cert string `json:"cert"`
-}
 
 // init function
 func init() {
@@ -26,7 +13,7 @@ func init() {
 }
 
 // LambdaHandler used to handle lambda call
-func LambdaHandler(event SignEvent) (SignResponse, error) {
+func LambdaHandler(event proto.AwsSignEvent) (proto.AwsSignResponse, error) {
 	var (
 		err  error
 		cert string

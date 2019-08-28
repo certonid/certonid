@@ -1,0 +1,51 @@
+package awscloud
+
+import (
+	"encoding/base64"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/kms"
+	"github.com/aws/aws-sdk-go/service/lambda"
+)
+
+// LambdaClient store aws info
+type LambdaClient struct {
+	Client *lambda.Lambda
+}
+
+// KmsEncryptText allow to encrypt text by AWS KMS
+func (cl *KMSClient) KmsEncryptText(keyId string, text []byte) (string, error) {
+	result, err := cl.Client.Encrypt(&kms.EncryptInput{
+		KeyId:     aws.String(keyId),
+		Plaintext: text,
+	})
+
+	if err != nil {
+		return "", err
+	}
+
+	return base64.StdEncoding.EncodeToString(result.CiphertextBlob), nil
+}
+
+// KmsDecryptText allow to decrypt text by AWS KMS
+func (cl *KMSClient) KmsDecryptText(text string) ([]byte, error) {
+	blob, err := base64.StdEncoding.DecodeString(text)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	result, err := cl.Client.Decrypt(&kms.DecryptInput{CiphertextBlob: blob})
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return result.Plaintext, nil
+}
+
+// LambdaClient return kms client
+func (client *Client) LambdaClient(region string) *LambdaClient {
+	return &LambdaClient{
+		Client: lambda.New(client.Session, &aws.Config{Region: aws.String(region)}),
+	}
+}

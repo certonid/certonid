@@ -11,7 +11,7 @@ var gencertCmd = &cobra.Command{
 	Short: "Generate user or host certificate",
 	Long:  `Generate user or host sertificate by involke serverless function`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("TODO")
+		kmsClient := awscloud.New().LambdaClient(decryptAwsKmsRegion)
 	},
 }
 
