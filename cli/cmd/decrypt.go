@@ -10,8 +10,9 @@ import (
 )
 
 var (
-	decryptType         string
-	decryptAwsKmsRegion string
+	decryptType          string
+	decryptAwsKmsRegion  string
+	decryptAwsKmsProfile string
 
 	decryptCmd = &cobra.Command{
 		Use:   "decrypt [OPTIONS] TEXT",
@@ -29,7 +30,7 @@ var (
 
 			switch strings.ToLower(decryptType) {
 			case "aws_kms":
-				kmsClient := awscloud.New().KmsClient(decryptAwsKmsRegion)
+				kmsClient := awscloud.New(decryptAwsKmsProfile).KmsClient(decryptAwsKmsRegion)
 				text, err = kmsClient.KmsDecryptText(args[0])
 			default: // symmetric
 				text, err = utils.SymmetricDecrypt(args[0])
@@ -49,5 +50,6 @@ var (
 func init() {
 	rootCmd.AddCommand(decryptCmd)
 	decryptCmd.Flags().StringVarP(&decryptType, "type", "t", "symmetric", "Decryption type (symmetric, aws_kms, gcloud_kms)")
+	decryptCmd.Flags().StringVarP(&decryptAwsKmsProfile, "aws-kms-profile", "", "", "AWS KMS Profile")
 	decryptCmd.Flags().StringVarP(&decryptAwsKmsRegion, "aws-kms-region", "", "", "AWS KMS Region")
 }

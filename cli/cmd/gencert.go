@@ -12,12 +12,13 @@ import (
 )
 
 var (
-	genAwsLambdaRegion string
-	genCertType        string
-	genPublicKey       string
-	genUsername        string
-	genHostnames       string
-	genValidUntil      string
+	genAwsLambdaProfile string
+	genAwsLambdaRegion  string
+	genCertType         string
+	genPublicKey        string
+	genUsername         string
+	genHostnames        string
+	genValidUntil       string
 
 	gencertCmd = &cobra.Command{
 		Use:   "gencert [OPTIONS] [KEY NAME]",
@@ -46,7 +47,7 @@ var (
 				er(err)
 			}
 
-			lambdaClient := awscloud.New().LambdaClient(genAwsLambdaRegion)
+			lambdaClient := awscloud.New(genAwsLambdaProfile).LambdaClient(genAwsLambdaRegion)
 
 			invokePayload, err := lambdaClient.LambdaInvoke("BressFunction", awsSignRequest)
 
@@ -79,6 +80,7 @@ var (
 
 func init() {
 	rootCmd.AddCommand(gencertCmd)
+	gencertCmd.Flags().StringVarP(&genAwsLambdaProfile, "aws-lambda-profile", "", "", "AWS Lambda Profile")
 	gencertCmd.Flags().StringVarP(&genAwsLambdaRegion, "aws-lambda-region", "", "", "AWS Lambda Region")
 	gencertCmd.Flags().StringVarP(&genCertType, "type", "t", "user", "Certificate type (user, host)")
 	gencertCmd.Flags().StringVarP(&genPublicKey, "public-file", "p", "", "Path to public file, which will used for certificate")

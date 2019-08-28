@@ -10,9 +10,10 @@ import (
 )
 
 var (
-	encryptType         string
-	encryptAwsKmsKeyID  string
-	encryptAwsKmsRegion string
+	encryptType          string
+	encryptAwsKmsKeyID   string
+	encryptAwsKmsProfile string
+	encryptAwsKmsRegion  string
 
 	encryptCmd = &cobra.Command{
 		Use:   "encrypt [OPTIONS] TEXT",
@@ -30,7 +31,7 @@ var (
 
 			switch strings.ToLower(encryptType) {
 			case "aws_kms":
-				kmsClient := awscloud.New().KmsClient(encryptAwsKmsRegion)
+				kmsClient := awscloud.New(encryptAwsKmsProfile).KmsClient(encryptAwsKmsRegion)
 				encText, err = kmsClient.KmsEncryptText(encryptAwsKmsKeyID, []byte(args[0]))
 			default: // symmetric
 				encText, err = utils.SymmetricEncrypt([]byte(args[0]))
@@ -51,5 +52,7 @@ func init() {
 	rootCmd.AddCommand(encryptCmd)
 	encryptCmd.Flags().StringVarP(&encryptType, "type", "t", "symmetric", "Encryption type (symmetric, aws_kms, gcloud_kms)")
 	encryptCmd.Flags().StringVarP(&encryptAwsKmsKeyID, "aws-kms-key-id", "", "", "AWS KMS Key ID")
+	encryptCmd.MarkFlagRequired("aws-kms-key-id")
+	encryptCmd.Flags().StringVarP(&encryptAwsKmsProfile, "aws-kms-profile", "", "", "AWS KMS Profile")
 	encryptCmd.Flags().StringVarP(&encryptAwsKmsRegion, "aws-kms-region", "", "", "AWS KMS Region")
 }

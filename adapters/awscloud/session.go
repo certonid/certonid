@@ -1,6 +1,7 @@
 package awscloud
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
@@ -10,9 +11,13 @@ type Client struct {
 }
 
 // New init aws client session
-func New() *Client {
+func New(profile string) *Client {
 	sessionOptions := session.Options{
 		SharedConfigState: session.SharedConfigEnable,
+	}
+
+	if profile != "" {
+		sessionOptions.Profile = aws.String(profile)
 	}
 
 	return &Client{

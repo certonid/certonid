@@ -1,1 +1,9 @@
-runner: aws
+cache_keys_path: ~/.certonid/keys
+
+keys:
+  example:
+    public_key: ~/.ssh/id_ed25519.pub
+    runner: aws
+    aws:
+      profile: rw-site
+      region: us-east-1
