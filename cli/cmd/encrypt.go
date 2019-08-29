@@ -48,8 +48,7 @@ var (
 func init() {
 	rootCmd.AddCommand(encryptCmd)
 	encryptCmd.Flags().StringVarP(&encryptType, "type", "t", "symmetric", "Encryption type (symmetric, aws_kms, gcloud_kms)")
-	encryptCmd.Flags().StringVarP(&encryptAwsKmsKeyID, "aws-kms-key-id", "", "", "AWS KMS Key ID")
-	encryptCmd.MarkFlagRequired("aws-kms-key-id")
-	encryptCmd.Flags().StringVarP(&encryptAwsKmsProfile, "aws-kms-profile", "", "", "AWS KMS Profile")
-	encryptCmd.Flags().StringVarP(&encryptAwsKmsRegion, "aws-kms-region", "", "", "AWS KMS Region")
+	encryptCmd.Flags().StringVar(&encryptAwsKmsKeyID, "aws-kms-key-id", "", "AWS KMS Key ID")
+	encryptCmd.Flags().StringVar(&encryptAwsKmsProfile, "aws-kms-profile", "", "AWS KMS Profile")
+	encryptCmd.Flags().StringVar(&encryptAwsKmsRegion, "aws-kms-region", "", "AWS KMS Region")
 }
