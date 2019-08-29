@@ -6,6 +6,6 @@ keys:
     username: leopard
     runner: aws
     aws:
-      profile: rw-site
+      profile: example
       region: us-east-1
       function_name: BressFunction
