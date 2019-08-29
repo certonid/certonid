@@ -210,9 +210,9 @@ func genCertFromAws(keyData []byte) error {
 
 func init() {
 	rootCmd.AddCommand(gencertCmd)
-	gencertCmd.Flags().StringVarP(&genAwsLambdaProfile, "aws-lambda-profile", "", "", "AWS Lambda Profile")
-	gencertCmd.Flags().StringVarP(&genAwsLambdaRegion, "aws-lambda-region", "", "", "AWS Lambda Region")
-	gencertCmd.Flags().StringVarP(&genAwsLambdaFuncName, "aws-lambda-func-name", "", "", "AWS Lambda Function name")
+	gencertCmd.Flags().StringVar(&genAwsLambdaProfile, "aws-lambda-profile", "", "AWS Lambda Profile")
+	gencertCmd.Flags().StringVar(&genAwsLambdaRegion, "aws-lambda-region", "", "AWS Lambda Region")
+	gencertCmd.Flags().StringVar(&genAwsLambdaFuncName, "aws-lambda-func-name", "", "AWS Lambda Function name")
 	gencertCmd.Flags().StringVarP(&genCertCertName, "key-name", "n", "", "Certificate name")
 	gencertCmd.Flags().StringVarP(&genCertRunner, "runner", "r", "", "Serverless runner (aws)")
 	gencertCmd.Flags().StringVarP(&genCertType, "type", "t", "user", "Certificate type (user, host)")
