@@ -3,6 +3,10 @@
 # Build a static binary for the host OS/ARCH
 #
 
+# windows deps
+go get github.com/inconshreveable/mousetrap
+go get github.com/konsorten/go-windows-terminal-sequences
+
 source ./scripts/build/.variables
 
 echo "Building statically linked certonid"
