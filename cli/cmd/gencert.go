@@ -150,7 +150,10 @@ func validateOptions() {
 }
 
 func storeCertAtFile(filename, cert string) error {
-	os.MkdirAll(filepath.Dir(filename), os.ModePerm)
+	err := os.MkdirAll(filepath.Dir(filename), os.ModePerm)
+        if err != nil {
+                return err
+        }
 	return ioutil.WriteFile(filename, []byte(cert), 0600)
 }
 
