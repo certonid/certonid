@@ -33,7 +33,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.SetVersionTemplate("Certonid version {{.Version}}\n")
-	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is $HOME/.certonid/config.yml)")
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is $HOME/.certonid.yml)")
 }
 
 func initLogging() {
