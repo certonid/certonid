@@ -1,9 +1,11 @@
-cache_keys_path: ~/.certonid/keys
+cache_keys_path: ~/.projects_ssh
 
 keys:
   example:
-    public_key: ~/.ssh/id_ed25519.pub
+    public_key_path: ~/.ssh/id_ed25519.pub
+    username: leopard
     runner: aws
     aws:
       profile: rw-site
       region: us-east-1
+      function_name: BressFunction

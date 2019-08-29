@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/le0pard/certonid/cli/version"
 	homedir "github.com/mitchellh/go-homedir"
@@ -34,7 +33,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.SetVersionTemplate("Certonid version {{.Version}}\n")
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.certonid/config.yml)")
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is $HOME/.certonid/config.yml)")
 }
 
 func initLogging() {
@@ -72,16 +71,16 @@ func initConfig() {
 			os.Exit(1)
 		}
 
-		viper.AddConfigPath(filepath.Join(home, ".certonid"))
-		viper.AddConfigPath(".certonid")
-		viper.SetConfigName("config")
+		viper.AddConfigPath(home)
+		viper.AddConfigPath(".")
+		viper.SetConfigName(".certonid")
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			log.WithFields(log.Fields{
 				"error": err,
-			}).Error("Config not found. Continue without it")
+			}).Warn("Config not found. Continue without it")
 		} else {
 			log.WithFields(log.Fields{
 				"error": err,
