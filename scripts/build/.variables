@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 set -eu
 
-PLATFORM=${PLATFORM:-}
-VERSION=${VERSION:-"unknown-version"}
-GITCOMMIT=${GITCOMMIT:-$(git rev-parse --short HEAD 2> /dev/null || true)}
-BUILDTIME=${BUILDTIME:-$(date --utc --rfc-3339 ns 2> /dev/null | sed -e 's/ /T/')}
+CERTONID_PLATFORM=${CERTONID_PLATFORM:-}
+CERTONID_VERSION=${CERTONID_VERSION:-"unknown-version"}
+CERTONID_GITCOMMIT=${CERTONID_GITCOMMIT:-$(git rev-parse --short HEAD 2> /dev/null || true)}
+CERTONID_BUILDTIME=${CERTONID_BUILDTIME:-$(date --utc --rfc-3339 ns 2> /dev/null | sed -e 's/ /T/')}
 
-PLATFORM_LDFLAGS=
-if test -n "${PLATFORM}"; then
-	PLATFORM_LDFLAGS="-X \"github.com/le0pard/certonid/cli/version.PlatformName=${PLATFORM}\""
+CERTONID_PLATFORM_LDFLAGS=
+if test -n "${CERTONID_PLATFORM}"; then
+	CERTONID_PLATFORM_LDFLAGS="-X \"github.com/le0pard/certonid/cli/version.PlatformName=${CERTONID_PLATFORM}\""
 fi
 
 export LDFLAGS="\
     -w \
-    ${PLATFORM_LDFLAGS} \
-    -X \"github.com/le0pard/certonid/cli/version.GitCommit=${GITCOMMIT}\" \
-    -X \"github.com/le0pard/certonid/cli/version.BuildTime=${BUILDTIME}\" \
-    -X \"github.com/le0pard/certonid/cli/version.Version=${VERSION}\" \
+    ${CERTONID_PLATFORM_LDFLAGS} \
+    -X \"github.com/le0pard/certonid/cli/version.GitCommit=${CERTONID_GITCOMMIT}\" \
+    -X \"github.com/le0pard/certonid/cli/version.BuildTime=${CERTONID_BUILDTIME}\" \
+    -X \"github.com/le0pard/certonid/cli/version.Version=${CERTONID_VERSION}\" \
     ${LDFLAGS:-} \
 "
 

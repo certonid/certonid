@@ -11,7 +11,7 @@ notifications:
 
 env:
   global:
-    - VERSION=$TRAVIS_TAG
+    - CERTONID_VERSION=$TRAVIS_TAG
 
 matrix:
   include:

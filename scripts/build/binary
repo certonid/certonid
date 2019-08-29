@@ -3,8 +3,6 @@
 # Build a static binary for the host OS/ARCH
 #
 
-go get github.com/mitchellh/gox
-
 source ./scripts/build/.variables
 
 echo "Building statically linked certonid"
