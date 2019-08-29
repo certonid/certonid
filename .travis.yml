@@ -9,6 +9,10 @@ dist: xenial
 notifications:
   email: false
 
+env:
+  global:
+    - VERSION=$TRAVIS_TAG
+
 matrix:
   include:
   - go: '1.12'
