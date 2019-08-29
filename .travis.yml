@@ -1,0 +1,39 @@
+language: go
+
+before_install:
+# gox simplifies building for multiple architectures
+- go get github.com/mitchellh/gox
+
+sudo: false
+dist: xenial
+
+notifications:
+  email: false
+
+matrix:
+  include:
+    # "1.x" always refers to the latest Go version, inc. the patch release.
+    # e.g. "1.x" is 1.11 until 1.11.1 is available.
+    - go: '1.12'
+      env: LATEST=true
+    - go: '1.11'
+    - go: '1.10'
+    - go: tip
+  allow_failures:
+    - go: tip
+
+before_deploy:
+ - if [ "${LATEST}" = "true" ]; then ./scripts/build/binary; fi
+
+deploy:
+  provider: releases
+  skip_cleanup: true
+  file:
+  - certonid.darwin.amd64
+  - certonid.linux.amd64
+  - certonid.windows.amd64.exe
+  - serverless.linux.amd64
+  on:
+    repo: le0pard/certonid
+    tags: true
+    condition: $LATEST = true

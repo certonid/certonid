@@ -31,12 +31,18 @@ func getCAPassphrase() ([]byte, error) {
 
 	switch strings.ToLower(viper.GetString("ca.passphrase.encryption")) {
 	case "aws_kms":
-		var region string
+		var (
+			profile string
+			region  string
+		)
 
+		if viper.IsSet("ca.passphrase.profile") {
+			profile = viper.GetString("ca.passphrase.profile")
+		}
 		if viper.IsSet("ca.passphrase.region") {
 			region = viper.GetString("ca.passphrase.region")
 		}
-		kmsClient := awscloud.New().KmsClient(region)
+		kmsClient := awscloud.New(profile).KmsClient(region)
 		passphrase, err = kmsClient.KmsDecryptText(encryptedPassphrase)
 	default: // symmetric
 		passphrase, err = utils.SymmetricDecrypt(encryptedPassphrase)

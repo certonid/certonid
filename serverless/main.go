@@ -27,10 +27,10 @@ func LambdaHandler(event proto.AwsSignEvent) (proto.AwsSignResponse, error) {
 		ValidUntil: event.ValidUntil,
 	})
 	if err != nil {
-		return SignResponse{}, err
+		return proto.AwsSignResponse{}, err
 	}
 
-	return SignResponse{
+	return proto.AwsSignResponse{
 		Cert: cert,
 	}, nil
 }
