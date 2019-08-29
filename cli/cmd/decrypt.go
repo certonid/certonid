@@ -48,6 +48,6 @@ var (
 func init() {
 	rootCmd.AddCommand(decryptCmd)
 	decryptCmd.Flags().StringVarP(&decryptType, "type", "t", "symmetric", "Decryption type (symmetric, aws_kms, gcloud_kms)")
-	decryptCmd.Flags().StringVarP(&decryptAwsKmsProfile, "aws-kms-profile", "", "", "AWS KMS Profile")
-	decryptCmd.Flags().StringVarP(&decryptAwsKmsRegion, "aws-kms-region", "", "", "AWS KMS Region")
+	decryptCmd.Flags().StringVar(&decryptAwsKmsProfile, "aws-kms-profile", "", "AWS KMS Profile")
+	decryptCmd.Flags().StringVar(&decryptAwsKmsRegion, "aws-kms-region", "", "AWS KMS Region")
 }
