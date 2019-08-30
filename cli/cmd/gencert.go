@@ -20,8 +20,9 @@ import (
 )
 
 const (
-	timeSkew     = 15 * time.Second // to protect against time-skew issues we potentially generate a certificate timeSkew duration
-	genCertSufix = "cert.pub"
+	timeSkew          = 15 * time.Second // to protect against time-skew issues we potentially generate a certificate timeSkew duration
+	genCertSufix      = "cert.pub"
+	defaultValidUntil = "30m" // default 30 min
 )
 
 var (
@@ -154,6 +155,10 @@ func validateOptions() {
 
 	if len(genValidUntil) == 0 && hasConfigKey {
 		genValidUntil = viper.GetString(fmt.Sprintf("%s.valid_until", keyPrefix))
+
+		if len(genValidUntil) == 0 {
+			genValidUntil = defaultValidUntil
+		}
 	}
 
 	// aws
@@ -280,5 +285,5 @@ func init() {
 	gencertCmd.Flags().StringVarP(&genCertPath, "certificate-path", "o", "", "Path to cerrtificate file")
 	gencertCmd.Flags().StringVarP(&genUsername, "username", "u", "", "Username for certificate")
 	gencertCmd.Flags().StringVarP(&genHostnames, "hostnames", "s", "", "Hostnames for certificate (use comma as divider)")
-	gencertCmd.Flags().StringVarP(&genValidUntil, "valid-until", "l", "24h", "TTL for certificate")
+	gencertCmd.Flags().StringVarP(&genValidUntil, "valid-until", "l", "", "TTL for certificate")
 }
