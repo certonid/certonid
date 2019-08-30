@@ -74,7 +74,7 @@ var (
 					log.WithFields(log.Fields{
 						"certificate": genCertPath,
 						"valid until": time.Unix(int64(cachedCert.ValidBefore), 0).UTC(),
-					}).Info("Current certificate still valid")
+					}).Info("Current certificate still valid. Exiting...")
 					os.Exit(0)
 				}
 			}
