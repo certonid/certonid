@@ -20,8 +20,8 @@ import (
 )
 
 const (
-	TIME_SKEW      = 15 * time.Second // to protect against time-skew issues we potentially generate a certificate TIME_SKEW duration
-	GEN_CERT_SUFIX = "cert.pub"
+	timeSkew     = 15 * time.Second // to protect against time-skew issues we potentially generate a certificate timeSkew duration
+	genCertSufix = "cert.pub"
 )
 
 var (
@@ -135,7 +135,7 @@ func validateOptions() {
 		genCertPath = viper.GetString(fmt.Sprintf("%s.certificate_path", keyPrefix))
 
 		if len(genCertPath) == 0 && viper.IsSet("cache_keys_path") {
-			certFilePath, err := homedir.Expand(filepath.Join(viper.GetString("cache_keys_path"), fmt.Sprintf("%s-%s", genCertCertName, GEN_CERT_SUFIX)))
+			certFilePath, err := homedir.Expand(filepath.Join(viper.GetString("cache_keys_path"), fmt.Sprintf("%s-%s", genCertCertName, genCertSufix)))
 			if err != nil {
 				er(err)
 			}
@@ -200,7 +200,7 @@ func isCertStillFresh() (bool, *ssh.Certificate) {
 
 	now := time.Now()
 
-	validBefore := time.Unix(int64(cert.ValidBefore), 0).Add(-1 * TIME_SKEW) // upper bound
+	validBefore := time.Unix(int64(cert.ValidBefore), 0).Add(-1 * timeSkew) // upper bound
 
 	return now.Before(validBefore), cert
 }
