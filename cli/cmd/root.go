@@ -11,7 +11,9 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
+var (
+	cfgFile string
+)
 
 var rootCmd = &cobra.Command{
 	Use:                   "certonid [OPTIONS] COMMAND [ARG...]",
@@ -37,6 +39,10 @@ func init() {
 }
 
 func initLogging() {
+	log.SetFormatter(&log.TextFormatter{
+		DisableColors: false,
+		FullTimestamp: true,
+	})
 	log.SetOutput(os.Stdout)
 
 	if viper.IsSet("logger.level") {

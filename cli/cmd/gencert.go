@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/le0pard/certonid/adapters/awscloud"
 	"github.com/le0pard/certonid/proto"
@@ -15,6 +16,12 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"golang.org/x/crypto/ssh"
+)
+
+const (
+	TIME_SKEW      = 15 * time.Second // to protect against time-skew issues we potentially generate a certificate TIME_SKEW duration
+	GEN_CERT_SUFIX = "cert.pub"
 )
 
 var (
@@ -22,6 +29,7 @@ var (
 	genAwsLambdaRegion   string
 	genAwsLambdaFuncName string
 	genCertCertName      string
+	genSkipCertCache     bool
 	genCertRunner        string
 	genCertPath          string
 	genCertType          string
@@ -58,6 +66,24 @@ var (
 			} else if len(genUsername) == 0 {
 				er("You need to username for certificate")
 			}
+
+			if !genSkipCertCache {
+				isFresh, cachedCert := isCertStillFresh()
+
+				if isFresh {
+					log.WithFields(log.Fields{
+						"certificate": genCertPath,
+						"valid until": time.Unix(int64(cachedCert.ValidBefore), 0).UTC(),
+					}).Info("Current certificate still valid")
+					os.Exit(0)
+				}
+			}
+
+			log.WithFields(log.Fields{
+				"runner":      genCertRunner,
+				"public key":  genPublicKeyPath,
+				"certificate": genCertPath,
+			}).Info("Signing public key")
 
 			publicKeyData, err := ioutil.ReadFile(genPublicKeyPath)
 
@@ -109,12 +135,7 @@ func validateOptions() {
 		genCertPath = viper.GetString(fmt.Sprintf("%s.certificate_path", keyPrefix))
 
 		if len(genCertPath) == 0 && viper.IsSet("cache_keys_path") {
-			certFilename := []string{
-				genCertCertName,
-				".cert",
-			}
-
-			certFilePath, err := homedir.Expand(filepath.Join(viper.GetString("cache_keys_path"), strings.Join(certFilename, "")))
+			certFilePath, err := homedir.Expand(filepath.Join(viper.GetString("cache_keys_path"), fmt.Sprintf("%s-%s", genCertCertName, GEN_CERT_SUFIX)))
 			if err != nil {
 				er(err)
 			}
@@ -149,11 +170,46 @@ func validateOptions() {
 	genCertType = strings.ToLower(genCertType)
 }
 
+func isCertStillFresh() (bool, *ssh.Certificate) {
+	bytes, err := ioutil.ReadFile(genCertPath)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Warn("Could not read cert")
+		return false, nil
+	}
+
+	k, _, _, _, err := ssh.ParseAuthorizedKey(bytes)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Warn("Could not parse cert")
+		return false, nil
+	}
+
+	cert, ok := k.(*ssh.Certificate)
+	if !ok {
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Warn("Bytes do not correspond to an ssh certificate")
+		return false, nil
+	}
+	if cert == nil {
+		return false, nil
+	}
+
+	now := time.Now()
+
+	validBefore := time.Unix(int64(cert.ValidBefore), 0).Add(-1 * TIME_SKEW) // upper bound
+
+	return now.Before(validBefore), cert
+}
+
 func storeCertAtFile(filename, cert string) error {
 	err := os.MkdirAll(filepath.Dir(filename), os.ModePerm)
-        if err != nil {
-                return err
-        }
+	if err != nil {
+		return err
+	}
 	return ioutil.WriteFile(filename, []byte(cert), 0600)
 }
 
@@ -216,12 +272,13 @@ func init() {
 	gencertCmd.Flags().StringVar(&genAwsLambdaProfile, "aws-lambda-profile", "", "AWS Lambda Profile")
 	gencertCmd.Flags().StringVar(&genAwsLambdaRegion, "aws-lambda-region", "", "AWS Lambda Region")
 	gencertCmd.Flags().StringVar(&genAwsLambdaFuncName, "aws-lambda-func-name", "", "AWS Lambda Function name")
+	gencertCmd.Flags().BoolVar(&genSkipCertCache, "skip-cache", false, "Skip certificate in cache and run serverless function")
 	gencertCmd.Flags().StringVarP(&genCertCertName, "key-name", "n", "", "Certificate name")
 	gencertCmd.Flags().StringVarP(&genCertRunner, "runner", "r", "", "Serverless runner (aws)")
 	gencertCmd.Flags().StringVarP(&genCertType, "type", "t", "user", "Certificate type (user, host)")
 	gencertCmd.Flags().StringVarP(&genPublicKeyPath, "public-key-path", "p", "", "Path to public file, which will used for certificate")
-	gencertCmd.Flags().StringVarP(&genCertPath, "certificate-path", "o", "", "Path to cerrtificate file, which will saved output")
+	gencertCmd.Flags().StringVarP(&genCertPath, "certificate-path", "o", "", "Path to cerrtificate file")
 	gencertCmd.Flags().StringVarP(&genUsername, "username", "u", "", "Username for certificate")
-	gencertCmd.Flags().StringVarP(&genHostnames, "hostnames", "s", "", "Hostnames for certificate (use , for division)")
+	gencertCmd.Flags().StringVarP(&genHostnames, "hostnames", "s", "", "Hostnames for certificate (use comma as divider)")
 	gencertCmd.Flags().StringVarP(&genValidUntil, "valid-until", "l", "24h", "TTL for certificate")
 }

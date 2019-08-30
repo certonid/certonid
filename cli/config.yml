@@ -1,4 +1,4 @@
-cache_keys_path: ~/.projects_ssh
+cache_keys_path: ~/.projects_certs
 
 keys:
   example:

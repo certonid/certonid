@@ -23,8 +23,9 @@ var (
 )
 
 const (
-	userCertType string = "user"
-	hostCertType string = "host"
+	TIME_SKEW    = 5 * time.Minute // to protect against time-skew issues we potentially generate a certificate TIME_SKEW duration
+	userCertType = "user"
+	hostCertType = "host"
 )
 
 // KeySigner does the work of signing a ssh public key with the CA key.
@@ -122,7 +123,7 @@ func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
 		CertType:    certType,
 		Key:         pubkey,
 		KeyId:       fmt.Sprintf("%s_%d", req.Username, time.Now().UTC().Unix()),
-		ValidAfter:  uint64(time.Now().UTC().Add(-5 * time.Minute).Unix()),
+		ValidAfter:  uint64(time.Now().UTC().Add(-1 * TIME_SKEW).Unix()),
 		ValidBefore: uint64(req.ValidUntil.Unix()),
 	}
 	// principals

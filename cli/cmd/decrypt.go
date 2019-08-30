@@ -18,13 +18,12 @@ var (
 		Use:   "decrypt [OPTIONS] TEXT",
 		Short: "Decrypt text",
 		Long:  `Decrypt text with symmetric or kms encryption`,
-                Args:  cobra.MinimumNArgs(1),
+		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			var (
 				err  error
 				text []byte
 			)
-
 
 			switch strings.ToLower(decryptType) {
 			case "aws_kms":
