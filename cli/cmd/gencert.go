@@ -69,7 +69,8 @@ var (
 			}
 
 			if !genSkipCertCache {
-				isFresh, cachedCert := isCertStillFresh()
+				cachedCert := getCertFromFile()
+				isFresh := isCertStillFresh(cachedCert)
 
 				if isFresh {
 					log.WithFields(log.Fields{
@@ -175,21 +176,13 @@ func validateOptions() {
 	genCertType = strings.ToLower(genCertType)
 }
 
-func isCertStillFresh() (bool, *ssh.Certificate) {
-	bytes, err := ioutil.ReadFile(genCertPath)
-	if err != nil {
-		log.WithFields(log.Fields{
-			"error": err,
-		}).Warn("Could not read cert")
-		return false, nil
-	}
-
+func parseCertificate(bytes []byte) *ssh.Certificate {
 	k, _, _, _, err := ssh.ParseAuthorizedKey(bytes)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"error": err,
 		}).Warn("Could not parse cert")
-		return false, nil
+		return nil
 	}
 
 	cert, ok := k.(*ssh.Certificate)
@@ -197,25 +190,41 @@ func isCertStillFresh() (bool, *ssh.Certificate) {
 		log.WithFields(log.Fields{
 			"error": err,
 		}).Warn("Bytes do not correspond to an ssh certificate")
-		return false, nil
+		return nil
 	}
+
+	return cert
+}
+
+func getCertFromFile() *ssh.Certificate {
+	bytes, err := ioutil.ReadFile(genCertPath)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Warn("Could not read cert")
+		return nil
+	}
+
+	return parseCertificate(bytes)
+}
+
+func isCertStillFresh(cert *ssh.Certificate) bool {
 	if cert == nil {
-		return false, nil
+		return false
 	}
 
 	now := time.Now()
-
 	validBefore := time.Unix(int64(cert.ValidBefore), 0).Add(-1 * timeSkew) // upper bound
 
-	return now.Before(validBefore), cert
+	return now.Before(validBefore)
 }
 
-func storeCertAtFile(filename, cert string) error {
+func storeCertAtFile(filename string, cert []byte) error {
 	err := os.MkdirAll(filepath.Dir(filename), os.ModePerm)
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(filename, []byte(cert), 0600)
+	return ioutil.WriteFile(filename, cert, 0600)
 }
 
 func genCertFromAws(keyData []byte) error {
@@ -258,7 +267,8 @@ func genCertFromAws(keyData []byte) error {
 		return errors.New("Function not return cert in result")
 	}
 
-	err = storeCertAtFile(genCertPath, resp.Cert)
+	certBytes := []byte(resp.Cert)
+	err = storeCertAtFile(genCertPath, certBytes)
 
 	if err != nil {
 		return err
