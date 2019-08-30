@@ -1,6 +1,5 @@
-cache_keys_path: ~/.projects_certs
-
-keys:
+cache_path: ~/.projects_certs
+certificates:
   example:
     public_key_path: ~/.ssh/id_ed25519.pub
     username: leopard
