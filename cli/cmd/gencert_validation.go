@@ -69,6 +69,10 @@ func genValidateOptions() {
 		}
 	}
 
+	if !genSkipCertCache && hasConfigKey {
+		genSkipCertCache = viper.GetBool(fmt.Sprintf("%s.skip_cache", keyPrefix))
+	}
+
 	// aws
 	if len(genAwsLambdaProfile) == 0 && hasConfigKey {
 		genAwsLambdaProfile = viper.GetString(fmt.Sprintf("%s.aws.profile", keyPrefix))
