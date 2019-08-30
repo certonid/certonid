@@ -43,7 +43,7 @@ func genValidateOptions() {
 	if len(genCertPath) == 0 && hasConfigKey {
 		genCertPath = viper.GetString(fmt.Sprintf("%s.certificate_path", keyPrefix))
 
-		if len(genCertPath) == 0 && viper.IsSet("cache_keys_path") {
+		if len(genCertPath) == 0 && viper.IsSet("cache_path") {
 			certFilePath, err := homedir.Expand(filepath.Join(viper.GetString("cache_path"), fmt.Sprintf("%s-%s", genCertCertName, genCertSufix)))
 			if err != nil {
 				er(err)
