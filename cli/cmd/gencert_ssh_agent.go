@@ -3,19 +3,21 @@ package cmd
 import (
 	"fmt"
 	"io/ioutil"
-	"reflect"
+	"os"
 	"time"
 
+	"github.com/le0pard/certonid/utils"
 	homedir "github.com/mitchellh/go-homedir"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
-	"github.com/le0pard/certonid/utils"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 func genAddCertToAgent(cert *ssh.Certificate) error {
-	var(
-		privateKey ssh.Signer
+	var (
+		privateKey    ssh.Signer
+		privateKeyErr error
 	)
 	expandedPrivateKey, err := homedir.Expand(genAddToSSHAgent)
 	if err != nil {
@@ -35,16 +37,26 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 		return err
 	}
 
-	passphrase, ok := utils.GetENV("PRIVATE_KEY_PASSPHRASE")
+	_, ok := utils.GetENV("PRIVATE_KEY_PASSPHRASE")
 	if ok {
-		privateKey, err = ssh.ParsePrivateKeyWithPassphrase(privatKeyBytes, []byte(passphrase))
+		fmt.Print("SSH Key Passphrase [none]: ")
+		passPhrase, err := terminal.ReadPassword(int(os.Stdin.Fd()))
+		fmt.Print("\n")
+		if err != nil {
+			log.WithFields(log.Fields{
+				"error": err,
+			}).Error("Not provided passphrase for provate key")
+			return err
+		}
+
+		privateKey, privateKeyErr = ssh.ParsePrivateKeyWithPassphrase(privatKeyBytes, []byte(passPhrase))
 	} else {
-		privateKey, err = ssh.ParsePrivateKey(privatKeyBytes)
+		privateKey, privateKeyErr = ssh.ParsePrivateKey(privatKeyBytes)
 	}
 
-	if err != nil {
+	if privateKeyErr != nil {
 		log.WithFields(log.Fields{
-			"error":    err,
+			"error":    privateKeyErr,
 			"filename": expandedPrivateKey,
 		}).Error("Could not parse private key")
 		return err
@@ -68,7 +80,6 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 			"error":    err,
 			"filename": expandedPrivateKey,
 		}).Error("Unable to add cert to ssh agent")
-		panic(reflect.TypeOf(privateKey))
 		return err
 	}
 

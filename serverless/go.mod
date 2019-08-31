@@ -10,5 +10,5 @@ require (
 	github.com/le0pard/certonid v0.0.0-20190829121644-9fbfef83f5f1
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/viper v1.4.0
-	golang.org/x/crypto v0.0.0-20190820162420-60c769a6c586
+	golang.org/x/crypto v0.0.0-20190829043050-9756ffdc2472
 )
