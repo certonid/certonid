@@ -8,6 +8,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"golang.org/x/crypto/ssh"
 )
 
 var (
@@ -23,6 +24,7 @@ var (
 	genUsername          string
 	genHostnames         string
 	genValidUntil        string
+	genAddToSSHAgent     string
 
 	gencertCmd = &cobra.Command{
 		Use:   "gencert [OPTIONS] [KEY NAME]",
@@ -54,7 +56,11 @@ var (
 				er("You need to username for certificate")
 			}
 
-			if !genSkipCertCache && genIsCertValidInCache() {
+			isFresh, cachedCert := genIsCertValidInCache()
+
+			if !genSkipCertCache && isFresh {
+				genPostScripts(cachedCert)
+				// exit from program
 				os.Exit(0)
 			}
 
@@ -98,9 +104,17 @@ var (
 				"certificate": genCertPath,
 				"valid until": time.Unix(int64(cert.ValidBefore), 0).UTC(),
 			}).Info("Certificate generated and stored")
+
+			genPostScripts(cert)
 		},
 	}
 )
+
+func genPostScripts(cert *ssh.Certificate) {
+	if len(genAddToSSHAgent) > 0 {
+		genAddCertToAgent(cert)
+	}
+}
 
 func init() {
 	rootCmd.AddCommand(gencertCmd)
@@ -116,4 +130,5 @@ func init() {
 	gencertCmd.Flags().StringVarP(&genUsername, "username", "u", "", "Username for certificate")
 	gencertCmd.Flags().StringVarP(&genHostnames, "hostnames", "s", "", "Hostnames for certificate (use comma as divider)")
 	gencertCmd.Flags().StringVarP(&genValidUntil, "valid-until", "l", "", "TTL for certificate")
+	gencertCmd.Flags().StringVar(&genAddToSSHAgent, "add-to-ssh-agent", "", "Private key path, which will added with certificate to ssh-agent")
 }

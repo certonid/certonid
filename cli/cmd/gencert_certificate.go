@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	timeSkew = 15 * time.Second // to protect against time-skew issues we potentially generate a certificate timeSkew duration
+	timeSkew = time.Duration(5) * time.Second // to protect against time-skew issues we potentially generate a certificate timeSkew duration
 )
 
 func genParseCertificate(bytes []byte) (*ssh.Certificate, error) {
@@ -58,7 +58,7 @@ func genIsCertStillFresh(cert *ssh.Certificate) bool {
 	return now.Before(validBefore)
 }
 
-func genIsCertValidInCache() bool {
+func genIsCertValidInCache() (bool, *ssh.Certificate) {
 	cachedCert, err := genCertFromFile()
 
 	if err == nil {
@@ -69,11 +69,11 @@ func genIsCertValidInCache() bool {
 				"certificate": genCertPath,
 				"valid until": time.Unix(int64(cachedCert.ValidBefore), 0).UTC(),
 			}).Info("Current certificate still valid. Exiting...")
-			return true
+			return true, cachedCert
 		}
 	}
 
-	return false
+	return false, nil
 }
 
 func genStoreCertAtFile(filename string, cert []byte) error {

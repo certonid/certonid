@@ -69,6 +69,10 @@ func genValidateOptions() {
 		}
 	}
 
+	if len(genAddToSSHAgent) == 0 && hasConfigKey {
+		genAddToSSHAgent = viper.GetString(fmt.Sprintf("%s.add_to_ssh_agent", keyPrefix))
+	}
+
 	if !genSkipCertCache && hasConfigKey {
 		genSkipCertCache = viper.GetBool(fmt.Sprintf("%s.skip_cache", keyPrefix))
 	}

@@ -23,7 +23,7 @@ var (
 )
 
 const (
-	timeSkew     = 5 * time.Minute // to protect against time-skew issues we potentially generate a certificate timeSkew duration
+	timeSkew     = time.Duration(5) * time.Minute // to protect against time-skew issues we potentially generate a certificate timeSkew duration
 	userCertType = "user"
 	hostCertType = "host"
 )
@@ -155,6 +155,7 @@ func (s *KeySigner) SignKey(req *SignRequest) (string, error) {
 	}
 
 	marshaled := ssh.MarshalAuthorizedKey(cert)
+	// Strip trailing newline
 	return string(marshaled[:len(marshaled)-1]), nil
 }
 
