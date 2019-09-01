@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/ScaleFT/sshkeys"
-	"github.com/le0pard/certonid/utils"
 	homedir "github.com/mitchellh/go-homedir"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ed25519"
@@ -25,23 +24,33 @@ import (
 
 func genGetPrivateKeyPassphrase(data []byte) ([]byte, error) {
 	var (
-		passPhrase    []byte
-		passPhraseErr error
+		isEncryptedByPass bool
+		passPhrase        []byte
+		passPhraseErr     error
 	)
 
 	block, _ := pem.Decode(data)
 
-	_, setFlagForPassphrase := utils.GetENV("PRIVATE_KEY_PASSPHRASE")
+	if block != nil {
+		isEncryptedByPass = x509.IsEncryptedPEMBlock(block)
 
-	if (block != nil && x509.IsEncryptedPEMBlock(block)) || setFlagForPassphrase {
-		fmt.Print("SSH Key Passphrase [none]: ")
-		passPhrase, passPhraseErr = terminal.ReadPassword(int(os.Stdin.Fd()))
-		fmt.Print("\n")
-		if passPhraseErr != nil {
-			log.WithFields(log.Fields{
-				"error": passPhraseErr,
-			}).Error("Not provided passphrase for provate key")
-			return nil, passPhraseErr
+		if !isEncryptedByPass {
+			_, err := x509.DecryptPEMBlock(block, []byte{})
+			if err != nil {
+				isEncryptedByPass = true
+			}
+		}
+
+		if isEncryptedByPass {
+			fmt.Print("SSH Key Passphrase [none]: ")
+			passPhrase, passPhraseErr = terminal.ReadPassword(int(os.Stdin.Fd()))
+			fmt.Print("\n")
+			if passPhraseErr != nil {
+				log.WithFields(log.Fields{
+					"error": passPhraseErr,
+				}).Error("Not provided passphrase for provate key")
+				return nil, passPhraseErr
+			}
 		}
 	}
 
@@ -120,15 +129,15 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 		return err
 	}
 
-	authSock := os.Getenv("SSH_AUTH_SOCK")
-	if authSock == "" {
+	agentAuthSock := os.Getenv("SSH_AUTH_SOCK")
+	if agentAuthSock == "" {
 		log.WithFields(log.Fields{
 			"error":    privateKeyErr,
 			"filename": expandedPrivateKey,
 		}).Error("SSH_AUTH_SOCK environment variable empty")
 		return errors.New("SSH_AUTH_SOCK environment variable empty")
 	}
-	agentSock, err := net.Dial("unix", authSock)
+	agentSock, err := net.Dial("unix", agentAuthSock)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"error":    privateKeyErr,
@@ -147,7 +156,8 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 		log.WithFields(log.Fields{
 			"error":    privateKeyErr,
 			"filename": expandedPrivateKey,
-		}).Error("Unknow private key format")
+		}).Error("Unknown private key format")
+		return errors.New("Unknown private key format")
 	}
 
 	pubcert := agent.AddedKey{
@@ -167,7 +177,8 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 	}
 
 	log.WithFields(log.Fields{
-		"filename":    expandedPrivateKey,
+		"cert ID":     cert.KeyId,
+		"private key": expandedPrivateKey,
 		"valid until": time.Unix(int64(cert.ValidBefore), 0).UTC(),
 	}).Info("Cetificate successfully added to ssh-agent")
 
