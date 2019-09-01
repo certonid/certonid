@@ -25,7 +25,7 @@ var (
 			}
 
 			log.WithFields(log.Fields{
-				"string": text,
+				"CERTONID_SYMMETRIC_KEY": text,
 			}).Info("Successfully generated random string")
 		},
 	}

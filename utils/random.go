@@ -3,7 +3,7 @@ package utils
 import (
 	"crypto/rand"
 
-	"github.com/sethvargo/go-password/password"
+	passGenerator "github.com/sethvargo/go-password/password"
 )
 
 // GenerateRandomBytes returns securely generated random bytes.
@@ -26,7 +26,14 @@ func GenerateRandomBytes(n int) ([]byte, error) {
 // number generator fails to function correctly, in which
 // case the caller should not continue.
 func GenerateRandomString(n int) (string, error) {
-	// Generate a password that is n characters long with 10 digits, 20 symbols,
+	gen, err := passGenerator.NewGenerator(&passGenerator.GeneratorInput{
+		Symbols: "~@#&*()_+-=?,.",
+	})
+
+	if err != nil {
+		return "", err
+	}
+	// Generate a password that is n characters long with 5 digits, 3 symbols,
 	// allowing upper and lower case letters, disallowing repeat characters.
-	return password.Generate(n, 10, 20, false, false)
+	return gen.Generate(n, 5, 3, false, false)
 }
