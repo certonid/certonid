@@ -83,11 +83,7 @@ func initConfig() {
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			log.WithFields(log.Fields{
-				"error": err,
-			}).Warn("Config not found. Continue without it")
-		} else {
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
 			log.WithFields(log.Fields{
 				"error": err,
 			}).Error("Fatal error in config file")
