@@ -6,7 +6,7 @@ require (
 	github.com/ScaleFT/sshkeys v0.0.0-20181112160850-82451a803681
 	github.com/aws/aws-sdk-go v1.23.10 // indirect
 	github.com/dchest/bcrypt_pbkdf v0.0.0-20150205184540-83f37f9c154a // indirect
-	github.com/le0pard/certonid v0.0.0-20190901105832-ac34018d7186
+	github.com/le0pard/certonid v0.0.0-20190901122703-aaf97e31ac94
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/sethvargo/go-password v0.1.2 // indirect
 	github.com/sirupsen/logrus v1.4.2

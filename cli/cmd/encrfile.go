@@ -1,10 +1,13 @@
 package cmd
 
 import (
+	"fmt"
+	"io/ioutil"
 	"strings"
 
 	"github.com/le0pard/certonid/adapters/awscloud"
 	"github.com/le0pard/certonid/utils"
+	homedir "github.com/mitchellh/go-homedir"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -26,21 +29,39 @@ var (
 				encText string
 			)
 
+			origFilepath, err := homedir.Expand(args[0])
+			if err != nil {
+				er(err)
+			}
+
+			encrFilepath := fmt.Sprintf("%s.enc", origFilepath)
+
+			fileBytes, err := ioutil.ReadFile(origFilepath)
+			if err != nil {
+				er(err)
+			}
+
 			switch strings.ToLower(encrfileType) {
 			case "aws_kms":
 				kmsClient := awscloud.New(encrfileAwsKmsProfile).KmsClient(encrfileAwsKmsRegion)
-				encText, err = kmsClient.KmsEncryptText(encrfileAwsKmsKeyID, []byte(args[0]))
+				encText, err = kmsClient.KmsEncryptText(encrfileAwsKmsKeyID, fileBytes)
 			default: // symmetric
-				encText, err = utils.SymmetricEncrypt([]byte(args[0]))
+				encText, err = utils.SymmetricEncrypt(fileBytes)
 			}
 
 			if err != nil {
 				er(err)
 			}
 
+			err = ioutil.WriteFile(encrFilepath, []byte(encText), 0600)
+			if err != nil {
+				er(err)
+			}
+
 			log.WithFields(log.Fields{
-				"text": encText,
-			}).Info("Successfully encrypted")
+				"original":  origFilepath,
+				"encrypted": encrFilepath,
+			}).Info("Successfully encrypted file")
 		},
 	}
 )
