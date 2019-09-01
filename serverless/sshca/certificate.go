@@ -51,6 +51,41 @@ func getCAPassphrase() ([]byte, error) {
 	return passphrase, err
 }
 
+func decryptCAContent(data []byte) ([]byte, error) {
+	var (
+		decryptedErr     error
+		decryptedContent []byte
+	)
+
+	// file is not encrypted
+	if !viper.IsSet("ca.encrypted") {
+		return data, nil
+	}
+
+	encryptedContent := string(data)
+
+	switch strings.ToLower(viper.GetString("ca.encrypted.encryption")) {
+	case "aws_kms":
+		var (
+			profile string
+			region  string
+		)
+
+		if viper.IsSet("ca.encrypted.profile") {
+			profile = viper.GetString("ca.encrypted.profile")
+		}
+		if viper.IsSet("ca.encrypted.region") {
+			region = viper.GetString("ca.encrypted.region")
+		}
+		kmsClient := awscloud.New(profile).KmsClient(region)
+		decryptedContent, decryptedErr = kmsClient.KmsDecryptText(encryptedContent)
+	default: // symmetric
+		decryptedContent, decryptedErr = utils.SymmetricDecrypt(encryptedContent)
+	}
+
+	return decryptedContent, decryptedErr
+}
+
 func getCAFromStorage() ([]byte, error) {
 	var (
 		err      error
@@ -63,7 +98,11 @@ func getCAFromStorage() ([]byte, error) {
 		certData, err = ioutil.ReadFile(viper.GetString("ca.path"))
 	}
 
-	return certData, err
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return decryptCAContent(certData)
 }
 
 // GenerateCetrificate main function to get user of host cert

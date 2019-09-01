@@ -19,7 +19,7 @@ var (
 	encrfileAwsKmsRegion  string
 
 	encrfileCmd = &cobra.Command{
-		Use:   "encrfile [OPTIONS] TEXT",
+		Use:   "encrfile [OPTIONS] FILEPATH",
 		Short: "Encrypt file",
 		Long:  `Encrypt file with symmetric or kms encryption`,
 		Args:  cobra.MinimumNArgs(1),

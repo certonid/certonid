@@ -1,6 +1,9 @@
 ca:
   storage: file
   path: ca.pem
+  # encrypted:
+  #   encryption: aws_kms
+  #   region: us-east-1
   passphrase:
     # encryption: symmetric
     # content: D3X/XhrBnC9DASVW50DSDv5NgkhbSUFEwxLLHysyFeT8htTq

@@ -18,7 +18,7 @@ var (
 	decrfileAwsKmsProfile string
 
 	decrfileCmd = &cobra.Command{
-		Use:   "decrfile [OPTIONS] TEXT",
+		Use:   "decrfile [OPTIONS] FILEPATH",
 		Short: "Decrypt file",
 		Long:  `Decrypt file with symmetric or kms encryption`,
 		Args:  cobra.MinimumNArgs(1),
