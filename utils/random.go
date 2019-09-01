@@ -1,6 +1,10 @@
 package utils
 
-import "crypto/rand"
+import (
+	"crypto/rand"
+
+	"github.com/sethvargo/go-password/password"
+)
 
 // GenerateRandomBytes returns securely generated random bytes.
 // It will return an error if the system's secure random
@@ -22,13 +26,7 @@ func GenerateRandomBytes(n int) ([]byte, error) {
 // number generator fails to function correctly, in which
 // case the caller should not continue.
 func GenerateRandomString(n int) (string, error) {
-	const letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-!#$%&'()*+,-./:;<=>?@[]^_"
-	bytes, err := GenerateRandomBytes(n)
-	if err != nil {
-		return "", err
-	}
-	for i, b := range bytes {
-		bytes[i] = letters[b%byte(len(letters))]
-	}
-	return string(bytes), nil
+	// Generate a password that is n characters long with 10 digits, 20 symbols,
+	// allowing upper and lower case letters, disallowing repeat characters.
+	return password.Generate(n, 10, 20, false, false)
 }
