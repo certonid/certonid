@@ -4,6 +4,17 @@ Certonid is a Serverless SSH Certificate Authority.
 
 Сonsists of two parts: CLI and serverless function.
 
-[Wiki page](https://github.com/le0pard/certonid/wiki)
+## Documentation
 
-More will be added...
+[All information published at Wiki page](https://github.com/le0pard/certonid/wiki)
+
+## Roadmap
+
+ - [ ] Improve documentation
+ - [ ] Support kmsauth
+ - [ ] Support AWS S3 for SSH CA key
+ - [ ] Support Google Cloud functions
+ - [ ] Support Google Cloud Storage for SSH CA key
+ - [ ] Website and video
+ - [ ] Use serverless framework to automate deploy and setup
+
