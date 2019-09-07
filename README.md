@@ -2,7 +2,7 @@
 
 Certonid is a Serverless SSH Certificate Authority.
 
-Сonsists of two parts: CLI and serverless function.
+Consists of two parts: CLI and serverless function.
 
 ## Documentation
 
