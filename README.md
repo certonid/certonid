@@ -10,6 +10,7 @@ Consists of two parts: CLI and serverless function.
 
 ## Roadmap
 
+ - [ ] Add tests
  - [ ] Improve documentation
  - [ ] Support kmsauth
  - [ ] Support AWS S3 for SSH CA key
