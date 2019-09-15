@@ -8,7 +8,7 @@ require (
 	github.com/dchest/bcrypt_pbkdf v0.0.0-20150205184540-83f37f9c154a // indirect
 	github.com/go-playground/locales v0.12.1 // indirect
 	github.com/go-playground/universal-translator v0.16.0 // indirect
-	github.com/le0pard/certonid v0.0.0-20190915192736-c0e7fbf8ed0a
+	github.com/le0pard/certonid v0.0.0-20190915193009-80f7df055e65
 	github.com/leodido/go-urn v1.1.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/sethvargo/go-password v0.1.2 // indirect

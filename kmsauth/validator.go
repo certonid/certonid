@@ -3,7 +3,7 @@ package kmsauth
 import (
 	"encoding/base64"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"time"
 
 	"github.com/le0pard/certonid/adapters/awscloud"
@@ -55,8 +55,8 @@ func (tv *TokenValidator) decryptToken(tokenb64 string) (*Token, error) {
 	if err != nil {
 		return nil, err
 	}
-	if AuthKey != keyID {
-		return nil, errors.New("Invalid KMS key used %s", keyID)
+	if tv.AuthKey != keyID {
+		return nil, fmt.Errorf("Invalid KMS key used %s", keyID)
 	}
 	token := &Token{}
 	err = json.Unmarshal(plaintext, token)
