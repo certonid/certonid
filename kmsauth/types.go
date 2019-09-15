@@ -7,7 +7,6 @@ import (
 
 	"errors"
 
-	log "github.com/sirupsen/logrus"
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
@@ -89,7 +88,7 @@ type TokenTime struct {
 
 // MarshalJSON marshals into json
 func (t *TokenTime) MarshalJSON() ([]byte, error) {
-	formatted := t.Time.Format(TimeFormat)
+	formatted := t.Time.Format(time.RFC3339)
 	stamp := fmt.Sprintf("\"%s\"", formatted)
 	return []byte(stamp), nil
 }
@@ -99,11 +98,11 @@ func (t *TokenTime) UnmarshalJSON(b []byte) error {
 	s := string(b)
 	// Unmarshal gives us back a string that looks like "<some_time>". Get rid of the quotes
 	s = strings.Trim(s, "\"")
-	parsed, err := time.Parse(TimeFormat, s)
+	parsed, err := time.Parse(time.RFC3339, s)
 	if err != nil {
 		return err
 	}
-	t = &TokenTime{parsed}
+	t.Time = parsed
 	return nil
 }
 
@@ -115,8 +114,6 @@ type Token struct {
 
 // IsValid returns an error if token is invalid, nil if valid
 func (t *Token) IsValid(tokenLifetime time.Duration) error {
-	log.Info("Token IsValid")
-	log.Info(t)
 	now := time.Now().UTC()
 	delta := t.NotAfter.Sub(t.NotBefore.Time)
 	if delta > tokenLifetime {
