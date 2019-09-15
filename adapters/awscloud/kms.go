@@ -25,7 +25,7 @@ func (cl *KMSClient) KmsEncrypt(keyID string, ciphertextBlob []byte, encryptionC
 		return []byte{}, "", fmt.Errorf("Error in encrypt data by AWS KMS: %w", err)
 	}
 
-	return result.CiphertextBlob, result.KeyId, nil
+	return result.CiphertextBlob, *result.KeyId, nil
 }
 
 // KmsEncryptText allow to encrypt text by AWS KMS
@@ -53,7 +53,7 @@ func (cl *KMSClient) KmsDecrypt(ciphertextBlob []byte, encryptionContext map[str
 		return []byte{}, "", fmt.Errorf("Error in decrypt data by AWS KMS: %w", err)
 	}
 
-	return result.Plaintext, result.KeyId, nil
+	return result.Plaintext, *result.KeyId, nil
 }
 
 // KmsDecryptText allow to decrypt text by AWS KMS
