@@ -12,7 +12,6 @@ Consists of two parts: CLI and serverless function.
 
  - [ ] Add tests
  - [ ] Improve documentation
- - [ ] Support kmsauth
  - [ ] Support AWS S3 for SSH CA key
  - [ ] Support Google Cloud functions
  - [ ] Support Google Cloud Storage for SSH CA key
