@@ -7,7 +7,6 @@ import (
 
 	"errors"
 
-	log "github.com/sirupsen/logrus"
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
@@ -120,15 +119,6 @@ func (t *Token) IsValid(tokenLifetime time.Duration) error {
 	if delta > tokenLifetime {
 		return errors.New("Token issued for longer than Tokenlifetime")
 	}
-
-	log.WithFields(log.Fields{
-		"now":          now,
-		"before":       t.NotBefore.Time,
-		"before_check": now.Before(t.NotBefore.Time),
-		"after":        t.NotAfter.Time,
-		"after_check":  now.After(t.NotAfter.Time),
-	}).Info("IsValid")
-
 	if now.Before(t.NotBefore.Time) || now.After(t.NotAfter.Time) {
 		return errors.New("Invalid time validity for token")
 	}

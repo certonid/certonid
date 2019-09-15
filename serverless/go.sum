@@ -71,6 +71,8 @@ github.com/le0pard/certonid v0.0.0-20190915193440-3faaf9aa0110 h1:eDjMyXwfW1xzrd
 github.com/le0pard/certonid v0.0.0-20190915193440-3faaf9aa0110/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
 github.com/le0pard/certonid v0.0.0-20190915212244-4c2e84775653 h1:W8eGRJP2ijqkyoUZN1UnJ0rMiPjC5V9/X2lY8VAI1dY=
 github.com/le0pard/certonid v0.0.0-20190915212244-4c2e84775653/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
+github.com/le0pard/certonid v0.0.0-20190915212616-9a081803ea9f h1:Lwluftqo5OPRIYk0PVmiqqk8fB657VqyqtCn3I2j7W0=
+github.com/le0pard/certonid v0.0.0-20190915212616-9a081803ea9f/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
 github.com/leodido/go-urn v1.1.0 h1:Sm1gr51B1kKyfD2BlRcLSiEkffoG96g6TPv6eRoEiB8=
 github.com/leodido/go-urn v1.1.0/go.mod h1:+cyI34gQWZcE1eQU7NVgKkkzdXDQHr1dBMtdAPozLkw=
 github.com/magiconair/properties v1.8.0 h1:LLgXmsheXeRoUOBOjtwPQCWIYqM/LU1ayDtDePerRcY=

@@ -14,7 +14,7 @@ type KMSClient struct {
 }
 
 // KmsEncrypt allow to encrypt data by AWS KMS
-func (cl *KMSClient) KmsEncrypt(keyID string, ciphertextBlob []byte, encryptionContext map[string]*string) ([]byte, string, error) {
+func (cl *KMSClient) KmsEncrypt(keyID string, ciphertextBlob []byte, encryptionContext map[string]*string) ([]byte, error) {
 	result, err := cl.Client.Encrypt(&kms.EncryptInput{
 		KeyId:             aws.String(keyID),
 		Plaintext:         ciphertextBlob,
@@ -22,10 +22,10 @@ func (cl *KMSClient) KmsEncrypt(keyID string, ciphertextBlob []byte, encryptionC
 	})
 
 	if err != nil {
-		return []byte{}, "", fmt.Errorf("Error in encrypt data by AWS KMS: %w", err)
+		return []byte{}, fmt.Errorf("Error in encrypt data by AWS KMS: %w", err)
 	}
 
-	return result.CiphertextBlob, *result.KeyId, nil
+	return result.CiphertextBlob, nil
 }
 
 // KmsEncryptText allow to encrypt text by AWS KMS

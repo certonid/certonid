@@ -148,7 +148,7 @@ func (tg *TokenGenerator) GetEncryptedToken() (*EncryptedToken, error) {
 		return nil, err
 	}
 
-	encryptedData, _, err := tg.KMSClient.KmsEncrypt(
+	encryptedData, err := tg.KMSClient.KmsEncrypt(
 		tg.AuthKey,
 		tokenBytes,
 		tg.AuthContext.GetKMSContext(),
