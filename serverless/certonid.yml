@@ -11,6 +11,10 @@ ca:
     region: us-east-1
     content: AQICAHhBwiHijA5XW9EyanTVga4XbbwEVCmBLSUiWIxrCrxrUwGGt8JapxlfiJljay3FycLOAAAAZjBkBgkqhkiG9w0BBwagVzBVAgEAMFAGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMtZxOyGi2foFM+y9SAgEQgCOY1N4sMr5RIiyQ4/8yloRIAi6vWaK3n/jEdgPfn3bdJjrkNQ==
 
+kmsauth:
+  key_id: ''
+  service_id: ''
+
 certificates:
   user:
     max_valid_until: 168h

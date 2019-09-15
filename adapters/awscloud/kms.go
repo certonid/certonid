@@ -13,10 +13,25 @@ type KMSClient struct {
 	Client *kms.KMS
 }
 
-// KmsEncryptText allow to encrypt text by AWS KMS
-func (cl *KMSClient) KmsEncryptText(keyId string, text []byte) (string, error) {
+// KmsEncrypt allow to encrypt data by AWS KMS
+func (cl *KMSClient) KmsEncrypt(keyID string, ciphertextBlob []byte, encryptionContext map[string]*string) ([]byte, string, error) {
 	result, err := cl.Client.Encrypt(&kms.EncryptInput{
-		KeyId:     aws.String(keyId),
+		KeyId:             aws.String(keyID),
+		Plaintext:         ciphertextBlob,
+		EncryptionContext: encryptionContext,
+	})
+
+	if err != nil {
+		return []byte{}, "", fmt.Errorf("Error in encrypt data by AWS KMS: %w", err)
+	}
+
+	return result.CiphertextBlob, result.KeyId, nil
+}
+
+// KmsEncryptText allow to encrypt text by AWS KMS
+func (cl *KMSClient) KmsEncryptText(keyID string, text []byte) (string, error) {
+	result, err := cl.Client.Encrypt(&kms.EncryptInput{
+		KeyId:     aws.String(keyID),
 		Plaintext: text,
 	})
 
@@ -25,6 +40,20 @@ func (cl *KMSClient) KmsEncryptText(keyId string, text []byte) (string, error) {
 	}
 
 	return base64.StdEncoding.EncodeToString(result.CiphertextBlob), nil
+}
+
+// KmsDecrypt allow to decrypt data AWS KMS
+func (cl *KMSClient) KmsDecrypt(ciphertextBlob []byte, encryptionContext map[string]*string) ([]byte, string, error) {
+	result, err := cl.Client.Decrypt(&kms.DecryptInput{
+		CiphertextBlob:    ciphertextBlob,
+		EncryptionContext: encryptionContext,
+	})
+
+	if err != nil {
+		return []byte{}, "", fmt.Errorf("Error in decrypt data by AWS KMS: %w", err)
+	}
+
+	return result.Plaintext, result.KeyId, nil
 }
 
 // KmsDecryptText allow to decrypt text by AWS KMS

@@ -8,3 +8,6 @@ certificates:
       profile: example
       region: us-east-1
       function_name: BressFunction
+      kmsauth:
+        key_id: ''
+        service_id: ''

@@ -11,6 +11,7 @@ import (
 
 const (
 	genCertSufix         = "cert.pub"
+	genKmsAuthFileSufix  = "kmsauth.json"
 	genDefaultValidUntil = "30m" // default 30 min
 )
 
@@ -43,7 +44,12 @@ func genValidateOptions() {
 	if len(genCertPath) == 0 && hasConfigKey {
 		genCertPath = viper.GetString(fmt.Sprintf("%s.certificate_path", keyPrefix))
 
-		if len(genCertPath) == 0 && viper.IsSet("cache_path") {
+		if len(genCertPath) != 0 {
+			genCertPath, err = homedir.Expand(genCertPath)
+			if err != nil {
+				er(err)
+			}
+		} else if len(genCertPath) == 0 && viper.IsSet("cache_path") {
 			certFilePath, err := homedir.Expand(filepath.Join(viper.GetString("cache_path"), fmt.Sprintf("%s-%s", genCertCertName, genCertSufix)))
 			if err != nil {
 				er(err)
@@ -78,14 +84,46 @@ func genValidateOptions() {
 	}
 
 	// aws
-	if len(genAwsLambdaProfile) == 0 && hasConfigKey {
-		genAwsLambdaProfile = viper.GetString(fmt.Sprintf("%s.aws.profile", keyPrefix))
+	if len(genAwsProfile) == 0 && hasConfigKey {
+		genAwsProfile = viper.GetString(fmt.Sprintf("%s.aws.profile", keyPrefix))
 	}
-	if len(genAwsLambdaRegion) == 0 && hasConfigKey {
-		genAwsLambdaRegion = viper.GetString(fmt.Sprintf("%s.aws.region", keyPrefix))
+	if len(genAwsRegion) == 0 && hasConfigKey {
+		genAwsRegion = viper.GetString(fmt.Sprintf("%s.aws.region", keyPrefix))
 	}
-	if len(genAwsLambdaFuncName) == 0 && hasConfigKey {
-		genAwsLambdaFuncName = viper.GetString(fmt.Sprintf("%s.aws.function_name", keyPrefix))
+	if len(genAwsFuncName) == 0 && hasConfigKey {
+		genAwsFuncName = viper.GetString(fmt.Sprintf("%s.aws.function_name", keyPrefix))
+	}
+
+	if len(genKMSAuthCachePath) == 0 && hasConfigKey {
+		genKMSAuthCachePath = viper.GetString(fmt.Sprintf("%s.aws.kmsauth.cache_path", keyPrefix))
+
+		if len(genKMSAuthCachePath) != 0 {
+			genKMSAuthCachePath, err = homedir.Expand(genKMSAuthCachePath)
+			if err != nil {
+				er(err)
+			}
+		} else if len(genKMSAuthCachePath) == 0 && viper.IsSet("cache_path") {
+			kmsauthCachePath, err := homedir.Expand(filepath.Join(viper.GetString("cache_path"), fmt.Sprintf("%s-%s", genCertCertName, genKmsAuthFileSufix)))
+			if err != nil {
+				er(err)
+			}
+
+			genKMSAuthCachePath = kmsauthCachePath
+		}
+	}
+
+	if len(genKMSAuthKeyID) == 0 && hasConfigKey {
+		genKMSAuthKeyID = viper.GetString(fmt.Sprintf("%s.aws.kmsauth.key_id", keyPrefix))
+	}
+	if len(genKMSAuthServiceID) == 0 && hasConfigKey {
+		genKMSAuthServiceID = viper.GetString(fmt.Sprintf("%s.aws.kmsauth.service_id", keyPrefix))
+	}
+	if len(genKMSAuthTokenValidUntil) == 0 && hasConfigKey {
+		genKMSAuthTokenValidUntil = viper.GetString(fmt.Sprintf("%s.aws.kmsauth.valid_until", keyPrefix))
+
+		if len(genKMSAuthTokenValidUntil) == 0 {
+			genKMSAuthTokenValidUntil = genDefaultValidUntil
+		}
 	}
 
 	genCertType = strings.ToLower(genCertType)

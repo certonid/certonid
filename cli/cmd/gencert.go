@@ -13,19 +13,23 @@ import (
 )
 
 var (
-	genAwsLambdaProfile  string
-	genAwsLambdaRegion   string
-	genAwsLambdaFuncName string
-	genCertCertName      string
-	genSkipCertCache     bool
-	genCertRunner        string
-	genCertPath          string
-	genCertType          string
-	genPublicKeyPath     string
-	genUsername          string
-	genHostnames         string
-	genValidUntil        string
-	genAddToSSHAgent     string
+	genAwsProfile             string
+	genAwsRegion              string
+	genAwsFuncName            string
+	genCertCertName           string
+	genSkipCertCache          bool
+	genCertRunner             string
+	genCertPath               string
+	genCertType               string
+	genPublicKeyPath          string
+	genUsername               string
+	genHostnames              string
+	genValidUntil             string
+	genAddToSSHAgent          string
+	genKMSAuthCachePath       string
+	genKMSAuthKeyID           string
+	genKMSAuthServiceID       string
+	genKMSAuthTokenValidUntil string
 
 	gencertCmd = &cobra.Command{
 		Use:   "gencert [OPTIONS] [KEY NAME]",
@@ -33,6 +37,7 @@ var (
 		Long:  `Generate user or host sertificate by involke serverless function`,
 		Run: func(cmd *cobra.Command, args []string) {
 			var (
+				kmsauthToken  string
 				certBytes     []byte
 				serverlessErr error
 			)
@@ -77,11 +82,18 @@ var (
 				er(fmt.Errorf("Error to read public key: %w", err))
 			}
 
+			if genCertType != "host" && len(genKMSAuthKeyID) != 0 && len(genKMSAuthServiceID) != 0 {
+				kmsauthToken, err = GenerateKMSAuthToken()
+				if err != nil {
+					er(err)
+				}
+			}
+
 			switch strings.ToLower(genCertRunner) {
 			case "gcloud":
 				// TODO
 			default: // aws
-				certBytes, serverlessErr = genCertFromAws(publicKeyData)
+				certBytes, serverlessErr = genCertFromAws(publicKeyData, kmsauthToken)
 			}
 
 			if serverlessErr != nil {
@@ -124,12 +136,18 @@ func init() {
 	gencertCmd.Flags().StringVarP(&genPublicKeyPath, "public-key-path", "p", "", "Path to public file, which will used for certificate")
 	gencertCmd.Flags().StringVarP(&genCertPath, "certificate-path", "o", "", "Path to cerrtificate file")
 	gencertCmd.Flags().StringVarP(&genUsername, "username", "u", "", "Username for certificate")
-	gencertCmd.Flags().StringVar(&genAwsLambdaProfile, "aws-lambda-profile", "", "AWS Lambda Profile")
-	gencertCmd.Flags().StringVar(&genAwsLambdaRegion, "aws-lambda-region", "", "AWS Lambda Region")
-	gencertCmd.Flags().StringVar(&genAwsLambdaFuncName, "aws-lambda-func-name", "", "AWS Lambda Function name")
 	gencertCmd.Flags().BoolVar(&genSkipCertCache, "skip-cache", false, "Skip certificate in cache and run serverless function")
 	gencertCmd.Flags().StringVar(&genCertCertName, "key-name", "", "Certificate name")
 	gencertCmd.Flags().StringVar(&genHostnames, "hostnames", "", "Hostnames for certificate (use comma as divider)")
 	gencertCmd.Flags().StringVar(&genValidUntil, "valid-until", "", "TTL for certificate")
 	gencertCmd.Flags().StringVar(&genAddToSSHAgent, "add-to-ssh-agent", "", "Private key path, which will added with certificate to ssh-agent")
+	// aws
+	gencertCmd.Flags().StringVar(&genAwsProfile, "aws-lambda-profile", "", "AWS Lambda Profile")
+	gencertCmd.Flags().StringVar(&genAwsRegion, "aws-lambda-region", "", "AWS Lambda Region")
+	gencertCmd.Flags().StringVar(&genAwsFuncName, "aws-lambda-func-name", "", "AWS Lambda Function name")
+	// kmsauth
+	gencertCmd.Flags().StringVar(&genKMSAuthCachePath, "kmsauth-cache-path", "", "Path to KMSAuth cached token")
+	gencertCmd.Flags().StringVar(&genKMSAuthKeyID, "kmsauth-key-id", "", "KMSAuth key ID")
+	gencertCmd.Flags().StringVar(&genKMSAuthServiceID, "kmsauth-service-id", "", "KMSAuth service ID")
+	gencertCmd.Flags().StringVar(&genKMSAuthTokenValidUntil, "kmsauth-token-ttl", "", "KMSAuth token TTL")
 }

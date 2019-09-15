@@ -10,26 +10,27 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func genCertFromAws(keyData []byte) ([]byte, error) {
-	if len(genAwsLambdaFuncName) == 0 {
+func genCertFromAws(keyData []byte, kmsauthToken string) ([]byte, error) {
+	if len(genAwsFuncName) == 0 {
 		return []byte{}, errors.New("You need to provide AWS Lambda function name")
 	}
 
 	awsSignRequest, err := json.Marshal(proto.AwsSignEvent{
-		CertType:   genCertType,
-		Key:        string(keyData),
-		Username:   genUsername,
-		Hostnames:  genHostnames,
-		ValidUntil: genValidUntil,
+		CertType:     genCertType,
+		Key:          string(keyData),
+		Username:     genUsername,
+		Hostnames:    genHostnames,
+		ValidUntil:   genValidUntil,
+		KMSAuthToken: kmsauthToken,
 	})
 
 	if err != nil {
 		return []byte{}, fmt.Errorf("Error to marshal data in json: %w", err)
 	}
 
-	lambdaClient := awscloud.New(genAwsLambdaProfile).LambdaClient(genAwsLambdaRegion)
+	lambdaClient := awscloud.New(genAwsProfile).LambdaClient(genAwsRegion)
 
-	invokePayload, err := lambdaClient.LambdaInvoke(genAwsLambdaFuncName, awsSignRequest)
+	invokePayload, err := lambdaClient.LambdaInvoke(genAwsFuncName, awsSignRequest)
 
 	if err != nil {
 		return []byte{}, err
