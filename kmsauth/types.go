@@ -7,6 +7,7 @@ import (
 
 	"errors"
 
+	log "github.com/sirupsen/logrus"
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
@@ -96,9 +97,13 @@ func (t *TokenTime) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON unmarshals
 func (t *TokenTime) UnmarshalJSON(b []byte) error {
 	s := string(b)
+	log.Info("Token")
+	log.Info(s)
 	// Unmarshal gives us back a string that looks like "<some_time>". Get rid of the quotes
 	s = strings.Trim(s, "\"")
+	log.Info(s)
 	parsed, err := time.Parse(TimeFormat, s)
+	log.Info(parsed)
 	if err != nil {
 		return err
 	}

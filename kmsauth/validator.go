@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/le0pard/certonid/adapters/awscloud"
-	log "github.com/sirupsen/logrus"
 )
 
 // TokenValidator validates a token
@@ -59,10 +58,7 @@ func (tv *TokenValidator) decryptToken(tokenb64 string) (*Token, error) {
 	if tv.AuthKey != keyID {
 		return nil, fmt.Errorf("Invalid KMS key used %s", keyID)
 	}
-	log.Info("Token")
-	log.Info(string(plaintext))
 	token := &Token{}
 	err = json.Unmarshal(plaintext, token)
-	log.Info(token)
 	return token, err
 }
