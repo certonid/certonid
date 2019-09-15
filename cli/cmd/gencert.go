@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -73,7 +74,7 @@ var (
 			publicKeyData, err := ioutil.ReadFile(genPublicKeyPath)
 
 			if err != nil {
-				er(err)
+				er(fmt.Errorf("Error to read public key: %w", err))
 			}
 
 			switch strings.ToLower(genCertRunner) {

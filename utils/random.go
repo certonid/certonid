@@ -2,6 +2,7 @@ package utils
 
 import (
 	"crypto/rand"
+	"fmt"
 
 	passGenerator "github.com/sethvargo/go-password/password"
 )
@@ -31,7 +32,7 @@ func GenerateRandomString(n int) (string, error) {
 	})
 
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("Error to init random generator: %w", err)
 	}
 	// Generate a password that is n characters long with 5 digits, 3 symbols,
 	// allowing upper and lower case letters, disallowing repeat characters.

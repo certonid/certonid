@@ -2,6 +2,7 @@ package awscloud
 
 import (
 	"encoding/base64"
+	"fmt"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/kms"
@@ -20,7 +21,7 @@ func (cl *KMSClient) KmsEncryptText(keyId string, text []byte) (string, error) {
 	})
 
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("Error in encrypt data by AWS KMS: %w", err)
 	}
 
 	return base64.StdEncoding.EncodeToString(result.CiphertextBlob), nil
@@ -30,13 +31,13 @@ func (cl *KMSClient) KmsEncryptText(keyId string, text []byte) (string, error) {
 func (cl *KMSClient) KmsDecryptText(text string) ([]byte, error) {
 	blob, err := base64.StdEncoding.DecodeString(text)
 	if err != nil {
-		return []byte{}, err
+		return []byte{}, fmt.Errorf("Error in decode base64 encrypted data: %w", err)
 	}
 
 	result, err := cl.Client.Decrypt(&kms.DecryptInput{CiphertextBlob: blob})
 
 	if err != nil {
-		return []byte{}, err
+		return []byte{}, fmt.Errorf("Error in decrypt data by AWS KMS: %w", err)
 	}
 
 	return result.Plaintext, nil

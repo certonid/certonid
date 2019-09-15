@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/le0pard/certonid/adapters/awscloud"
 	"github.com/le0pard/certonid/proto"
@@ -23,7 +24,7 @@ func genCertFromAws(keyData []byte) ([]byte, error) {
 	})
 
 	if err != nil {
-		return []byte{}, err
+		return []byte{}, fmt.Errorf("Error to marshal data in json: %w", err)
 	}
 
 	lambdaClient := awscloud.New(genAwsLambdaProfile).LambdaClient(genAwsLambdaRegion)
@@ -39,7 +40,7 @@ func genCertFromAws(keyData []byte) ([]byte, error) {
 	err = json.Unmarshal(invokePayload, &resp)
 
 	if err != nil {
-		return []byte{}, err
+		return []byte{}, fmt.Errorf("Error to unmarshal data from json: %w", err)
 	}
 
 	if len(resp.Cert) == 0 {
@@ -49,5 +50,5 @@ func genCertFromAws(keyData []byte) ([]byte, error) {
 		return []byte{}, errors.New("Function not return cert in result")
 	}
 
-	return []byte(resp.Cert), err
+	return []byte(resp.Cert), nil
 }

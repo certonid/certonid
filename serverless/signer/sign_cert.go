@@ -98,7 +98,7 @@ func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
 	// parse public key
 	pubkey, _, _, _, err := ssh.ParseAuthorizedKey([]byte(req.Key))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Error to parse public key: %w", err)
 	}
 	// check duration
 	maxTTLConfigKey := fmt.Sprintf("certificates.%s.max_valid_until", req.CertType)
@@ -134,7 +134,7 @@ func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
 	setExtensions(cert, req)
 	// sign client key
 	if err := cert.SignCert(rand.Reader, s.ca); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Error sign public key: %w", err)
 	}
 
 	log.WithFields(log.Fields{
@@ -163,7 +163,7 @@ func (s *KeySigner) SignKey(req *SignRequest) (string, error) {
 func New(pemBytes, passPhrase []byte) (*KeySigner, error) {
 	key, err := sshkeys.ParseEncryptedPrivateKey(pemBytes, passPhrase)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Error parse private key: %w", err)
 	}
 	return &KeySigner{
 		ca: key,

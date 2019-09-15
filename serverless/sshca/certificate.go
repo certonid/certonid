@@ -1,6 +1,7 @@
 package sshca
 
 import (
+	"fmt"
 	"io/ioutil"
 	"strings"
 	"time"
@@ -120,7 +121,7 @@ func GenerateCetrificate(req *CertificateRequest) (string, error) {
 			"error": err,
 			"value": req.ValidUntil,
 		}).Error("Invalid ValidUntil value")
-		return "", err
+		return "", fmt.Errorf("Invalid ValidUntil value: %w", err)
 	}
 
 	certData, err = getCAFromStorage()
@@ -129,7 +130,7 @@ func GenerateCetrificate(req *CertificateRequest) (string, error) {
 			"error":    err,
 			"filepath": viper.GetString("ca.path"),
 		}).Error("Error to read CA file")
-		return "", err
+		return "", fmt.Errorf("Error to read CA file from storage: %w", err)
 	}
 
 	passphrase, err = getCAPassphrase()
@@ -139,7 +140,7 @@ func GenerateCetrificate(req *CertificateRequest) (string, error) {
 			"encryption": viper.GetString("ca.passphrase.encryption"),
 		}).Error("Error to decrypt passphrase for CA key")
 
-		return "", err
+		return "", fmt.Errorf("Error to decrypt passphrase for CA key: %w", err)
 	}
 
 	certSigner, err := signer.New(certData, passphrase)
@@ -147,7 +148,7 @@ func GenerateCetrificate(req *CertificateRequest) (string, error) {
 		log.WithFields(log.Fields{
 			"error": err,
 		}).Error("Error to parse CA key")
-		return "", err
+		return "", fmt.Errorf("Error to parse CA key: %w", err)
 	}
 
 	cert, err := certSigner.SignKey(&signer.SignRequest{
@@ -161,7 +162,7 @@ func GenerateCetrificate(req *CertificateRequest) (string, error) {
 		log.WithFields(log.Fields{
 			"error": err,
 		}).Error("Error to sign user key")
-		return "", err
+		return "", fmt.Errorf("Error to sign user key: %w", err)
 	}
 
 	return cert, nil

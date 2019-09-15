@@ -6,6 +6,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"io"
 )
 
@@ -23,17 +24,17 @@ func getSymmetricKey() ([]byte, error) {
 func SymmetricEncrypt(data []byte) (string, error) {
 	symmetricKey, err := getSymmetricKey()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("Not found symmetric key: %w", err)
 	}
 
 	cphr, err := aes.NewCipher(symmetricKey)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("Error to init aes cipher: %w", err)
 	}
 
 	gcm, err := cipher.NewGCM(cphr)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("Error to init gcm: %w", err)
 	}
 
 	// creates a new byte array the size of the nonce
@@ -42,7 +43,7 @@ func SymmetricEncrypt(data []byte) (string, error) {
 	// populates our nonce with a cryptographically secure
 	// random sequence
 	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
-		return "", err
+		return "", fmt.Errorf("Error to populate nonce with random sequence: %w", err)
 	}
 
 	encryptedData := gcm.Seal(nonce, nonce, data, nil)
@@ -54,27 +55,27 @@ func SymmetricEncrypt(data []byte) (string, error) {
 func SymmetricDecrypt(val string) ([]byte, error) {
 	symmetricKey, err := getSymmetricKey()
 	if err != nil {
-		return []byte{}, err
+		return []byte{}, fmt.Errorf("Not found symmetric key: %w", err)
 	}
 
 	data, err := base64.StdEncoding.DecodeString(val)
 	if err != nil {
-		return []byte{}, err
+		return []byte{}, fmt.Errorf("Error to decode base64 encrypted value: %w", err)
 	}
 
 	cphr, err := aes.NewCipher(symmetricKey)
 	if err != nil {
-		return []byte{}, err
+		return []byte{}, fmt.Errorf("Error to init aes cipher: %w", err)
 	}
 
 	gcm, err := cipher.NewGCM(cphr)
 	if err != nil {
-		return []byte{}, err
+		return []byte{}, fmt.Errorf("Error to init gcm: %w", err)
 	}
 
 	nonceSize := gcm.NonceSize()
 	if len(data) < nonceSize {
-		return []byte{}, err
+		return []byte{}, fmt.Errorf("Invalid nonce size for decrypt: %w", err)
 	}
 
 	nonce, data := data[:nonceSize], data[nonceSize:]

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -20,7 +21,7 @@ func genParseCertificate(bytes []byte) (*ssh.Certificate, error) {
 		log.WithFields(log.Fields{
 			"error": err,
 		}).Warn("Could not parse cert")
-		return nil, err
+		return nil, fmt.Errorf("Could not parse cert: %w", err)
 	}
 
 	cert, ok := k.(*ssh.Certificate)
@@ -28,7 +29,7 @@ func genParseCertificate(bytes []byte) (*ssh.Certificate, error) {
 		log.WithFields(log.Fields{
 			"error": err,
 		}).Warn("Bytes do not correspond to an ssh certificate")
-		return nil, err
+		return nil, fmt.Errorf("Bytes do not correspond to an ssh certificate: %w", err)
 	}
 
 	return cert, nil
@@ -41,7 +42,7 @@ func genCertFromFile() (*ssh.Certificate, error) {
 			"error":    err,
 			"filename": genCertPath,
 		}).Warn("Could not read cert from file")
-		return nil, err
+		return nil, fmt.Errorf("Could not read cert from file: %w", err)
 	}
 
 	return genParseCertificate(bytes)

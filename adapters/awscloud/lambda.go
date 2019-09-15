@@ -1,6 +1,8 @@
 package awscloud
 
 import (
+	"fmt"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/lambda"
 )
@@ -18,7 +20,7 @@ func (cl *LambdaClient) LambdaInvoke(funcName string, payload []byte) ([]byte, e
 	})
 
 	if err != nil {
-		return []byte{}, err
+		return []byte{}, fmt.Errorf("Error to invoke AWS Lambda function: %w", err)
 	}
 
 	return result.Payload, nil

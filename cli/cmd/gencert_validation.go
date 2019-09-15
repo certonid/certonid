@@ -31,7 +31,7 @@ func genValidateOptions() {
 
 	resolvedPublicKeyPath, err := homedir.Expand(genPublicKeyPath)
 	if err != nil {
-		er(err)
+		er(fmt.Errorf("Could not expand path: %w", err))
 	}
 
 	genPublicKeyPath = resolvedPublicKeyPath

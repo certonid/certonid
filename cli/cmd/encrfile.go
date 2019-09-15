@@ -31,14 +31,14 @@ var (
 
 			origFilepath, err := homedir.Expand(args[0])
 			if err != nil {
-				er(err)
+				er(fmt.Errorf("Error to expand home dir: %w", err))
 			}
 
 			encrFilepath := fmt.Sprintf("%s.enc", origFilepath)
 
 			fileBytes, err := ioutil.ReadFile(origFilepath)
 			if err != nil {
-				er(err)
+				er(fmt.Errorf("Error to read file %s: %w", origFilepath, err))
 			}
 
 			switch strings.ToLower(encrfileType) {
@@ -55,7 +55,7 @@ var (
 
 			err = ioutil.WriteFile(encrFilepath, []byte(encText), 0600)
 			if err != nil {
-				er(err)
+				er(fmt.Errorf("Error to write file %s: %w", encrFilepath, err))
 			}
 
 			log.WithFields(log.Fields{

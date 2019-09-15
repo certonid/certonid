@@ -30,14 +30,14 @@ var (
 
 			encrFilepath, err := homedir.Expand(args[0])
 			if err != nil {
-				er(err)
+				er(fmt.Errorf("Error to expand home dir: %w", err))
 			}
 
 			origFilepath := fmt.Sprintf("%s.orig", encrFilepath)
 
 			fileBytes, err := ioutil.ReadFile(encrFilepath)
 			if err != nil {
-				er(err)
+				er(fmt.Errorf("Error to read file %s: %w", encrFilepath, err))
 			}
 
 			fileContent := string(fileBytes)
@@ -56,7 +56,7 @@ var (
 
 			err = ioutil.WriteFile(origFilepath, results, 0600)
 			if err != nil {
-				er(err)
+				er(fmt.Errorf("Error to write file %s: %w", origFilepath, err))
 			}
 
 			log.WithFields(log.Fields{

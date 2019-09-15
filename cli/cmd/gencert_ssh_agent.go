@@ -89,7 +89,7 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 			"error":    err,
 			"filename": genAddToSSHAgent,
 		}).Error("Could not expand path")
-		return err
+		return fmt.Errorf("Could not expand path: %w", err)
 	}
 
 	privatKeyBytes, err := ioutil.ReadFile(expandedPrivateKey)
@@ -98,7 +98,7 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 			"error":    err,
 			"filename": expandedPrivateKey,
 		}).Error("Could not read private key")
-		return err
+		return fmt.Errorf("Could not read private key: %w", err)
 	}
 
 	passPhrase, err := genGetPrivateKeyPassphrase(privatKeyBytes)
@@ -107,7 +107,7 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 			"error":    err,
 			"filename": expandedPrivateKey,
 		}).Error("Could not get passphrase for private key")
-		return err
+		return fmt.Errorf("Could not get passphrase for private key: %w", err)
 	}
 
 	privateKeyRaw, privateKeyErr = sshkeys.ParseEncryptedRawPrivateKey(privatKeyBytes, passPhrase)
@@ -117,7 +117,7 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 			"error":    privateKeyErr,
 			"filename": expandedPrivateKey,
 		}).Error("Could not parse private key")
-		return err
+		return fmt.Errorf("Could not parse private key: %w", err)
 	}
 
 	privateKey = genCastInterfaceToPrimaryKeyInterface(privateKeyRaw)
@@ -126,7 +126,7 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 			"error":    privateKeyErr,
 			"filename": expandedPrivateKey,
 		}).Error("Unknown private key format")
-		return err
+		return fmt.Errorf("Unknown private key format: %w", err)
 	}
 
 	agentAuthSock := os.Getenv("SSH_AUTH_SOCK")
@@ -143,7 +143,7 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 			"error":    privateKeyErr,
 			"filename": expandedPrivateKey,
 		}).Error("ssh-agent is not working on SSH_AUTH_SOCK socket")
-		return err
+		return fmt.Errorf("ssh-agent is not working on SSH_AUTH_SOCK socket: %w", err)
 	}
 	defer agentSock.Close()
 
@@ -173,7 +173,7 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 			"error":    err,
 			"filename": expandedPrivateKey,
 		}).Error("Unable to add cert to ssh agent")
-		return err
+		return fmt.Errorf("Unable to add cert to ssh agent: %w", err)
 	}
 
 	log.WithFields(log.Fields{
