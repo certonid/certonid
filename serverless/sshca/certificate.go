@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/le0pard/certonid/adapters/awscloud"
+	"github.com/le0pard/certonid/kmsauth"
 	"github.com/le0pard/certonid/serverless/signer"
 	"github.com/le0pard/certonid/utils"
 	log "github.com/sirupsen/logrus"
@@ -15,11 +16,12 @@ import (
 
 // CertificateRequest used for function arguments
 type CertificateRequest struct {
-	CertType   string `json:"cert_type"`
-	Key        string `json:"key"`
-	Username   string `json:"username"`
-	Hostnames  string `json:"hostnames"`
-	ValidUntil string `json:"valid_until"`
+	CertType     string `json:"cert_type"`
+	Key          string `json:"key"`
+	Username     string `json:"username"`
+	Hostnames    string `json:"hostnames"`
+	ValidUntil   string `json:"valid_until"`
+	KMSAuthToken string `json:"kmsauth_token"`
 }
 
 func getCAPassphrase() ([]byte, error) {
@@ -106,6 +108,42 @@ func getCAFromStorage() ([]byte, error) {
 	return decryptCAContent(certData)
 }
 
+func validateKMSAuthToken(token, username string) error {
+	var (
+		region string
+	)
+
+	validUntil, err := time.ParseDuration(viper.GetString("kmsauth.max_valid_until"))
+	if err != nil {
+		log.WithFields(log.Fields{
+			"error": err,
+			"value": validUntil,
+		}).Error("Invalid KMSAuth ValidUntil value")
+		return fmt.Errorf("Invalid KMSAuth ValidUntil value: %w", err)
+	}
+
+	if viper.IsSet("kmsauth.region") {
+		region = viper.GetString("kmsauth.region")
+	}
+
+	kmsClient := awscloud.New("").KmsClient(region)
+
+	kmsauthContext := &kmsauth.AuthContextV2{
+		From:     username,
+		To:       viper.GetString("kmsauth.service_id"),
+		UserType: "user",
+	}
+
+	tv := kmsauth.NewTokenValidator(
+		viper.GetString("kmsauth.key_id"),
+		kmsauthContext,
+		validUntil,
+		kmsClient,
+	)
+
+	return tv.ValidateToken(token)
+}
+
 // GenerateCetrificate main function to get user of host cert
 func GenerateCetrificate(req *CertificateRequest) (string, error) {
 	var (
@@ -141,6 +179,16 @@ func GenerateCetrificate(req *CertificateRequest) (string, error) {
 		}).Error("Error to decrypt passphrase for CA key")
 
 		return "", fmt.Errorf("Error to decrypt passphrase for CA key: %w", err)
+	}
+
+	if req.CertType != "host" && viper.IsSet("kmsauth.key_id") && viper.IsSet("kmsauth.service_id") && viper.IsSet("kmsauth.region") {
+		if len(req.KMSAuthToken) == 0 {
+			return "", fmt.Errorf("Need to provide KMSAuth token to get certificate")
+		}
+		err = validateKMSAuthToken(req.KMSAuthToken, req.Username)
+		if err != nil {
+			return "", fmt.Errorf("Error to validate kmsauth token: %w", err)
+		}
 	}
 
 	certSigner, err := signer.New(certData, passphrase)

@@ -20,11 +20,12 @@ func LambdaHandler(event proto.AwsSignEvent) (proto.AwsSignResponse, error) {
 	)
 
 	cert, err = sshca.GenerateCetrificate(&sshca.CertificateRequest{
-		CertType:   event.CertType,
-		Key:        event.Key,
-		Username:   event.Username,
-		Hostnames:  event.Hostnames,
-		ValidUntil: event.ValidUntil,
+		CertType:     event.CertType,
+		Key:          event.Key,
+		Username:     event.Username,
+		Hostnames:    event.Hostnames,
+		ValidUntil:   event.ValidUntil,
+		KMSAuthToken: event.KMSAuthToken,
 	})
 	if err != nil {
 		return proto.AwsSignResponse{}, err

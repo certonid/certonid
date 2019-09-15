@@ -14,6 +14,8 @@ ca:
 kmsauth:
   key_id: ''
   service_id: ''
+  region: us-east-1
+  max_valid_until: 24h
 
 certificates:
   user:

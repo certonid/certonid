@@ -1,6 +1,7 @@
 package kmsauth
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -157,7 +158,7 @@ func (tg *TokenGenerator) GetEncryptedToken() (*EncryptedToken, error) {
 		return nil, err
 	}
 
-	encryptedToken := EncryptedToken(string(encryptedData))
+	encryptedToken := EncryptedToken(base64.StdEncoding.EncodeToString(encryptedData))
 
 	tokenCache := &TokenCache{
 		Token:          *token,
