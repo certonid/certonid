@@ -97,13 +97,9 @@ func (t *TokenTime) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON unmarshals
 func (t *TokenTime) UnmarshalJSON(b []byte) error {
 	s := string(b)
-	log.Info("Token")
-	log.Info(s)
 	// Unmarshal gives us back a string that looks like "<some_time>". Get rid of the quotes
 	s = strings.Trim(s, "\"")
-	log.Info(s)
 	parsed, err := time.Parse(TimeFormat, s)
-	log.Info(parsed)
 	if err != nil {
 		return err
 	}
@@ -119,6 +115,8 @@ type Token struct {
 
 // IsValid returns an error if token is invalid, nil if valid
 func (t *Token) IsValid(tokenLifetime time.Duration) error {
+	log.Info("Token IsValid")
+	log.Info(t)
 	now := time.Now().UTC()
 	delta := t.NotAfter.Sub(t.NotBefore.Time)
 	if delta > tokenLifetime {

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/le0pard/certonid/adapters/awscloud"
+	log "github.com/sirupsen/logrus"
 )
 
 // TokenValidator validates a token
@@ -42,6 +43,8 @@ func (tv *TokenValidator) ValidateToken(tokenb64 string) error {
 	if err != nil {
 		return err
 	}
+	log.Info("Token")
+	log.Info(token)
 	return token.IsValid(tv.TokenLifetime)
 }
 
