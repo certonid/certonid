@@ -25,7 +25,7 @@ type TokenGenerator struct {
 	// The token lifetime
 	TokenLifetime time.Duration
 	// A file to use as a cache
-	TokenCacheFile *string
+	TokenCacheFile string
 	// An auth context
 	AuthContext AuthContext
 
@@ -40,7 +40,7 @@ func NewTokenGenerator(
 	authKey string,
 	tokenVersion TokenVersion,
 	tokenLifetime time.Duration,
-	tokenCacheFile *string,
+	tokenCacheFile string,
 	authContext AuthContext,
 	kmsClient *awscloud.KMSClient,
 ) *TokenGenerator {
@@ -64,15 +64,11 @@ func (tg *TokenGenerator) Validate() error {
 
 // getCachedToken tries to fetch a token from the cache
 func (tg *TokenGenerator) getCachedToken() (*Token, error) {
-	if tg.TokenCacheFile == nil {
-		log.Debug("No TokenCacheFile specified")
-		return nil, nil
-	}
 	// lock for reading
 	tg.mutex.RLock()
 	defer tg.mutex.RUnlock()
 
-	_, err := os.Stat(*tg.TokenCacheFile)
+	_, err := os.Stat(tg.TokenCacheFile)
 	if os.IsNotExist(err) {
 		// token cache file does not exist
 		return nil, nil
@@ -80,7 +76,7 @@ func (tg *TokenGenerator) getCachedToken() (*Token, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Error os.Stat token cache: %w", err)
 	}
-	cacheBytes, err := ioutil.ReadFile(*tg.TokenCacheFile)
+	cacheBytes, err := ioutil.ReadFile(tg.TokenCacheFile)
 	if err != nil {
 		return nil, fmt.Errorf("Could not open token cache file: %w", err)
 	}
@@ -107,15 +103,11 @@ func (tg *TokenGenerator) getCachedToken() (*Token, error) {
 
 // cacheToken caches a token
 func (tg *TokenGenerator) cacheToken(tokenCache *TokenCache) error {
-	if tg.TokenCacheFile == nil {
-		log.Debug("No TokenCacheFile specified")
-		return nil
-	}
 	// lock for writing
 	tg.mutex.Lock()
 	defer tg.mutex.Unlock()
 
-	dir := path.Dir(*tg.TokenCacheFile)
+	dir := path.Dir(tg.TokenCacheFile)
 	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
 		return err
@@ -126,7 +118,7 @@ func (tg *TokenGenerator) cacheToken(tokenCache *TokenCache) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(*tg.TokenCacheFile, data, 0644)
+	err = ioutil.WriteFile(tg.TokenCacheFile, data, 0644)
 	return err
 }
 

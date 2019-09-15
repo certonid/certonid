@@ -76,6 +76,8 @@ github.com/le0pard/certonid v0.0.0-20190915192736-c0e7fbf8ed0a h1:rNsrU9xjqBuGnz
 github.com/le0pard/certonid v0.0.0-20190915192736-c0e7fbf8ed0a/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
 github.com/le0pard/certonid v0.0.0-20190915193009-80f7df055e65 h1:2ja4Dy+a6Gb0t5gGn/LU4e1Xp10POFo1gsTmt77zdlw=
 github.com/le0pard/certonid v0.0.0-20190915193009-80f7df055e65/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
+github.com/le0pard/certonid v0.0.0-20190915193241-6397b54cd2c0 h1:jjGsQvTnJtGT0rjk4HsBpaNK+2sVtMJ837yLm9bv1DM=
+github.com/le0pard/certonid v0.0.0-20190915193241-6397b54cd2c0/go.mod h1:9ONLpgP+eHynVDVHaqQVr2VZPgR5FcYtGxWjsdkcIHw=
 github.com/leodido/go-urn v1.1.0 h1:Sm1gr51B1kKyfD2BlRcLSiEkffoG96g6TPv6eRoEiB8=
 github.com/leodido/go-urn v1.1.0/go.mod h1:+cyI34gQWZcE1eQU7NVgKkkzdXDQHr1dBMtdAPozLkw=
 github.com/magiconair/properties v1.8.0 h1:LLgXmsheXeRoUOBOjtwPQCWIYqM/LU1ayDtDePerRcY=
