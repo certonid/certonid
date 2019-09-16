@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/ScaleFT/sshkeys"
+	"github.com/le0pard/certonid/utils"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/ssh"
@@ -23,9 +24,7 @@ var (
 )
 
 const (
-	timeSkew     = time.Duration(5) * time.Minute // to protect against time-skew issues we potentially generate a certificate timeSkew duration
-	userCertType = "user"
-	hostCertType = "host"
+	timeSkew = time.Duration(5) * time.Minute // to protect against time-skew issues we potentially generate a certificate timeSkew duration
 )
 
 // KeySigner does the work of signing a ssh public key with the CA key.
@@ -43,7 +42,7 @@ type SignRequest struct {
 }
 
 func setPrincipals(cert *ssh.Certificate, req *SignRequest) {
-	if req.CertType == hostCertType {
+	if req.CertType == utils.HostCertType {
 		hosts := strings.Split(req.Hostnames, ",")
 		for i := range hosts {
 			hosts[i] = strings.TrimSpace(hosts[i])
@@ -92,8 +91,8 @@ func setExtensions(cert *ssh.Certificate, req *SignRequest) {
 
 // signPublicKey returns a signed ssh certificate.
 func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
-	if req.CertType != hostCertType && req.CertType != userCertType {
-		req.CertType = userCertType // be sure we have at least user key
+	if req.CertType != utils.HostCertType && req.CertType != utils.UserCertType {
+		req.CertType = utils.UserCertType // be sure we have at least user key
 	}
 	// parse public key
 	pubkey, _, _, _, err := ssh.ParseAuthorizedKey([]byte(req.Key))
@@ -115,7 +114,7 @@ func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
 	}
 	// check cert type
 	var certType uint32 = ssh.UserCert
-	if req.CertType == hostCertType {
+	if req.CertType == utils.HostCertType {
 		certType = ssh.HostCert
 	}
 	// init certificate

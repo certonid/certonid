@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/le0pard/certonid/utils"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh"
@@ -56,7 +57,7 @@ var (
 				er("You need to provide certificate path")
 			}
 
-			if genCertType == "host" && len(genHostnames) == 0 {
+			if genCertType == utils.HostCertType && len(genHostnames) == 0 {
 				er("You need to hostnames for certificate")
 			} else if len(genUsername) == 0 {
 				er("You need to username for certificate")
@@ -82,7 +83,7 @@ var (
 				er(fmt.Errorf("Error to read public key: %w", err))
 			}
 
-			if genCertType != "host" && len(genKMSAuthKeyID) != 0 && len(genKMSAuthServiceID) != 0 {
+			if genCertType != utils.HostCertType && len(genKMSAuthKeyID) != 0 && len(genKMSAuthServiceID) != 0 {
 				kmsauthToken, err = GenerateKMSAuthToken()
 				if err != nil {
 					er(err)

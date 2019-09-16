@@ -181,7 +181,7 @@ func GenerateCetrificate(req *CertificateRequest) (string, error) {
 		return "", fmt.Errorf("Error to decrypt passphrase for CA key: %w", err)
 	}
 
-	if req.CertType != "host" && viper.IsSet("kmsauth.key_id") && viper.IsSet("kmsauth.service_id") && viper.IsSet("kmsauth.region") {
+	if req.CertType != utils.HostCertType && viper.IsSet("kmsauth.key_id") && viper.IsSet("kmsauth.service_id") && viper.IsSet("kmsauth.region") {
 		if len(req.KMSAuthToken) == 0 {
 			return "", fmt.Errorf("Need to provide KMSAuth token to get certificate")
 		}
