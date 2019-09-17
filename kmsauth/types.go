@@ -88,7 +88,7 @@ type TokenTime struct {
 
 // MarshalJSON marshals into json
 func (t *TokenTime) MarshalJSON() ([]byte, error) {
-	formatted := t.Time.Format(time.RFC3339)
+	formatted := t.Time.Format(TimeFormat)
 	stamp := fmt.Sprintf("\"%s\"", formatted)
 	return []byte(stamp), nil
 }
@@ -98,7 +98,7 @@ func (t *TokenTime) UnmarshalJSON(b []byte) error {
 	s := string(b)
 	// Unmarshal gives us back a string that looks like "<some_time>". Get rid of the quotes
 	s = strings.Trim(s, "\"")
-	parsed, err := time.Parse(time.RFC3339, s)
+	parsed, err := time.Parse(TimeFormat, s)
 	if err != nil {
 		return err
 	}
