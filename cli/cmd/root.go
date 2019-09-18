@@ -12,7 +12,8 @@ import (
 )
 
 var (
-	cfgFile string
+	cfgFile      string
+	debugLogging bool
 )
 
 var rootCmd = &cobra.Command{
@@ -36,6 +37,7 @@ func init() {
 
 	rootCmd.SetVersionTemplate("Certonid version {{.Version}}\n")
 	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is $HOME/.certonid.yml)")
+	rootCmd.PersistentFlags().BoolVar(&debugLogging, "debug", false, "use debug logging")
 }
 
 func initLogging() {
@@ -44,6 +46,11 @@ func initLogging() {
 		FullTimestamp: true,
 	})
 	log.SetOutput(os.Stdout)
+
+	if debugLogging {
+		log.SetLevel(log.DebugLevel)
+		return
+	}
 
 	if viper.IsSet("logger.level") {
 		var level, err = log.ParseLevel(viper.GetString("logger.level"))
@@ -56,9 +63,10 @@ func initLogging() {
 			}).Info("Invalid log level")
 			log.SetLevel(log.InfoLevel)
 		}
-	} else {
-		log.SetLevel(log.InfoLevel)
+		return
 	}
+
+	log.SetLevel(log.InfoLevel)
 }
 
 func initConfig() {

@@ -32,6 +32,10 @@ func getCAPassphrase() ([]byte, error) {
 
 	encryptedPassphrase := viper.GetString("ca.passphrase.content")
 
+	log.WithFields(log.Fields{
+		"encryptedPassphrase": encryptedPassphrase,
+	}).Debug("Decrypting encrypted passphrase")
+
 	switch strings.ToLower(viper.GetString("ca.passphrase.encryption")) {
 	case "aws_kms":
 		var (
@@ -51,6 +55,12 @@ func getCAPassphrase() ([]byte, error) {
 		passphrase, err = utils.SymmetricDecrypt(encryptedPassphrase)
 	}
 
+	log.WithFields(log.Fields{
+		"type":                viper.GetString("ca.passphrase.encryption"),
+		"encryptedPassphrase": encryptedPassphrase,
+		"error":               err,
+	}).Debug("Decrypted encrypted passphrase")
+
 	return passphrase, err
 }
 
@@ -62,10 +72,15 @@ func decryptCAContent(data []byte) ([]byte, error) {
 
 	// file is not encrypted
 	if !viper.IsSet("ca.encrypted") {
+		log.Debug("CA key is not encrypted")
 		return data, nil
 	}
 
 	encryptedContent := string(data)
+
+	log.WithFields(log.Fields{
+		"encryptedContent": encryptedContent,
+	}).Debug("Decrypting encrypted CA key")
 
 	switch strings.ToLower(viper.GetString("ca.encrypted.encryption")) {
 	case "aws_kms":
@@ -86,6 +101,12 @@ func decryptCAContent(data []byte) ([]byte, error) {
 		decryptedContent, decryptedErr = utils.SymmetricDecrypt(encryptedContent)
 	}
 
+	log.WithFields(log.Fields{
+		"type":             viper.GetString("ca.encrypted.encryption"),
+		"encryptedContent": encryptedContent,
+		"error":            decryptedErr,
+	}).Debug("Decrypted encrypted CA key")
+
 	return decryptedContent, decryptedErr
 }
 
@@ -94,6 +115,11 @@ func getCAFromStorage() ([]byte, error) {
 		err      error
 		certData []byte
 	)
+
+	log.WithFields(log.Fields{
+		"type": viper.GetString("ca.storage"),
+	}).Debug("Reading CA file content")
+
 	switch strings.ToLower(viper.GetString("ca.storage")) {
 	case "aws_s3":
 		// empty
@@ -122,6 +148,10 @@ func validateKMSAuthToken(token, username string) error {
 		return fmt.Errorf("Invalid KMSAuth ValidUntil value: %w", err)
 	}
 
+	log.WithFields(log.Fields{
+		"validUntil": validUntil,
+	}).Debug("Validate KMSAuth TTL")
+
 	if viper.IsSet("kmsauth.region") {
 		region = viper.GetString("kmsauth.region")
 	}
@@ -133,6 +163,10 @@ func validateKMSAuthToken(token, username string) error {
 		To:       viper.GetString("kmsauth.service_id"),
 		UserType: "user",
 	}
+
+	log.WithFields(log.Fields{
+		"kmsauthContext": kmsauthContext,
+	}).Debug("KMSAuth context")
 
 	tv := kmsauth.NewTokenValidator(
 		viper.GetString("kmsauth.key_id"),
@@ -161,6 +195,10 @@ func GenerateCetrificate(req *CertificateRequest) (string, error) {
 		}).Error("Invalid ValidUntil value")
 		return "", fmt.Errorf("Invalid ValidUntil value: %w", err)
 	}
+
+	log.WithFields(log.Fields{
+		"validUntil": validUntil,
+	}).Debug("Get TTL information for certificate")
 
 	certData, err = getCAFromStorage()
 	if err != nil {
