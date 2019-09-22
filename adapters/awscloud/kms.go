@@ -74,8 +74,9 @@ func (cl *KMSClient) KmsDecryptText(text string) ([]byte, error) {
 
 // Reader interface
 func (cl *KMSClient) Reader(p []byte) (n int, err error) {
+	var nob = int64(len(p))
 	input := &kms.GenerateRandomInput{
-		NumberOfBytes: aws.Int64(int64(len(p))),
+		NumberOfBytes: aws.Int64(nob),
 	}
 
 	result, err := cl.Client.GenerateRandom(input)
