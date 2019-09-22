@@ -72,6 +72,23 @@ func (cl *KMSClient) KmsDecryptText(text string) ([]byte, error) {
 	return result.Plaintext, nil
 }
 
+// Reader interface
+func (cl *KMSClient) Reader(p []byte) (n int, err error) {
+	input := &kms.GenerateRandomInput{
+		NumberOfBytes: aws.Int64(len(p)),
+	}
+
+	result, err := cl.Client.GenerateRandom(input)
+	if err != nil {
+		n = 0
+		return
+	}
+
+	copy(p, result.Plaintext)
+	n = len(p)
+	return
+}
+
 // KmsClient return kms client
 func (client *Client) KmsClient(region string) *KMSClient {
 	awsConfig := aws.Config{}

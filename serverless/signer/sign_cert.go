@@ -3,10 +3,12 @@ package signer
 import (
 	"crypto/rand"
 	"fmt"
+	"io"
 	"strings"
 	"time"
 
 	"github.com/ScaleFT/sshkeys"
+	"github.com/le0pard/certonid/adapters/awscloud"
 	"github.com/le0pard/certonid/utils"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -75,6 +77,31 @@ func setCriticalOptions(cert *ssh.Certificate, req *SignRequest) {
 	}
 }
 
+func certRandomReader() io.Reader {
+	switch strings.ToLower(viper.GetString("ca.random_seed.source")) {
+	case "aws_kms":
+		var (
+			profile string
+			region  string
+		)
+
+		if viper.IsSet("ca.random_seed.profile") {
+			profile = viper.GetString("ca.random_seed.profile")
+		} else if viper.IsSet("ca.passphrase.profile") {
+			profile = viper.GetString("ca.passphrase.profile")
+		}
+		if viper.IsSet("ca.random_seed.region") {
+			region = viper.GetString("ca.random_seed.region")
+		} else if viper.IsSet("ca.passphrase.region") {
+			region = viper.GetString("ca.passphrase.region")
+		}
+
+		return awscloud.New(profile).KmsClient(region)
+	default: // urandom
+		return rand.Reader
+	}
+}
+
 func setExtensions(cert *ssh.Certificate, req *SignRequest) {
 	cert.Extensions = make(map[string]string)
 	extensions := defaultEntensions
@@ -132,7 +159,7 @@ func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
 	// extensions
 	setExtensions(cert, req)
 	// sign client key
-	if err := cert.SignCert(rand.Reader, s.ca); err != nil {
+	if err := cert.SignCert(certRandomReader(), s.ca); err != nil {
 		return nil, fmt.Errorf("Error sign public key: %w", err)
 	}
 

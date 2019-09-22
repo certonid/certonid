@@ -35,6 +35,7 @@ func InitConfig() {
 	viper.SetDefault("ca.storage", "file")
 	viper.SetDefault("ca.path", "ca.pem")
 	viper.SetDefault("ca.passphrase.encryption", "symmetric")
+	viper.SetDefault("ca.random_seed.source", "urandom")
 	// user cert
 	viper.SetDefault("certificates.user.max_valid_until", "24h")
 	viper.SetDefault("certificates.user.additional_principals", []string{})
