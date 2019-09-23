@@ -12,7 +12,5 @@ source ./scripts/build/.variables
 echo "Building statically linked certonid"
 export CGO_ENABLED=0
 
-# FIX: widnows build broken by this commit https://github.com/golang/sys/commit/2dccfee4fd3e23e10ba17b9d696cf2388c28764b
-# gox -os="linux darwin windows" -arch="amd64" -output="certonid.{{.OS}}.{{.Arch}}" -ldflags "${LDFLAGS}" -verbose ./cli
-gox -os="linux darwin" -arch="amd64" -output="certonid.{{.OS}}.{{.Arch}}" -ldflags "${LDFLAGS}" -verbose ./cli
+gox -os="linux darwin windows" -arch="amd64" -output="certonid.{{.OS}}.{{.Arch}}" -ldflags "${LDFLAGS}" -verbose ./cli
 gox -os="linux" -arch="amd64" -output="serverless.{{.OS}}.{{.Arch}}" -ldflags "${LDFLAGS}" -verbose ./serverless
