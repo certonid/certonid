@@ -78,20 +78,20 @@ func setCriticalOptions(cert *ssh.Certificate, req *SignRequest) {
 }
 
 func certRandomReader() io.Reader {
-	switch strings.ToLower(viper.GetString("ca.random_seed.source")) {
+	switch strings.ToLower(viper.GetString("certificates.random_seed.source")) {
 	case "aws_kms":
 		var (
 			profile string
 			region  string
 		)
 
-		if viper.IsSet("ca.random_seed.profile") {
-			profile = viper.GetString("ca.random_seed.profile")
+		if viper.IsSet("certificates.random_seed.profile") {
+			profile = viper.GetString("certificates.random_seed.profile")
 		} else if viper.IsSet("ca.passphrase.profile") {
 			profile = viper.GetString("ca.passphrase.profile")
 		}
-		if viper.IsSet("ca.random_seed.region") {
-			region = viper.GetString("ca.random_seed.region")
+		if viper.IsSet("certificates.random_seed.region") {
+			region = viper.GetString("certificates.random_seed.region")
 		} else if viper.IsSet("ca.passphrase.region") {
 			region = viper.GetString("ca.passphrase.region")
 		}
