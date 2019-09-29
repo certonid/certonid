@@ -16,9 +16,11 @@ Consists of two parts: CLI and serverless function.
 
  - [ ] Add tests
  - [ ] Improve documentation
+ - [ ] Website and video
+ - [ ] Use serverless framework to automate deploy and setup
  - [ ] Support AWS S3 for SSH CA key
  - [ ] Support Google Cloud functions
  - [ ] Support Google Cloud Storage for SSH CA key
- - [ ] Website and video
- - [ ] Use serverless framework to automate deploy and setup
+ - [ ] Support Azure Functions
+ - [ ] Support Apache OpenWhisk
 
