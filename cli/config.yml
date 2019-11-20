@@ -14,3 +14,7 @@ certificates:
         profile: example
         region: us-east-1
         valid_until: 24h
+    failover:
+    - region: eu-central-1
+    - region: eu-west-1
+      function_name: BackupBressFunction

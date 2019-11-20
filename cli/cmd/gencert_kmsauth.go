@@ -9,8 +9,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// GenerateKMSAuthToken return kmsauth token
-func GenerateKMSAuthToken() (string, error) {
+// GenerateAwsKMSAuthToken return kmsauth token
+func GenerateAwsKMSAuthToken() (string, error) {
 	validUntil, err := time.ParseDuration(genKMSAuthTokenValidUntil)
 	if err != nil {
 		log.WithFields(log.Fields{

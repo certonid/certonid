@@ -32,6 +32,8 @@ var (
 	genKMSAuthServiceID       string
 	genKMSAuthTokenValidUntil string
 
+	genFailoverVariants       map[string]interface{}
+
 	gencertCmd = &cobra.Command{
 		Use:   "gencert [OPTIONS] [KEY NAME]",
 		Short: "Generate user or host certificate",
@@ -83,18 +85,25 @@ var (
 				er(fmt.Errorf("Error to read public key: %w", err))
 			}
 
-			if genCertType != utils.HostCertType && len(genKMSAuthKeyID) != 0 && len(genKMSAuthServiceID) != 0 {
-				kmsauthToken, err = GenerateKMSAuthToken()
-				if err != nil {
-					er(err)
-				}
-			}
-
 			switch strings.ToLower(genCertRunner) {
 			case "gcloud":
 				// TODO
 			default: // aws
-				certBytes, serverlessErr = genCertFromAws(publicKeyData, kmsauthToken)
+			  // kmsauth for aws
+				if genCertType != utils.HostCertType && len(genKMSAuthKeyID) != 0 && len(genKMSAuthServiceID) != 0 {
+					kmsauthToken, err = GenerateAwsKMSAuthToken()
+					if err != nil {
+						er(err)
+					}
+				}
+
+				certBytes, serverlessErr = genCertFromAws(
+					genAwsProfile,
+					genAwsRegion,
+					genAwsFuncName,
+					publicKeyData,
+					kmsauthToken,
+				)
 			}
 
 			if serverlessErr != nil {
