@@ -12,6 +12,16 @@ Consists of two parts: CLI and serverless function.
 
 [All information published at Wiki page](https://github.com/le0pard/certonid/wiki)
 
+## Dev build
+
+```shell
+$ cd serverless
+$ GOOS=linux go build -o serverless main.go
+$ cd ..
+$ cd cli
+$ go build -o certonid main.go
+```
+
 ## Roadmap
 
  - [ ] Add tests
