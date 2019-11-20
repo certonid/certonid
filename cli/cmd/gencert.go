@@ -32,7 +32,7 @@ var (
 	genKMSAuthServiceID       string
 	genKMSAuthTokenValidUntil string
 
-	genFailoverVariants       map[string]interface{}
+	genFailoverVariants []interface{}
 
 	gencertCmd = &cobra.Command{
 		Use:   "gencert [OPTIONS] [KEY NAME]",
@@ -89,7 +89,7 @@ var (
 			case "gcloud":
 				// TODO
 			default: // aws
-			  // kmsauth for aws
+				// kmsauth for aws
 				if genCertType != utils.HostCertType && len(genKMSAuthKeyID) != 0 && len(genKMSAuthServiceID) != 0 {
 					kmsauthToken, err = GenerateAwsKMSAuthToken()
 					if err != nil {

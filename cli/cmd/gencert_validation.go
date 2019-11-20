@@ -127,7 +127,10 @@ func genValidateOptions() {
 	}
 
 	if hasConfigKey {
-		genFailoverVariants = viper.GetStringMap(fmt.Sprintf("%s.failover", keyPrefix))
+		failoverKey := fmt.Sprintf("%s.failover", keyPrefix)
+		if viper.IsSet(failoverKey) {
+			//genFailoverVariants = viper.Get(failoverKey)
+		}
 	}
 
 	genCertType = strings.ToLower(genCertType)
