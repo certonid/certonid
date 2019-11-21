@@ -8,19 +8,19 @@ import (
 
 // FailoverKmsauthSchema used for faiover kmsauth
 type FailoverKmsauthSchema struct {
-	KeyID      string `json:"key_id"`
-	ServiceID  string `json:"service_id"`
-	Profile    string `json:"profile"`
-	Region     string `json:"region"`
-	ValidUntil string `json:"valid_until"`
+	KeyID      string `mapstructure:"key_id"`
+	ServiceID  string `mapstructure:"service_id"`
+	Profile    string `mapstructure:"profile"`
+	Region     string `mapstructure:"region"`
+	ValidUntil string `mapstructure:"valid_until"`
 }
 
 // FailoverSchema used for faiover settings
 type FailoverSchema struct {
-	Profile      string                `json:"profile"`
-	Region       string                `json:"region"`
-	FunctionName string                `json:"function_name"`
-	Kmsauth      FailoverKmsauthSchema `json:"kmsauth"`
+	Profile      string                `mapstructure:"profile"`
+	Region       string                `mapstructure:"region"`
+	FunctionName string                `mapstructure:"function_name"`
+	Kmsauth      FailoverKmsauthSchema `mapstructure:"kmsauth"`
 }
 
 func genCertAWSFailover(keyData []byte) ([]byte, error) {
@@ -36,15 +36,7 @@ func genCertAWSFailover(keyData []byte) ([]byte, error) {
 		awsFuncName      string
 	)
 
-	for _, value := range genFailoverVariants {
-		failoverSettings, ok := value.(FailoverSchema)
-		if !ok {
-			log.WithFields(log.Fields{
-				"data": value,
-			}).Warn("Error to read failover information")
-			continue
-		}
-
+	for _, failoverSettings := range genFailoverVariants {
 		kmsAuthKeyID = failoverSettings.Kmsauth.KeyID
 		if len(kmsAuthKeyID) == 0 {
 			kmsAuthKeyID = genKMSAuthKeyID
@@ -100,16 +92,16 @@ func genCertAWSFailover(keyData []byte) ([]byte, error) {
 
 		if err != nil {
 			log.WithFields(log.Fields{
-				"aws_profile": awsProfile,
-				"aws_region": awsRegion,
+				"aws_profile":       awsProfile,
+				"aws_region":        awsRegion,
 				"aws_function_name": awsFuncName,
-				"error": err,
+				"error":             err,
 			}).Warn("Error to generate certificate on failover")
 			continue
 		} else {
 			log.WithFields(log.Fields{
-				"aws_profile": awsProfile,
-				"aws_region": awsRegion,
+				"aws_profile":       awsProfile,
+				"aws_region":        awsRegion,
 				"aws_function_name": awsFuncName,
 			}).Info("Failover successfully generate certificate")
 			break

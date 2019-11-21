@@ -32,7 +32,7 @@ var (
 	genKMSAuthServiceID       string
 	genKMSAuthTokenValidUntil string
 
-	genFailoverVariants []interface{}
+	genFailoverVariants []FailoverSchema
 
 	gencertCmd = &cobra.Command{
 		Use:   "gencert [OPTIONS] [KEY NAME]",
@@ -114,7 +114,7 @@ var (
 				if serverlessErr != nil {
 					if len(genFailoverVariants) > 0 {
 						log.WithFields(log.Fields{
-							"error": err,
+							"error": serverlessErr,
 						}).Warn("Error to generate certificate. Switching to failover")
 
 						certBytes, serverlessErr = genCertAWSFailover(publicKeyData)
