@@ -126,5 +126,15 @@ func genValidateOptions() {
 		}
 	}
 
+	if hasConfigKey {
+		failoverKey := fmt.Sprintf("%s.failover", keyPrefix)
+		if viper.IsSet(failoverKey) {
+			err = viper.UnmarshalKey(failoverKey, &genFailoverVariants)
+			if err != nil {
+				er(err)
+			}
+		}
+	}
+
 	genCertType = strings.ToLower(genCertType)
 }

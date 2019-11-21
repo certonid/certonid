@@ -32,6 +32,8 @@ var (
 	genKMSAuthServiceID       string
 	genKMSAuthTokenValidUntil string
 
+	genFailoverVariants []FailoverSchema
+
 	gencertCmd = &cobra.Command{
 		Use:   "gencert [OPTIONS] [KEY NAME]",
 		Short: "Generate user or host certificate",
@@ -83,22 +85,48 @@ var (
 				er(fmt.Errorf("Error to read public key: %w", err))
 			}
 
-			if genCertType != utils.HostCertType && len(genKMSAuthKeyID) != 0 && len(genKMSAuthServiceID) != 0 {
-				kmsauthToken, err = GenerateKMSAuthToken()
-				if err != nil {
-					er(err)
-				}
-			}
-
 			switch strings.ToLower(genCertRunner) {
 			case "gcloud":
 				// TODO
 			default: // aws
-				certBytes, serverlessErr = genCertFromAws(publicKeyData, kmsauthToken)
-			}
+				// kmsauth for aws
+				if genCertType != utils.HostCertType && len(genKMSAuthKeyID) != 0 && len(genKMSAuthServiceID) != 0 {
+					kmsauthToken, err = GenerateAwsKMSAuthToken(
+						genKMSAuthKeyID,
+						genKMSAuthServiceID,
+						genKMSAuthTokenValidUntil,
+						genAwsProfile,
+						genAwsRegion,
+					)
+					if err != nil {
+						er(err)
+					}
+				}
 
-			if serverlessErr != nil {
-				er(serverlessErr)
+				certBytes, serverlessErr = genCertFromAws(
+					genAwsProfile,
+					genAwsRegion,
+					genAwsFuncName,
+					publicKeyData,
+					kmsauthToken,
+				)
+
+				if serverlessErr != nil {
+					if len(genFailoverVariants) > 0 {
+						log.WithFields(log.Fields{
+							"error": serverlessErr,
+						}).Warn("Error to generate certificate. Switching to failover")
+
+						certBytes, serverlessErr = genCertAWSFailover(publicKeyData)
+
+						if serverlessErr != nil {
+							er(serverlessErr)
+						}
+					} else {
+						er(serverlessErr)
+					}
+				}
+
 			}
 
 			err = genStoreCertAtFile(genCertPath, certBytes)
