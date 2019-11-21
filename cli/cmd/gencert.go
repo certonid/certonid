@@ -91,7 +91,13 @@ var (
 			default: // aws
 				// kmsauth for aws
 				if genCertType != utils.HostCertType && len(genKMSAuthKeyID) != 0 && len(genKMSAuthServiceID) != 0 {
-					kmsauthToken, err = GenerateAwsKMSAuthToken()
+					kmsauthToken, err = GenerateAwsKMSAuthToken(
+						genKMSAuthKeyID,
+						genKMSAuthServiceID,
+						genKMSAuthTokenValidUntil,
+						genAwsProfile,
+						genAwsRegion,
+					)
 					if err != nil {
 						er(err)
 					}
@@ -104,10 +110,23 @@ var (
 					publicKeyData,
 					kmsauthToken,
 				)
-			}
 
-			if serverlessErr != nil {
-				er(serverlessErr)
+				if serverlessErr != nil {
+					if len(genFailoverVariants) > 0 {
+						log.WithFields(log.Fields{
+							"error": err,
+						}).Warn("Error to generate certificate. Switching to failover")
+
+						certBytes, serverlessErr = genCertAWSFailover(publicKeyData)
+
+						if serverlessErr != nil {
+							er(serverlessErr)
+						}
+					} else {
+						er(serverlessErr)
+					}
+				}
+
 			}
 
 			err = genStoreCertAtFile(genCertPath, certBytes)

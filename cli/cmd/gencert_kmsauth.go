@@ -10,26 +10,26 @@ import (
 )
 
 // GenerateAwsKMSAuthToken return kmsauth token
-func GenerateAwsKMSAuthToken() (string, error) {
-	validUntil, err := time.ParseDuration(genKMSAuthTokenValidUntil)
+func GenerateAwsKMSAuthToken(kmsAuthKeyID, kmsAuthServiceID, kmsAuthTokenValidUntil, awsProfile, awsRegion string) (string, error) {
+	validUntil, err := time.ParseDuration(kmsAuthTokenValidUntil)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"error": err,
-			"value": genKMSAuthTokenValidUntil,
+			"value": kmsAuthTokenValidUntil,
 		}).Error("Invalid KMSAuth ValidUntil value")
 		return "", fmt.Errorf("Invalid KMSAuth ValidUntil value: %w", err)
 	}
 
-	kmsClient := awscloud.New(genAwsProfile).KmsClient(genAwsRegion)
+	kmsClient := awscloud.New(awsProfile).KmsClient(awsRegion)
 
 	kmsauthContext := &kmsauth.AuthContextV2{
 		From:     genUsername,
-		To:       genKMSAuthServiceID,
+		To:       kmsAuthServiceID,
 		UserType: "user",
 	}
 
 	tg := kmsauth.NewTokenGenerator(
-		genKMSAuthKeyID,
+		kmsAuthKeyID,
 		kmsauth.TokenVersion2,
 		validUntil,
 		genKMSAuthCachePath,

@@ -11,8 +11,6 @@ certificates:
       kmsauth:
         key_id: arn:aws:kms:key-id
         service_id: some-service
-        profile: example
-        region: us-east-1
         valid_until: 24h
     failover:
     - region: eu-central-1
