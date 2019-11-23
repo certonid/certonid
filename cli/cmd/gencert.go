@@ -119,7 +119,7 @@ var (
 							"error": serverlessErr,
 						}).Warn("Error to generate certificate. Switching to failover")
 
-						certBytes, serverlessErr = genCertAWSFailover(publicKeyData, genCertTimeout)
+						certBytes, serverlessErr = genCertAWSFailover(publicKeyData)
 
 						if serverlessErr != nil {
 							er(serverlessErr)
