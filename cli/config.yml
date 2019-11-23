@@ -4,6 +4,7 @@ certificates:
     public_key_path: ~/.ssh/id_ed25519.pub
     username: leopard
     runner: aws
+    timeout: 5
     aws:
       profile: example
       region: us-east-1

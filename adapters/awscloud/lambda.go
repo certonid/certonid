@@ -1,7 +1,9 @@
 package awscloud
 
 import (
+	"context"
 	"fmt"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/lambda"
@@ -12,9 +14,12 @@ type LambdaClient struct {
 	Client *lambda.Lambda
 }
 
-// LambdaInvoke allow to encrypt text by AWS KMS
+// LambdaInvoke allow to call AWS Lambda
 func (cl *LambdaClient) LambdaInvoke(funcName string, payload []byte) ([]byte, error) {
-	result, err := cl.Client.Invoke(&lambda.InvokeInput{
+	ctx, done := context.WithTimeout(context.Background(), genCertTimeout*time.Second)
+	defer done()
+
+	result, err := cl.Client.InvokeWithContext(ctx, &lambda.InvokeInput{
 		FunctionName: aws.String(funcName),
 		Payload:      payload,
 	})
@@ -26,7 +31,7 @@ func (cl *LambdaClient) LambdaInvoke(funcName string, payload []byte) ([]byte, e
 	return result.Payload, nil
 }
 
-// LambdaClient return kms client
+// LambdaClient return AWS Lambda client
 func (client *Client) LambdaClient(region string) *LambdaClient {
 	awsConfig := aws.Config{}
 
