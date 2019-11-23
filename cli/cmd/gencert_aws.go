@@ -10,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func genCertFromAws(awsProfile, awsRegion, awsFuncName string, keyData []byte, kmsauthToken string) ([]byte, error) {
+func genCertFromAws(awsProfile, awsRegion, awsFuncName string, keyData []byte, kmsauthToken string, timeout int) ([]byte, error) {
 	if len(genAwsFuncName) == 0 {
 		return []byte{}, errors.New("You need to provide AWS Lambda function name")
 	}
@@ -30,7 +30,7 @@ func genCertFromAws(awsProfile, awsRegion, awsFuncName string, keyData []byte, k
 
 	lambdaClient := awscloud.New(awsProfile).LambdaClient(awsRegion)
 
-	invokePayload, err := lambdaClient.LambdaInvoke(awsFuncName, awsSignRequest)
+	invokePayload, err := lambdaClient.LambdaInvoke(awsFuncName, awsSignRequest, timeout)
 
 	if err != nil {
 		return []byte{}, err

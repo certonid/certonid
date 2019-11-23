@@ -23,7 +23,7 @@ type FailoverSchema struct {
 	Kmsauth      FailoverKmsauthSchema `mapstructure:"kmsauth"`
 }
 
-func genCertAWSFailover(keyData []byte) ([]byte, error) {
+func genCertAWSFailover(keyData []byte, timeout int) ([]byte, error) {
 	var (
 		certBytes        []byte
 		kmsauthToken     string
@@ -88,6 +88,7 @@ func genCertAWSFailover(keyData []byte) ([]byte, error) {
 			awsFuncName,
 			keyData,
 			kmsauthToken,
+			timeout,
 		)
 
 		if err != nil {

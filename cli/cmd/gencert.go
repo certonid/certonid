@@ -110,6 +110,7 @@ var (
 					genAwsFuncName,
 					publicKeyData,
 					kmsauthToken,
+					genCertTimeout,
 				)
 
 				if serverlessErr != nil {
@@ -118,7 +119,7 @@ var (
 							"error": serverlessErr,
 						}).Warn("Error to generate certificate. Switching to failover")
 
-						certBytes, serverlessErr = genCertAWSFailover(publicKeyData)
+						certBytes, serverlessErr = genCertAWSFailover(publicKeyData, genCertTimeout)
 
 						if serverlessErr != nil {
 							er(serverlessErr)
