@@ -40,6 +40,13 @@ func genValidateOptions() {
 	if len(genCertRunner) == 0 && hasConfigKey {
 		genCertRunner = viper.GetString(fmt.Sprintf("%s.runner", keyPrefix))
 	}
+	if genCertTimeout <= 0 && hasConfigKey {
+		genCertTimeout = viper.GetInt(fmt.Sprintf("%s.timeout", keyPrefix))
+
+		if genCertTimeout <= 0 {
+			genCertTimeout = 10 // 10 seconds default timeout
+		}
+	}
 
 	if len(genCertPath) == 0 && hasConfigKey {
 		genCertPath = viper.GetString(fmt.Sprintf("%s.certificate_path", keyPrefix))
