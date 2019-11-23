@@ -16,7 +16,7 @@ type LambdaClient struct {
 
 // LambdaInvoke allow to call AWS Lambda
 func (cl *LambdaClient) LambdaInvoke(funcName string, payload []byte, timeout int) ([]byte, error) {
-	ctx, done := context.WithTimeout(context.Background(), timeout*time.Second)
+	ctx, done := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
 	defer done()
 
 	result, err := cl.Client.InvokeWithContext(ctx, &lambda.InvokeInput{
