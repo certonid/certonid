@@ -4,7 +4,7 @@ before_install:
 - go get github.com/mitchellh/gox
 
 sudo: false
-dist: xenial
+dist: bionic
 
 notifications:
   email: false
