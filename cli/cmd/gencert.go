@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/le0pard/certonid/utils"
+	"github.com/certonid/certonid/utils"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh"

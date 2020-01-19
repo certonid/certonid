@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/le0pard/certonid/cli/cmd"
+	"github.com/certonid/certonid/cli/cmd"
 	log "github.com/sirupsen/logrus"
 )
 

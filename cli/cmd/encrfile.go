@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/le0pard/certonid/adapters/awscloud"
-	"github.com/le0pard/certonid/utils"
+	"github.com/certonid/certonid/adapters/awscloud"
+	"github.com/certonid/certonid/utils"
 	homedir "github.com/mitchellh/go-homedir"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"

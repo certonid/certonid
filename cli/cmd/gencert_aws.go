@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/le0pard/certonid/adapters/awscloud"
-	"github.com/le0pard/certonid/proto"
+	"github.com/certonid/certonid/adapters/awscloud"
+	"github.com/certonid/certonid/proto"
 	log "github.com/sirupsen/logrus"
 )
 

@@ -3,8 +3,8 @@ package cmd
 import (
 	"strings"
 
-	"github.com/le0pard/certonid/adapters/awscloud"
-	"github.com/le0pard/certonid/utils"
+	"github.com/certonid/certonid/adapters/awscloud"
+	"github.com/certonid/certonid/utils"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )

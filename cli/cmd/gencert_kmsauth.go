@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/le0pard/certonid/adapters/awscloud"
-	"github.com/le0pard/certonid/kmsauth"
+	"github.com/certonid/certonid/adapters/awscloud"
+	"github.com/certonid/certonid/kmsauth"
 	log "github.com/sirupsen/logrus"
 )
 

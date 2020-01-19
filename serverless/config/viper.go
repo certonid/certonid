@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/le0pard/certonid/utils"
+	"github.com/certonid/certonid/utils"
 	"github.com/spf13/viper"
 )
 

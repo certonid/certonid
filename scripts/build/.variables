@@ -8,15 +8,15 @@ CERTONID_BUILDTIME=${CERTONID_BUILDTIME:-$(date --utc --rfc-3339 ns 2> /dev/null
 
 CERTONID_PLATFORM_LDFLAGS=
 if test -n "${CERTONID_PLATFORM}"; then
-	CERTONID_PLATFORM_LDFLAGS="-X \"github.com/le0pard/certonid/cli/version.PlatformName=${CERTONID_PLATFORM}\""
+	CERTONID_PLATFORM_LDFLAGS="-X \"github.com/certonid/certonid/cli/version.PlatformName=${CERTONID_PLATFORM}\""
 fi
 
 export LDFLAGS="\
     -w \
     ${CERTONID_PLATFORM_LDFLAGS} \
-    -X \"github.com/le0pard/certonid/cli/version.GitCommit=${CERTONID_GITCOMMIT}\" \
-    -X \"github.com/le0pard/certonid/cli/version.BuildTime=${CERTONID_BUILDTIME}\" \
-    -X \"github.com/le0pard/certonid/cli/version.Version=${CERTONID_VERSION}\" \
+    -X \"github.com/certonid/certonid/cli/version.GitCommit=${CERTONID_GITCOMMIT}\" \
+    -X \"github.com/certonid/certonid/cli/version.BuildTime=${CERTONID_BUILDTIME}\" \
+    -X \"github.com/certonid/certonid/cli/version.Version=${CERTONID_VERSION}\" \
     ${LDFLAGS:-} \
 "
 

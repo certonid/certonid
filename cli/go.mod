@@ -1,4 +1,4 @@
-module github.com/le0pard/certonid/cli
+module github.com/certonid/certonid/cli
 
 go 1.12
 
@@ -8,7 +8,7 @@ require (
 	github.com/dchest/bcrypt_pbkdf v0.0.0-20150205184540-83f37f9c154a // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
-	github.com/le0pard/certonid v0.0.0-20191123173730-b88c03b6363d
+	github.com/certonid/certonid v0.0.0-20191123173730-b88c03b6363d
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pelletier/go-toml v1.6.0 // indirect

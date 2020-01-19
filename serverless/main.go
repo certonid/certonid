@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/le0pard/certonid/proto"
-	"github.com/le0pard/certonid/serverless/config"
-	"github.com/le0pard/certonid/serverless/sshca"
+	"github.com/certonid/certonid/proto"
+	"github.com/certonid/certonid/serverless/config"
+	"github.com/certonid/certonid/serverless/sshca"
 )
 
 // init function

@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/ScaleFT/sshkeys"
-	"github.com/le0pard/certonid/adapters/awscloud"
-	"github.com/le0pard/certonid/utils"
+	"github.com/certonid/certonid/adapters/awscloud"
+	"github.com/certonid/certonid/utils"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/ssh"

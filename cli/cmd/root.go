@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/le0pard/certonid/cli/version"
+	"github.com/certonid/certonid/cli/version"
 	homedir "github.com/mitchellh/go-homedir"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"

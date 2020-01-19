@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/le0pard/certonid/adapters/awscloud"
-	"github.com/le0pard/certonid/kmsauth"
-	"github.com/le0pard/certonid/serverless/signer"
-	"github.com/le0pard/certonid/utils"
+	"github.com/certonid/certonid/adapters/awscloud"
+	"github.com/certonid/certonid/kmsauth"
+	"github.com/certonid/certonid/serverless/signer"
+	"github.com/certonid/certonid/utils"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )

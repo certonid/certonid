@@ -36,6 +36,6 @@ deploy:
   - certonid.windows.amd64.exe
   - serverless.linux.amd64
   on:
-    repo: le0pard/certonid
+    repo: certonid/certonid
     tags: true
     condition: $LATEST = true

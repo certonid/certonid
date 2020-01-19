@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/le0pard/certonid/adapters/awscloud"
+	"github.com/certonid/certonid/adapters/awscloud"
 )
 
 // TokenValidator validates a token

@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/le0pard/certonid/adapters/awscloud"
+	"github.com/certonid/certonid/adapters/awscloud"
 
 	log "github.com/sirupsen/logrus"
 )
