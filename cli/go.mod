@@ -5,10 +5,10 @@ go 1.12
 require (
 	github.com/ScaleFT/sshkeys v0.0.0-20181112160850-82451a803681
 	github.com/aws/aws-sdk-go v1.25.41 // indirect
+	github.com/certonid/certonid v0.0.0-20200119155306-e09c2eb9a71b
 	github.com/dchest/bcrypt_pbkdf v0.0.0-20150205184540-83f37f9c154a // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
-	github.com/certonid/certonid v0.0.0-20191123173730-b88c03b6363d
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pelletier/go-toml v1.6.0 // indirect
