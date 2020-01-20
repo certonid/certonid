@@ -58,7 +58,7 @@ func genValidateOptions() {
 				er(err)
 			}
 		} else if len(genCertPath) == 0 {
-			var genCertonidDefaultCachePath string = genDefaultCachePath
+			genCertonidDefaultCachePath := genDefaultCachePath
 
 			if viper.IsSet("cache_path") {
 				genCertonidDefaultCachePath = viper.GetString("cache_path")
@@ -117,7 +117,7 @@ func genValidateOptions() {
 				er(err)
 			}
 		} else if len(genKMSAuthCachePath) == 0 {
-			var genKMSAuthDefaultCachePath string = genDefaultCachePath
+			genKMSAuthDefaultCachePath := genDefaultCachePath
 
 			if viper.IsSet("cache_path") {
 				genKMSAuthDefaultCachePath = viper.GetString("cache_path")
