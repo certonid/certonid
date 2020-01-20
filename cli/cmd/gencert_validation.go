@@ -10,6 +10,7 @@ import (
 )
 
 const (
+	genDefaultCachePath  = "~/.certonid_cache"
 	genCertSufix         = "cert.pub"
 	genKmsAuthFileSufix  = "kmsauth.json"
 	genDefaultValidUntil = "30m" // default 30 min
@@ -56,8 +57,14 @@ func genValidateOptions() {
 			if err != nil {
 				er(err)
 			}
-		} else if len(genCertPath) == 0 && viper.IsSet("cache_path") {
-			certFilePath, err := homedir.Expand(filepath.Join(viper.GetString("cache_path"), fmt.Sprintf("%s-%s", genCertCertName, genCertSufix)))
+		} else if len(genCertPath) == 0 {
+			var genCertonidDefaultCachePath string = genDefaultCachePath
+
+			if viper.IsSet("cache_path") {
+				genCertonidDefaultCachePath = viper.GetString("cache_path")
+			}
+
+			certFilePath, err := homedir.Expand(filepath.Join(genCertonidDefaultCachePath, fmt.Sprintf("%s-%s", genCertCertName, genCertSufix)))
 			if err != nil {
 				er(err)
 			}
@@ -109,8 +116,14 @@ func genValidateOptions() {
 			if err != nil {
 				er(err)
 			}
-		} else if len(genKMSAuthCachePath) == 0 && viper.IsSet("cache_path") {
-			kmsauthCachePath, err := homedir.Expand(filepath.Join(viper.GetString("cache_path"), fmt.Sprintf("%s-%s", genCertCertName, genKmsAuthFileSufix)))
+		} else if len(genKMSAuthCachePath) == 0 {
+			var genKMSAuthDefaultCachePath string = genDefaultCachePath
+
+			if viper.IsSet("cache_path") {
+				genKMSAuthDefaultCachePath = viper.GetString("cache_path")
+			}
+
+			kmsauthCachePath, err := homedir.Expand(filepath.Join(genKMSAuthDefaultCachePath, fmt.Sprintf("%s-%s", genCertCertName, genKmsAuthFileSufix)))
 			if err != nil {
 				er(err)
 			}
