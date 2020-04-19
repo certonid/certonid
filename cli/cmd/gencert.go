@@ -87,7 +87,7 @@ var (
 			}
 
 			switch strings.ToLower(genCertRunner) {
-			case "gcloud":
+			case "gcp":
 				// TODO
 			default: // aws
 				// kmsauth for aws
@@ -162,7 +162,7 @@ func genPostScripts(cert *ssh.Certificate) {
 
 func init() {
 	rootCmd.AddCommand(gencertCmd)
-	gencertCmd.Flags().StringVarP(&genCertRunner, "runner", "r", "", "Serverless runner (aws, gcloud, etc)")
+	gencertCmd.Flags().StringVarP(&genCertRunner, "runner", "r", "", "Serverless runner (aws, gcp, etc)")
 	gencertCmd.Flags().IntVar(&genCertTimeout, "timeout", 0, "Timeout for serverless function (seconds)")
 	gencertCmd.Flags().StringVarP(&genCertType, "type", "t", "user", "Certificate type (user, host)")
 	gencertCmd.Flags().StringVarP(&genPublicKeyPath, "public-key-path", "p", "", "Path to public file, which will used for certificate")

@@ -1,4 +1,4 @@
-package serverless
+package gcp
 
 import (
 	"encoding/json"

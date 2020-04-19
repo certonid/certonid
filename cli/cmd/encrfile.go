@@ -68,7 +68,7 @@ var (
 
 func init() {
 	rootCmd.AddCommand(encrfileCmd)
-	encrfileCmd.Flags().StringVarP(&encrfileType, "type", "t", "symmetric", "Encryption type (symmetric, aws_kms, gcloud_kms)")
+	encrfileCmd.Flags().StringVarP(&encrfileType, "type", "t", "symmetric", "Encryption type (symmetric, aws_kms, gcp_kms)")
 	encrfileCmd.Flags().StringVar(&encrfileAwsKmsKeyID, "aws-kms-key-id", "", "AWS KMS Key ID")
 	encrfileCmd.Flags().StringVar(&encrfileAwsKmsProfile, "aws-kms-profile", "", "AWS KMS Profile")
 	encrfileCmd.Flags().StringVar(&encrfileAwsKmsRegion, "aws-kms-region", "", "AWS KMS Region")

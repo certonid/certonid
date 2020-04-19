@@ -69,7 +69,7 @@ var (
 
 func init() {
 	rootCmd.AddCommand(decrfileCmd)
-	decrfileCmd.Flags().StringVarP(&decrfileType, "type", "t", "symmetric", "Decryption type (symmetric, aws_kms, gcloud_kms)")
+	decrfileCmd.Flags().StringVarP(&decrfileType, "type", "t", "symmetric", "Decryption type (symmetric, aws_kms, gcp_kms)")
 	decrfileCmd.Flags().StringVar(&decrfileAwsKmsProfile, "aws-kms-profile", "", "AWS KMS Profile")
 	decrfileCmd.Flags().StringVar(&decrfileAwsKmsRegion, "aws-kms-region", "", "AWS KMS Region")
 }
