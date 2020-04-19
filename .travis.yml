@@ -18,7 +18,6 @@ jobs:
   - go: '1.14.x'
     env: LATEST=true
   - go: '1.13.x'
-    env: LATEST=true
   - go: tip
   allow_failures:
   - go: tip
