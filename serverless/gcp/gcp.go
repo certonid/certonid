@@ -10,6 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// HandleSign function to generate certificate
 func HandleSign(w http.ResponseWriter, r *http.Request) {
 	var (
 		requestData proto.GcpSignRequest
@@ -25,7 +26,7 @@ func HandleSign(w http.ResponseWriter, r *http.Request) {
 			"error": jsonErr,
 		}).Error("Error parsing application/json")
 
-		http.Error(w, "400 - Invalid json data", http.StatusBadRequest)
+		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 		return
 	}
 
