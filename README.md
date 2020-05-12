@@ -12,6 +12,10 @@ Consists of two parts: CLI and serverless function.
 
 [All information published at Wiki page](https://github.com/certonid/certonid/wiki)
 
+## Articles
+
+ - [(Russian) Certonid — SSH центр сертификации, который работает на AWS Lambda](https://dou.ua/lenta/articles/certonid-ssh/)
+
 ## Dev build
 
 ```shell
