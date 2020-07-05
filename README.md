@@ -14,7 +14,8 @@ Consists of two parts: CLI and serverless function.
 
 ## Articles
 
- - [(Russian) Certonid — SSH центр сертификации, который работает на AWS Lambda](https://dou.ua/lenta/articles/certonid-ssh/)
+ - [[English] Certonid — the SSH Certificate Authority Deployed on AWS Lambda](https://blog.mailtrap.io/certonid/)
+ - [[Russian] Certonid — SSH центр сертификации, который работает на AWS Lambda](https://dou.ua/lenta/articles/certonid-ssh/)
 
 ## Dev build
 
