@@ -15,16 +15,16 @@ env:
 
 jobs:
   include:
+  - go: '1.15.x'
+    env: LATEST=true
   - go: '1.14.x'
-    env: LATEST=true
   - go: '1.13.x'
-    env: LATEST=true
   - go: tip
   allow_failures:
   - go: tip
 
 before_deploy:
-- if [ "${LATEST}" = "true" ]; then ./scripts/build/binary; fi
+- if [ "${LATEST}" = "true" ]; then ./scripts/build/binary.sh; fi
 
 deploy:
   provider: releases
