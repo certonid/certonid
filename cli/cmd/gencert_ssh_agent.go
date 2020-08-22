@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"crypto/dsa"
-	"crypto/ecdsa"
-	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
@@ -16,7 +13,6 @@ import (
 	"github.com/ScaleFT/sshkeys"
 	homedir "github.com/mitchellh/go-homedir"
 	log "github.com/sirupsen/logrus"
-	"golang.org/x/crypto/ed25519"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
 	"golang.org/x/crypto/ssh/terminal"
@@ -57,30 +53,9 @@ func genGetPrivateKeyPassphrase(data []byte) ([]byte, error) {
 	return passPhrase, nil
 }
 
-func genCastInterfaceToPrimaryKeyInterface(key interface{}) interface{} {
-	rsaKey, ok := key.(rsa.PrivateKey)
-	if ok {
-		return &rsaKey
-	}
-	dsaKey, ok := key.(dsa.PrivateKey)
-	if ok {
-		return &dsaKey
-	}
-	ecdsaKey, ok := key.(ecdsa.PrivateKey)
-	if ok {
-		return &ecdsaKey
-	}
-	ed25519Key, ok := key.(ed25519.PrivateKey)
-	if ok {
-		return &ed25519Key
-	}
-	return nil
-}
-
 func genAddCertToAgent(cert *ssh.Certificate) error {
 	var (
 		privateKey    interface{}
-		privateKeyRaw interface{}
 		privateKeyErr error
 	)
 	expandedPrivateKey, err := homedir.Expand(genAddToSSHAgent)
@@ -110,7 +85,7 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 		return fmt.Errorf("Could not get passphrase for private key: %w", err)
 	}
 
-	privateKeyRaw, privateKeyErr = sshkeys.ParseEncryptedRawPrivateKey(privatKeyBytes, passPhrase)
+	privateKey, privateKeyErr = sshkeys.ParseEncryptedRawPrivateKey(privatKeyBytes, passPhrase)
 
 	if privateKeyErr != nil {
 		log.WithFields(log.Fields{
@@ -118,15 +93,6 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 			"filename": expandedPrivateKey,
 		}).Error("Could not parse private key")
 		return fmt.Errorf("Could not parse private key: %w", err)
-	}
-
-	privateKey = genCastInterfaceToPrimaryKeyInterface(privateKeyRaw)
-	if privateKey == nil {
-		log.WithFields(log.Fields{
-			"error":    privateKeyErr,
-			"filename": expandedPrivateKey,
-		}).Error("Unknown private key format")
-		return fmt.Errorf("Unknown private key format: %w", err)
 	}
 
 	agentAuthSock := os.Getenv("SSH_AUTH_SOCK")
