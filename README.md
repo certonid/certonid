@@ -1,4 +1,4 @@
-# Certonid [![Build Status](https://travis-ci.com/certonid/certonid.svg?branch=master)](https://travis-ci.com/certonid/certonid)
+# Certonid ![Build & Release](https://github.com/certonid/certonid/workflows/Build%20&%20Release/badge.svg)
 
 Certonid is a Serverless SSH Certificate Authority.
 
