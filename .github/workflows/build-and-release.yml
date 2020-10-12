@@ -24,7 +24,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
-      - name: Cli tests
+      - name: CLI tests
         run: go test ./...
         working-directory: cli
 
@@ -51,7 +51,7 @@ jobs:
   release:
     name: "Release"
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/') && false
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     needs: [build]
     steps:
       - name: Download linux binary
