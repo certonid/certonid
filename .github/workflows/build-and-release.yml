@@ -24,8 +24,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
-      - name: Tests
+      - name: Cli tests
         run: go test ./...
+        working-directory: cli
+
+      - name: Serverless tests
+        run: go test ./...
+        working-directory: serverless
 
       - name: Get gox
         run: go get github.com/mitchellh/gox
