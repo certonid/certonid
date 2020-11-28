@@ -2,23 +2,33 @@ package config
 
 import (
 	"os"
+	"strings"
+	"time"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 )
 
 func initLogging() {
-	log.SetOutput(os.Stdout)
+	if viper.IsSet("logger.format") && strings.ToLower(viper.GetString("logger.format")) == "json" {
+		log.Logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
+	} else {
+		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339})
+	}
+
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
 	if viper.IsSet("logger.level") {
-		var level, err = log.ParseLevel(viper.GetString("logger.level"))
+		var level, err = zerolog.ParseLevel(viper.GetString("logger.level"))
 		if err == nil {
-			log.SetLevel(level)
+			zerolog.SetGlobalLevel(level)
 		} else {
-			log.Error("Invalid log level:", err)
-			log.SetLevel(log.InfoLevel)
+			log.Warn().
+				Err(err).
+				Str("level", viper.GetString("logger.level")).
+				Msg("Invalid log level")
 		}
-	} else {
-		log.SetLevel(log.InfoLevel)
+		return
 	}
 }

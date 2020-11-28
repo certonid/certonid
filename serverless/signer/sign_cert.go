@@ -10,7 +10,7 @@ import (
 	"github.com/ScaleFT/sshkeys"
 	"github.com/certonid/certonid/adapters/awscloud"
 	"github.com/certonid/certonid/utils"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/ssh"
 )
@@ -130,9 +130,10 @@ func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
 	maxTTLConfigKey := fmt.Sprintf("certificates.%s.max_valid_until", req.CertType)
 	maxKeyDuration, err := time.ParseDuration(viper.GetString(maxTTLConfigKey))
 	if err != nil {
-		log.WithFields(log.Fields{
-			"error": err,
-		}).Warn("Invalid TTL for cert in config. Switched to TTL 24h")
+		log.Warn().
+			Err(err).
+			Str("value", viper.GetString(maxTTLConfigKey)).
+			Msg("Invalid TTL for cert in config. Switched to TTL 24h")
 		maxKeyDuration = time.Duration(24) * time.Hour
 	}
 	expires := time.Now().UTC().Add(maxKeyDuration)
@@ -163,12 +164,12 @@ func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
 		return nil, fmt.Errorf("Error sign public key: %w", err)
 	}
 
-	log.WithFields(log.Fields{
-		"ID":          cert.KeyId,
-		"principals":  cert.ValidPrincipals,
-		"fingerprint": ssh.FingerprintSHA256(pubkey),
-		"valid until": time.Unix(int64(cert.ValidBefore), 0).UTC(),
-	}).Info("Successfully issued cert")
+	log.Info().
+		Str("ID", cert.KeyId).
+		Str("principals", strings.Join(cert.ValidPrincipals, ",")).
+		Str("fingerprint", ssh.FingerprintSHA256(pubkey)).
+		Time("valid_until", time.Unix(int64(cert.ValidBefore), 0).UTC()).
+		Msg("Successfully issued cert")
 
 	return cert, nil
 }

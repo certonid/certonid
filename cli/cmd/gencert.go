@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/certonid/certonid/utils"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh"
 )
@@ -74,11 +74,11 @@ var (
 				os.Exit(0)
 			}
 
-			log.WithFields(log.Fields{
-				"runner":      genCertRunner,
-				"public key":  genPublicKeyPath,
-				"certificate": genCertPath,
-			}).Info("Signing public key")
+			log.Info().
+				Str("runner", genCertRunner).
+				Str("public_key", genPublicKeyPath).
+				Str("certificate", genCertPath).
+				Msg("Signing public key")
 
 			publicKeyData, err := ioutil.ReadFile(genPublicKeyPath)
 
@@ -115,9 +115,9 @@ var (
 
 				if serverlessErr != nil {
 					if len(genFailoverVariants) > 0 {
-						log.WithFields(log.Fields{
-							"error": serverlessErr,
-						}).Warn("Error to generate certificate. Switching to failover")
+						log.Warn().
+							Err(serverlessErr).
+							Msg("Error to generate certificate. Switching to failover")
 
 						certBytes, serverlessErr = genCertAWSFailover(publicKeyData)
 
@@ -143,11 +143,11 @@ var (
 				er(err)
 			}
 
-			log.WithFields(log.Fields{
-				"public_key":  genPublicKeyPath,
-				"certificate": genCertPath,
-				"valid until": time.Unix(int64(cert.ValidBefore), 0).UTC(),
-			}).Info("Certificate generated and stored")
+			log.Info().
+				Str("public_key", genPublicKeyPath).
+				Str("certificate", genCertPath).
+				Time("valid_until", time.Unix(int64(cert.ValidBefore), 0).UTC()).
+				Msg("Certificate generated and stored")
 
 			genPostScripts(cert)
 		},

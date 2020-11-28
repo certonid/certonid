@@ -8,7 +8,7 @@ import (
 	"github.com/certonid/certonid/adapters/awscloud"
 	"github.com/certonid/certonid/utils"
 	homedir "github.com/mitchellh/go-homedir"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
@@ -58,10 +58,10 @@ var (
 				er(fmt.Errorf("Error to write file %s: %w", encrFilepath, err))
 			}
 
-			log.WithFields(log.Fields{
-				"original":  origFilepath,
-				"encrypted": encrFilepath,
-			}).Info("Successfully encrypted file")
+			log.Info().
+				Str("original", origFilepath).
+				Str("encrypted", encrFilepath).
+				Msg("Successfully encrypted file")
 		},
 	}
 )

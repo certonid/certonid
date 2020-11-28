@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/certonid/certonid/utils"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 // FailoverKmsauthSchema used for faiover kmsauth
@@ -71,13 +71,13 @@ func genCertAWSFailover(keyData []byte) ([]byte, error) {
 				awsRegion,
 			)
 			if err != nil {
-				log.WithFields(log.Fields{
-					"kmsauth_key_id":     kmsAuthKeyID,
-					"kmsauth_service_id": kmsAuthServiceID,
-					"valid_until":        kmsValidUntil,
-					"profile":            awsProfile,
-					"region":             awsRegion,
-				}).Warn("Error to generate kmsauth token on failover")
+				log.Warn().
+					Str("kmsauth_key_id", kmsAuthKeyID).
+					Str("kmsauth_service_id", kmsAuthServiceID).
+					Str("valid_until", kmsValidUntil).
+					Str("aws_profile", awsProfile).
+					Str("aws_region", awsRegion).
+					Msg("Error to generate kmsauth token on failover")
 				continue
 			}
 		}
@@ -92,19 +92,18 @@ func genCertAWSFailover(keyData []byte) ([]byte, error) {
 		)
 
 		if err != nil {
-			log.WithFields(log.Fields{
-				"aws_profile":       awsProfile,
-				"aws_region":        awsRegion,
-				"aws_function_name": awsFuncName,
-				"error":             err,
-			}).Warn("Error to generate certificate on failover")
+			log.Warn().
+				Err(err).
+				Str("aws_profile", awsProfile).
+				Str("aws_region", awsRegion).
+				Msg("Error to generate certificate on failover")
 			continue
 		} else {
-			log.WithFields(log.Fields{
-				"aws_profile":       awsProfile,
-				"aws_region":        awsRegion,
-				"aws_function_name": awsFuncName,
-			}).Info("Failover successfully generate certificate")
+			log.Info().
+				Str("aws_profile", awsProfile).
+				Str("aws_region", awsRegion).
+				Str("aws_function_name", awsFuncName).
+				Msg("Failover successfully generate certificate")
 			break
 		}
 

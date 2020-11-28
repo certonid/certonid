@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"time"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -18,17 +18,17 @@ const (
 func genParseCertificate(bytes []byte) (*ssh.Certificate, error) {
 	k, _, _, _, err := ssh.ParseAuthorizedKey(bytes)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"error": err,
-		}).Warn("Could not parse cert")
+		log.Warn().
+			Err(err).
+			Msg("Could not parse cert")
 		return nil, fmt.Errorf("Could not parse cert: %w", err)
 	}
 
 	cert, ok := k.(*ssh.Certificate)
 	if !ok {
-		log.WithFields(log.Fields{
-			"error": err,
-		}).Warn("Bytes do not correspond to an ssh certificate")
+		log.Warn().
+			Err(err).
+			Msg("Bytes do not correspond to an ssh certificate")
 		return nil, fmt.Errorf("Bytes do not correspond to an ssh certificate: %w", err)
 	}
 
@@ -38,10 +38,10 @@ func genParseCertificate(bytes []byte) (*ssh.Certificate, error) {
 func genCertFromFile() (*ssh.Certificate, error) {
 	bytes, err := ioutil.ReadFile(genCertPath)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"error":    err,
-			"filename": genCertPath,
-		}).Warn("Could not read cert from file")
+		log.Warn().
+			Err(err).
+			Str("filename", genCertPath).
+			Msg("Could not read cert from file")
 		return nil, fmt.Errorf("Could not read cert from file: %w", err)
 	}
 
@@ -66,10 +66,10 @@ func genIsCertValidInCache() (bool, *ssh.Certificate) {
 		isFresh := genIsCertStillFresh(cachedCert)
 
 		if isFresh {
-			log.WithFields(log.Fields{
-				"certificate": genCertPath,
-				"valid until": time.Unix(int64(cachedCert.ValidBefore), 0).UTC(),
-			}).Info("Current certificate still valid. Exiting...")
+			log.Info().
+				Str("certificate", genCertPath).
+				Time("valid_until", time.Unix(int64(cachedCert.ValidBefore), 0).UTC()).
+				Msg("Current certificate still valid. Exiting...")
 			return true, cachedCert
 		}
 	}

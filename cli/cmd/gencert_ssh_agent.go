@@ -12,7 +12,7 @@ import (
 
 	"github.com/ScaleFT/sshkeys"
 	homedir "github.com/mitchellh/go-homedir"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
 	"golang.org/x/crypto/ssh/terminal"
@@ -42,9 +42,9 @@ func genGetPrivateKeyPassphrase(data []byte) ([]byte, error) {
 			passPhrase, passPhraseErr = terminal.ReadPassword(int(os.Stdin.Fd()))
 			fmt.Print("\n")
 			if passPhraseErr != nil {
-				log.WithFields(log.Fields{
-					"error": passPhraseErr,
-				}).Error("Not provided passphrase for provate key")
+				log.Error().
+					Err(passPhraseErr).
+					Msg("Not provided passphrase for private key")
 				return nil, passPhraseErr
 			}
 		}
@@ -60,55 +60,55 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 	)
 	expandedPrivateKey, err := homedir.Expand(genAddToSSHAgent)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"error":    err,
-			"filename": genAddToSSHAgent,
-		}).Error("Could not expand path")
+		log.Error().
+			Err(err).
+			Str("filename", genAddToSSHAgent).
+			Msg("Could not expand path")
 		return fmt.Errorf("Could not expand path: %w", err)
 	}
 
 	privatKeyBytes, err := ioutil.ReadFile(expandedPrivateKey)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"error":    err,
-			"filename": expandedPrivateKey,
-		}).Error("Could not read private key")
+		log.Error().
+			Err(err).
+			Str("filename", expandedPrivateKey).
+			Msg("Could not read private key")
 		return fmt.Errorf("Could not read private key: %w", err)
 	}
 
 	passPhrase, err := genGetPrivateKeyPassphrase(privatKeyBytes)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"error":    err,
-			"filename": expandedPrivateKey,
-		}).Error("Could not get passphrase for private key")
+		log.Error().
+			Err(err).
+			Str("filename", expandedPrivateKey).
+			Msg("Could not get passphrase for private key")
 		return fmt.Errorf("Could not get passphrase for private key: %w", err)
 	}
 
 	privateKey, privateKeyErr = sshkeys.ParseEncryptedRawPrivateKey(privatKeyBytes, passPhrase)
 
 	if privateKeyErr != nil {
-		log.WithFields(log.Fields{
-			"error":    privateKeyErr,
-			"filename": expandedPrivateKey,
-		}).Error("Could not parse private key")
+		log.Error().
+			Err(privateKeyErr).
+			Str("filename", expandedPrivateKey).
+			Msg("Could not parse private key")
 		return fmt.Errorf("Could not parse private key: %w", err)
 	}
 
 	agentAuthSock := os.Getenv("SSH_AUTH_SOCK")
 	if agentAuthSock == "" {
-		log.WithFields(log.Fields{
-			"error":    privateKeyErr,
-			"filename": expandedPrivateKey,
-		}).Error("SSH_AUTH_SOCK environment variable empty")
+		log.Error().
+			Err(privateKeyErr).
+			Str("filename", expandedPrivateKey).
+			Msg("SSH_AUTH_SOCK environment variable empty")
 		return errors.New("SSH_AUTH_SOCK environment variable empty")
 	}
 	agentSock, err := net.Dial("unix", agentAuthSock)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"error":    privateKeyErr,
-			"filename": expandedPrivateKey,
-		}).Error("ssh-agent is not working on SSH_AUTH_SOCK socket")
+		log.Error().
+			Err(err).
+			Str("filename", expandedPrivateKey).
+			Msg("ssh-agent is not working on SSH_AUTH_SOCK socket")
 		return fmt.Errorf("ssh-agent is not working on SSH_AUTH_SOCK socket: %w", err)
 	}
 	defer agentSock.Close()
@@ -119,10 +119,10 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 	lifetime := t.Sub(time.Now()).Seconds()
 
 	if privateKey == nil {
-		log.WithFields(log.Fields{
-			"error":    privateKeyErr,
-			"filename": expandedPrivateKey,
-		}).Error("Unknown private key format")
+		log.Error().
+			Err(privateKeyErr).
+			Str("filename", expandedPrivateKey).
+			Msg("Unknown private key format")
 		return errors.New("Unknown private key format")
 	}
 
@@ -135,18 +135,18 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 
 	err = agentKeyring.Add(pubcert)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"error":    err,
-			"filename": expandedPrivateKey,
-		}).Error("Unable to add cert to ssh agent")
+		log.Error().
+			Err(err).
+			Str("filename", expandedPrivateKey).
+			Msg("Unable to add cert to ssh agent")
 		return fmt.Errorf("Unable to add cert to ssh agent: %w", err)
 	}
 
-	log.WithFields(log.Fields{
-		"cert ID":     cert.KeyId,
-		"private key": expandedPrivateKey,
-		"valid until": time.Unix(int64(cert.ValidBefore), 0).UTC(),
-	}).Info("Cetificate successfully added to ssh-agent")
+	log.Info().
+		Str("cert_id", cert.KeyId).
+		Str("private_key", expandedPrivateKey).
+		Time("valid_until", time.Unix(int64(cert.ValidBefore), 0).UTC()).
+		Msg("Cetificate successfully added to ssh-agent")
 
 	return nil
 }

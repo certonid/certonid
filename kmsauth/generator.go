@@ -14,7 +14,7 @@ import (
 
 	"github.com/certonid/certonid/adapters/awscloud"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 // TokenGenerator generates a token
@@ -90,7 +90,7 @@ func (tg *TokenGenerator) getCachedToken() (*Token, error) {
 	// Compare token cache with current params
 	ok := reflect.DeepEqual(tokenCache.AuthContext, tg.AuthContext.GetKMSContext())
 	if !ok {
-		log.Debug("Cached token invalid")
+		log.Debug().Msg("Cached token invalid")
 		return nil, nil
 	}
 	now := time.Now().UTC()

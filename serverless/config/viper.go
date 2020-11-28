@@ -11,8 +11,9 @@ import (
 // InitConfig initialize config for serverless function
 func InitConfig() {
 	viper.SetConfigType("yaml")
-	viper.SetEnvPrefix(utils.EnvPrefix)
 	viper.AutomaticEnv()
+	viper.SetEnvPrefix(utils.EnvPrefix)
+	viper.SetEnvKeyReplacer(utils.EnvStrReplacer)
 
 	cfgFile, ok := utils.GetENV("CONFIG")
 	// Don't forget to read config either from cfgFile or from home directory!

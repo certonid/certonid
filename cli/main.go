@@ -2,14 +2,16 @@ package main
 
 import (
 	"os"
+	"time"
 
 	"github.com/certonid/certonid/cli/cmd"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 func init() {
-	log.SetOutput(os.Stdout)
-	log.SetLevel(log.InfoLevel)
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339})
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 }
 
 func main() {
