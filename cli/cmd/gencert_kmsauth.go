@@ -6,17 +6,17 @@ import (
 
 	"github.com/certonid/certonid/adapters/awscloud"
 	"github.com/certonid/certonid/kmsauth"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 // GenerateAwsKMSAuthToken return kmsauth token
 func GenerateAwsKMSAuthToken(kmsAuthKeyID, kmsAuthServiceID, kmsAuthTokenValidUntil, awsProfile, awsRegion string) (string, error) {
 	validUntil, err := time.ParseDuration(kmsAuthTokenValidUntil)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"error": err,
-			"value": kmsAuthTokenValidUntil,
-		}).Error("Invalid KMSAuth ValidUntil value")
+		log.Error().
+			Err(err).
+			Str("value", kmsAuthTokenValidUntil).
+			Msg("Invalid KMSAuth ValidUntil value")
 		return "", fmt.Errorf("Invalid KMSAuth ValidUntil value: %w", err)
 	}
 

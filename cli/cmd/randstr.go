@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/certonid/certonid/utils"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
@@ -24,9 +24,9 @@ var (
 				er(err)
 			}
 
-			log.WithFields(log.Fields{
-				"CERTONID_SYMMETRIC_KEY": text,
-			}).Info("Successfully generated random string")
+			log.Info().
+				Str("CERTONID_SYMMETRIC_KEY", text).
+				Msg("Successfully generated random string")
 		},
 	}
 )

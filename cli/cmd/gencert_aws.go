@@ -7,7 +7,7 @@ import (
 
 	"github.com/certonid/certonid/adapters/awscloud"
 	"github.com/certonid/certonid/proto"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 func genCertFromAws(awsProfile, awsRegion, awsFuncName string, keyData []byte, kmsauthToken string, timeout int) ([]byte, error) {
@@ -45,9 +45,9 @@ func genCertFromAws(awsProfile, awsRegion, awsFuncName string, keyData []byte, k
 	}
 
 	if len(resp.Cert) == 0 {
-		log.WithFields(log.Fields{
-			"response": string(invokePayload),
-		}).Error("Error to execute serverless function")
+		log.Error().
+			Str("response", string(invokePayload)).
+			Msg("Error to execute serverless function")
 		return []byte{}, errors.New("Function not return cert in result")
 	}
 

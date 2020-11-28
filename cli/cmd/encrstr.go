@@ -5,7 +5,7 @@ import (
 
 	"github.com/certonid/certonid/adapters/awscloud"
 	"github.com/certonid/certonid/utils"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
@@ -38,9 +38,9 @@ var (
 				er(err)
 			}
 
-			log.WithFields(log.Fields{
-				"text": encText,
-			}).Info("Successfully encrypted")
+			log.Info().
+				Str("text", encText).
+				Msg("Successfully encrypted")
 		},
 	}
 )

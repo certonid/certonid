@@ -3,10 +3,14 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
+	"time"
 
 	"github.com/certonid/certonid/cli/version"
+	"github.com/certonid/certonid/utils"
 	homedir "github.com/mitchellh/go-homedir"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -41,38 +45,38 @@ func init() {
 }
 
 func initLogging() {
-	log.SetFormatter(&log.TextFormatter{
-		DisableColors: false,
-		FullTimestamp: true,
-	})
-	log.SetOutput(os.Stdout)
+	if viper.IsSet("logger.format") && strings.ToLower(viper.GetString("logger.format")) == "json" {
+		log.Logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
+	} else {
+		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339})
+	}
 
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	if debugLogging {
-		log.SetLevel(log.DebugLevel)
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
 		return
 	}
 
 	if viper.IsSet("logger.level") {
-		var level, err = log.ParseLevel(viper.GetString("logger.level"))
+		var level, err = zerolog.ParseLevel(viper.GetString("logger.level"))
 		if err == nil {
-			log.SetLevel(level)
+			zerolog.SetGlobalLevel(level)
 		} else {
-			log.WithFields(log.Fields{
-				"error": err,
-				"level": viper.GetString("logger.level"),
-			}).Info("Invalid log level")
-			log.SetLevel(log.InfoLevel)
+			log.Warn().
+				Err(err).
+				Str("level", viper.GetString("logger.level")).
+				Msg("Invalid log level")
 		}
 		return
 	}
-
-	log.SetLevel(log.InfoLevel)
 }
 
 func initConfig() {
 	viper.SetConfigType("yaml")
-	viper.SetEnvPrefix("certonid")
 	viper.AutomaticEnv()
+	viper.SetEnvPrefix(utils.EnvPrefix)
+	viper.SetEnvKeyReplacer(utils.EnvStrReplacer)
+
 	// Don't forget to read config either from cfgFile or from home directory!
 	if cfgFile != "" {
 		// Use config file from the flag.
@@ -92,9 +96,9 @@ func initConfig() {
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
-			log.WithFields(log.Fields{
-				"error": err,
-			}).Error("Fatal error in config file")
+			log.Error().
+				Err(err).
+				Msg("Fatal error in config file")
 			os.Exit(1)
 		}
 
@@ -105,7 +109,9 @@ func initConfig() {
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		log.Error(err)
+		log.Error().
+			Err(err).
+			Msg("Execute error")
 		os.Exit(1)
 	}
 }

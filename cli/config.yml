@@ -1,4 +1,5 @@
 cache_path: ~/.certonid_cache
+
 certificates:
   example:
     public_key_path: ~/.ssh/id_ed25519.pub
@@ -17,3 +18,4 @@ certificates:
     - region: eu-central-1
     - region: eu-west-1
       function_name: BackupBressFunction
+

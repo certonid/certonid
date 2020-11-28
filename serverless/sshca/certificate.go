@@ -10,7 +10,7 @@ import (
 	"github.com/certonid/certonid/kmsauth"
 	"github.com/certonid/certonid/serverless/signer"
 	"github.com/certonid/certonid/utils"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 )
 
@@ -32,9 +32,9 @@ func getCAPassphrase() ([]byte, error) {
 
 	encryptedPassphrase := viper.GetString("ca.passphrase.content")
 
-	log.WithFields(log.Fields{
-		"encryptedPassphrase": encryptedPassphrase,
-	}).Debug("Decrypting encrypted passphrase")
+	log.Debug().
+		Str("encryptedPassphrase", encryptedPassphrase).
+		Msg("Decrypting encrypted passphrase")
 
 	switch strings.ToLower(viper.GetString("ca.passphrase.encryption")) {
 	case "aws_kms":
@@ -55,11 +55,11 @@ func getCAPassphrase() ([]byte, error) {
 		passphrase, err = utils.SymmetricDecrypt(encryptedPassphrase)
 	}
 
-	log.WithFields(log.Fields{
-		"type":                viper.GetString("ca.passphrase.encryption"),
-		"encryptedPassphrase": encryptedPassphrase,
-		"error":               err,
-	}).Debug("Decrypted encrypted passphrase")
+	log.Debug().
+		Err(err).
+		Str("type", viper.GetString("ca.passphrase.encryption")).
+		Str("encryptedPassphrase", encryptedPassphrase).
+		Msg("Decrypted encrypted passphrase")
 
 	return passphrase, err
 }
@@ -72,15 +72,15 @@ func decryptCAContent(data []byte) ([]byte, error) {
 
 	// file is not encrypted
 	if !viper.IsSet("ca.encrypted") {
-		log.Debug("CA key is not encrypted")
+		log.Debug().Msg("CA key is not encrypted")
 		return data, nil
 	}
 
 	encryptedContent := string(data)
 
-	log.WithFields(log.Fields{
-		"encryptedContent": encryptedContent,
-	}).Debug("Decrypting encrypted CA key")
+	log.Debug().
+		Str("encryptedContent", encryptedContent).
+		Msg("Decrypting encrypted CA key")
 
 	switch strings.ToLower(viper.GetString("ca.encrypted.encryption")) {
 	case "aws_kms":
@@ -101,11 +101,11 @@ func decryptCAContent(data []byte) ([]byte, error) {
 		decryptedContent, decryptedErr = utils.SymmetricDecrypt(encryptedContent)
 	}
 
-	log.WithFields(log.Fields{
-		"type":             viper.GetString("ca.encrypted.encryption"),
-		"encryptedContent": encryptedContent,
-		"error":            decryptedErr,
-	}).Debug("Decrypted encrypted CA key")
+	log.Debug().
+		Err(decryptedErr).
+		Str("type", viper.GetString("ca.encrypted.encryption")).
+		Str("encryptedContent", encryptedContent).
+		Msg("Decrypted encrypted CA key")
 
 	return decryptedContent, decryptedErr
 }
@@ -116,9 +116,9 @@ func getCAFromStorage() ([]byte, error) {
 		certData []byte
 	)
 
-	log.WithFields(log.Fields{
-		"type": viper.GetString("ca.storage"),
-	}).Debug("Reading CA file content")
+	log.Debug().
+		Str("type", viper.GetString("ca.storage")).
+		Msg("Reading CA file content")
 
 	switch strings.ToLower(viper.GetString("ca.storage")) {
 	case "aws_s3":
@@ -141,16 +141,16 @@ func validateKMSAuthToken(token, username string) error {
 
 	validUntil, err := time.ParseDuration(viper.GetString("kmsauth.max_valid_until"))
 	if err != nil {
-		log.WithFields(log.Fields{
-			"error": err,
-			"value": validUntil,
-		}).Error("Invalid KMSAuth ValidUntil value")
+		log.Error().
+			Err(err).
+			Str("value", viper.GetString("kmsauth.max_valid_until")).
+			Msg("Invalid KMSAuth ValidUntil value")
 		return fmt.Errorf("Invalid KMSAuth ValidUntil value: %w", err)
 	}
 
-	log.WithFields(log.Fields{
-		"validUntil": validUntil,
-	}).Debug("Validate KMSAuth TTL")
+	log.Debug().
+		Dur("valid until", validUntil).
+		Msg("Validate KMSAuth TTL")
 
 	if viper.IsSet("kmsauth.region") {
 		region = viper.GetString("kmsauth.region")
@@ -164,9 +164,11 @@ func validateKMSAuthToken(token, username string) error {
 		UserType: "user",
 	}
 
-	log.WithFields(log.Fields{
-		"kmsauthContext": kmsauthContext,
-	}).Debug("KMSAuth context")
+	log.Debug().
+		Str("From", username).
+		Str("To", viper.GetString("kmsauth.service_id")).
+		Str("UserType", "user").
+		Msg("KMSAuth context")
 
 	tv := kmsauth.NewTokenValidator(
 		viper.GetString("kmsauth.key_id"),
@@ -189,32 +191,32 @@ func GenerateCetrificate(req *CertificateRequest) (string, error) {
 
 	validUntil, err = time.ParseDuration(req.ValidUntil)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"error": err,
-			"value": req.ValidUntil,
-		}).Error("Invalid ValidUntil value")
+		log.Error().
+			Err(err).
+			Str("value", req.ValidUntil).
+			Msg("Invalid ValidUntil value")
 		return "", fmt.Errorf("Invalid ValidUntil value: %w", err)
 	}
 
-	log.WithFields(log.Fields{
-		"validUntil": validUntil,
-	}).Debug("Get TTL information for certificate")
+	log.Debug().
+		Dur("valid until", validUntil).
+		Msg("Get TTL information for certificate")
 
 	certData, err = getCAFromStorage()
 	if err != nil {
-		log.WithFields(log.Fields{
-			"error":    err,
-			"filepath": viper.GetString("ca.path"),
-		}).Error("Error to read CA file")
+		log.Error().
+			Err(err).
+			Str("filepath", viper.GetString("ca.path")).
+			Msg("Error to read CA file")
 		return "", fmt.Errorf("Error to read CA file from storage: %w", err)
 	}
 
 	passphrase, err = getCAPassphrase()
 	if err != nil {
-		log.WithFields(log.Fields{
-			"error":      err,
-			"encryption": viper.GetString("ca.passphrase.encryption"),
-		}).Error("Error to decrypt passphrase for CA key")
+		log.Error().
+			Err(err).
+			Str("encryption", viper.GetString("ca.passphrase.encryption")).
+			Msg("Error to decrypt passphrase for CA key")
 
 		return "", fmt.Errorf("Error to decrypt passphrase for CA key: %w", err)
 	}
@@ -231,9 +233,9 @@ func GenerateCetrificate(req *CertificateRequest) (string, error) {
 
 	certSigner, err := signer.New(certData, passphrase)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"error": err,
-		}).Error("Error to parse CA key")
+		log.Error().
+			Err(err).
+			Msg("Error to parse CA key")
 		return "", fmt.Errorf("Error to parse CA key: %w", err)
 	}
 
@@ -245,9 +247,9 @@ func GenerateCetrificate(req *CertificateRequest) (string, error) {
 		ValidUntil: time.Now().UTC().Add(validUntil),
 	})
 	if err != nil {
-		log.WithFields(log.Fields{
-			"error": err,
-		}).Error("Error to sign user key")
+		log.Error().
+			Err(err).
+			Msg("Error to sign user key")
 		return "", fmt.Errorf("Error to sign user key: %w", err)
 	}
 

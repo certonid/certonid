@@ -3,12 +3,22 @@ package cmd
 import (
 	"os"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
 func er(msg interface{}) {
-	log.Error(msg)
+	resError, ok := msg.(*error)
+
+	if ok {
+		log.Error().
+			Err(*resError).
+			Msg("Error")
+	} else {
+		log.Error().
+			Msgf("Error %+v", msg)
+	}
+
 	os.Exit(1)
 }
 
