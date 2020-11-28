@@ -143,9 +143,9 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 	}
 
 	log.Info().
-		Str("cert ID", cert.KeyId).
-		Str("private key", expandedPrivateKey).
-		Time("valid until", time.Unix(int64(cert.ValidBefore), 0).UTC()).
+		Str("cert_id", cert.KeyId).
+		Str("private_key", expandedPrivateKey).
+		Time("valid_until", time.Unix(int64(cert.ValidBefore), 0).UTC()).
 		Msg("Cetificate successfully added to ssh-agent")
 
 	return nil

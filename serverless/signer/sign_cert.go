@@ -168,7 +168,7 @@ func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
 		Str("ID", cert.KeyId).
 		Str("principals", strings.Join(cert.ValidPrincipals, ",")).
 		Str("fingerprint", ssh.FingerprintSHA256(pubkey)).
-		Time("valid until", time.Unix(int64(cert.ValidBefore), 0).UTC()).
+		Time("valid_until", time.Unix(int64(cert.ValidBefore), 0).UTC()).
 		Msg("Successfully issued cert")
 
 	return cert, nil

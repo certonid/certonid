@@ -75,8 +75,8 @@ func genCertAWSFailover(keyData []byte) ([]byte, error) {
 					Str("kmsauth_key_id", kmsAuthKeyID).
 					Str("kmsauth_service_id", kmsAuthServiceID).
 					Str("valid_until", kmsValidUntil).
-					Str("profile", awsProfile).
-					Str("region", awsRegion).
+					Str("aws_profile", awsProfile).
+					Str("aws_region", awsRegion).
 					Msg("Error to generate kmsauth token on failover")
 				continue
 			}

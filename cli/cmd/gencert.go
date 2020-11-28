@@ -146,7 +146,7 @@ var (
 			log.Info().
 				Str("public_key", genPublicKeyPath).
 				Str("certificate", genCertPath).
-				Time("valid until", time.Unix(int64(cert.ValidBefore), 0).UTC()).
+				Time("valid_until", time.Unix(int64(cert.ValidBefore), 0).UTC()).
 				Msg("Certificate generated and stored")
 
 			genPostScripts(cert)

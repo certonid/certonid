@@ -58,7 +58,7 @@ func getCAPassphrase() ([]byte, error) {
 	log.Debug().
 		Err(err).
 		Str("type", viper.GetString("ca.passphrase.encryption")).
-		Str("encryptedPassphrase", encryptedPassphrase).
+		Str("encrypted_passphrase", encryptedPassphrase).
 		Msg("Decrypted encrypted passphrase")
 
 	return passphrase, err
@@ -79,7 +79,7 @@ func decryptCAContent(data []byte) ([]byte, error) {
 	encryptedContent := string(data)
 
 	log.Debug().
-		Str("encryptedContent", encryptedContent).
+		Str("encrypted_content", encryptedContent).
 		Msg("Decrypting encrypted CA key")
 
 	switch strings.ToLower(viper.GetString("ca.encrypted.encryption")) {
@@ -104,7 +104,7 @@ func decryptCAContent(data []byte) ([]byte, error) {
 	log.Debug().
 		Err(decryptedErr).
 		Str("type", viper.GetString("ca.encrypted.encryption")).
-		Str("encryptedContent", encryptedContent).
+		Str("encrypted_content", encryptedContent).
 		Msg("Decrypted encrypted CA key")
 
 	return decryptedContent, decryptedErr
@@ -149,7 +149,7 @@ func validateKMSAuthToken(token, username string) error {
 	}
 
 	log.Debug().
-		Dur("valid until", validUntil).
+		Dur("valid_until", validUntil).
 		Msg("Validate KMSAuth TTL")
 
 	if viper.IsSet("kmsauth.region") {
@@ -165,9 +165,9 @@ func validateKMSAuthToken(token, username string) error {
 	}
 
 	log.Debug().
-		Str("From", username).
-		Str("To", viper.GetString("kmsauth.service_id")).
-		Str("UserType", "user").
+		Str("from", username).
+		Str("to", viper.GetString("kmsauth.service_id")).
+		Str("user_type", "user").
 		Msg("KMSAuth context")
 
 	tv := kmsauth.NewTokenValidator(

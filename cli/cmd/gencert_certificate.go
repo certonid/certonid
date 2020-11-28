@@ -68,7 +68,7 @@ func genIsCertValidInCache() (bool, *ssh.Certificate) {
 		if isFresh {
 			log.Info().
 				Str("certificate", genCertPath).
-				Time("valid until", time.Unix(int64(cachedCert.ValidBefore), 0).UTC()).
+				Time("valid_until", time.Unix(int64(cachedCert.ValidBefore), 0).UTC()).
 				Msg("Current certificate still valid. Exiting...")
 			return true, cachedCert
 		}
