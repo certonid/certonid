@@ -69,6 +69,7 @@ func genCertAWSFailover(keyData []byte) ([]byte, error) {
 				kmsValidUntil,
 				awsProfile,
 				awsRegion,
+				true,
 			)
 			if err != nil {
 				log.Warn().

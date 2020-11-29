@@ -10,7 +10,7 @@ import (
 )
 
 // GenerateAwsKMSAuthToken return kmsauth token
-func GenerateAwsKMSAuthToken(kmsAuthKeyID, kmsAuthServiceID, kmsAuthTokenValidUntil, awsProfile, awsRegion string) (string, error) {
+func GenerateAwsKMSAuthToken(kmsAuthKeyID, kmsAuthServiceID, kmsAuthTokenValidUntil, awsProfile, awsRegion string, skipCache bool) (string, error) {
 	validUntil, err := time.ParseDuration(kmsAuthTokenValidUntil)
 	if err != nil {
 		log.Error().
@@ -37,7 +37,7 @@ func GenerateAwsKMSAuthToken(kmsAuthKeyID, kmsAuthServiceID, kmsAuthTokenValidUn
 		kmsClient,
 	)
 
-	encryptedToken, err := tg.GetEncryptedToken()
+	encryptedToken, err := tg.GetEncryptedToken(skipCache)
 
 	if err != nil {
 		return "", fmt.Errorf("Error to generate kmsauth token: %w", err)

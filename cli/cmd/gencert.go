@@ -98,6 +98,7 @@ var (
 						genKMSAuthTokenValidUntil,
 						genAwsProfile,
 						genAwsRegion,
+						false,
 					)
 					if err != nil {
 						er(err)

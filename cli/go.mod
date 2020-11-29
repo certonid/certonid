@@ -5,7 +5,7 @@ go 1.12
 require (
 	github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
 	github.com/aws/aws-sdk-go v1.35.35 // indirect
-	github.com/certonid/certonid v0.0.0-20201128135255-6ce4cf131294
+	github.com/certonid/certonid v0.0.0-20201129212805-86f685e2bed9
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
