@@ -124,21 +124,23 @@ func (tg *TokenGenerator) cacheToken(tokenCache *TokenCache) error {
 }
 
 // getToken gets a token
-func (tg *TokenGenerator) getToken() (*Token, error) {
-	token, err := tg.getCachedToken()
-	if err != nil {
-		return nil, err
-	}
-	// If we could not find a token then return a new one
-	if token != nil {
-		return token, err
+func (tg *TokenGenerator) getToken(skipCache bool) (*Token, error) {
+	if !skipCache {
+		token, err := tg.getCachedToken()
+		if err != nil {
+			return nil, err
+		}
+		// If we could not find a token then return a new one
+		if token != nil {
+			return token, err
+		}
 	}
 	return NewToken(tg.TokenLifetime), nil
 }
 
 // GetEncryptedToken returns the encrypted kmsauth token
-func (tg *TokenGenerator) GetEncryptedToken() (*EncryptedToken, error) {
-	token, err := tg.getToken()
+func (tg *TokenGenerator) GetEncryptedToken(skipCache bool) (*EncryptedToken, error) {
+	token, err := tg.getToken(skipCache)
 	if err != nil {
 		return nil, err
 	}
@@ -160,14 +162,17 @@ func (tg *TokenGenerator) GetEncryptedToken() (*EncryptedToken, error) {
 
 	encryptedToken := EncryptedToken(base64.StdEncoding.EncodeToString(encryptedData))
 
-	tokenCache := &TokenCache{
-		Token:          *token,
-		EncryptedToken: encryptedToken,
-		AuthContext:    tg.AuthContext.GetKMSContext(),
+	if !skipCache {
+		tokenCache := &TokenCache{
+			Token:          *token,
+			EncryptedToken: encryptedToken,
+			AuthContext:    tg.AuthContext.GetKMSContext(),
+		}
+		err = tg.cacheToken(tokenCache)
+		if err != nil {
+			return nil, err
+		}
 	}
-	err = tg.cacheToken(tokenCache)
-	if err != nil {
-		return nil, err
-	}
+
 	return &encryptedToken, err
 }
