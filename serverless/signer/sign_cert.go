@@ -2,12 +2,12 @@ package signer
 
 import (
 	"crypto/rand"
+	"errors"
 	"fmt"
 	"io"
 	"strings"
 	"time"
 
-	"github.com/ScaleFT/sshkeys"
 	"github.com/certonid/certonid/adapters/awscloud"
 	"github.com/certonid/certonid/utils"
 	"github.com/rs/zerolog/log"
@@ -28,6 +28,31 @@ var (
 const (
 	timeSkew = time.Duration(5) * time.Minute // to protect against time-skew issues we potentially generate a certificate timeSkew duration
 )
+
+type sshAlgorithmSigner struct {
+	algorithm string
+	signer    ssh.AlgorithmSigner
+}
+
+func (s *sshAlgorithmSigner) PublicKey() ssh.PublicKey {
+	return s.signer.PublicKey()
+}
+
+func (s *sshAlgorithmSigner) Sign(rand io.Reader, data []byte) (*ssh.Signature, error) {
+	return s.signer.SignWithAlgorithm(rand, data, s.algorithm)
+}
+
+func newAlgorithmSignerFromSigner(signer ssh.Signer, algorithm string) (ssh.Signer, error) {
+	algorithmSigner, ok := signer.(ssh.AlgorithmSigner)
+	if !ok {
+		return nil, errors.New("unable to cast to ssh.AlgorithmSigner")
+	}
+	s := sshAlgorithmSigner{
+		signer:    algorithmSigner,
+		algorithm: algorithm,
+	}
+	return &s, nil
+}
 
 // KeySigner does the work of signing a ssh public key with the CA key.
 type KeySigner struct {
@@ -159,8 +184,16 @@ func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
 	setCriticalOptions(cert, req)
 	// extensions
 	setExtensions(cert, req)
+	// use rsa-sha2-256 for sign keys
+	sshAlgorithmSigner, err := newAlgorithmSignerFromSigner(s.ca, ssh.SigAlgoRSASHA2256)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("Error to initialize rsa-sha2-256 signer")
+		return nil, fmt.Errorf("Error to initialize rsa-sha2-256 signer: %w", err)
+	}
 	// sign client key
-	if err := cert.SignCert(certRandomReader(), s.ca); err != nil {
+	if err := cert.SignCert(certRandomReader(), sshAlgorithmSigner); err != nil {
 		return nil, fmt.Errorf("Error sign public key: %w", err)
 	}
 
@@ -188,7 +221,7 @@ func (s *KeySigner) SignKey(req *SignRequest) (string, error) {
 
 // New unseal CA key by passphrase
 func New(pemBytes, passPhrase []byte) (*KeySigner, error) {
-	key, err := sshkeys.ParseEncryptedPrivateKey(pemBytes, passPhrase)
+	key, err := ssh.ParsePrivateKeyWithPassphrase(pemBytes, passPhrase)
 	if err != nil {
 		return nil, fmt.Errorf("Error parse private key: %w", err)
 	}
