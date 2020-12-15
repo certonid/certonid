@@ -17,6 +17,10 @@ Consists of two parts: CLI and serverless function.
  - [[English] Certonid — the SSH Certificate Authority Deployed on AWS Lambda](https://blog.mailtrap.io/certonid/)
  - [[Russian] Certonid — SSH центр сертификации, который работает на AWS Lambda](https://dou.ua/lenta/articles/certonid-ssh/)
 
+## AWS Terraform module
+
+To simplify setup on AWS, you can use [Certonid AWS Terraform module](https://registry.terraform.io/modules/certonid/certonid/aws/latest)
+
 ## Dev build
 
 ```shell
