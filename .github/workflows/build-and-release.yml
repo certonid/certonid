@@ -100,16 +100,6 @@ jobs:
           asset_name: certonid.darwin.amd64
           asset_content_type: application/octet-stream
 
-      - name: Upload darwin arm binary
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: certonid.darwin.arm
-          asset_name: certonid.darwin.arm
-          asset_content_type: application/octet-stream
-
       - name: Upload windows amd64 binary
         uses: actions/upload-release-asset@v1
         env:
@@ -118,16 +108,6 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: certonid.windows.amd64.exe
           asset_name: certonid.windows.amd64.exe
-          asset_content_type: application/octet-stream
-
-      - name: Upload windows arm binary
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: certonid.windows.arm.exe
-          asset_name: certonid.windows.arm.exe
           asset_content_type: application/octet-stream
 
       - name: Upload serverless binary
