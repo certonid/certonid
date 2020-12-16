@@ -12,5 +12,5 @@ source ./scripts/build/.variables
 echo "Building statically linked certonid"
 export CGO_ENABLED=0
 
-gox -os="linux darwin windows" -arch="amd64" -output="build/certonid.{{.OS}}.{{.Arch}}" -ldflags "${LDFLAGS}" -verbose ./cli
+gox -os="linux darwin windows" -arch="amd64 arm" -output="build/certonid.{{.OS}}.{{.Arch}}" -ldflags "${LDFLAGS}" -verbose ./cli
 gox -os="linux" -arch="amd64" -output="build/serverless.{{.OS}}.{{.Arch}}" -ldflags "${LDFLAGS}" -verbose ./serverless

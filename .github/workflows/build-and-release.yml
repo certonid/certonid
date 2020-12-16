@@ -70,7 +70,7 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload linux binary
+      - name: Upload linux amd64 binary
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -80,7 +80,17 @@ jobs:
           asset_name: certonid.linux.amd64
           asset_content_type: application/octet-stream
 
-      - name: Upload darwin binary
+      - name: Upload linux arm binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: certonid.linux.arm
+          asset_name: certonid.linux.arm
+          asset_content_type: application/octet-stream
+
+      - name: Upload darwin amd64 binary
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -90,7 +100,17 @@ jobs:
           asset_name: certonid.darwin.amd64
           asset_content_type: application/octet-stream
 
-      - name: Upload windows binary
+      - name: Upload darwin arm binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: certonid.darwin.arm
+          asset_name: certonid.darwin.arm
+          asset_content_type: application/octet-stream
+
+      - name: Upload windows amd64 binary
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -98,6 +118,16 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: certonid.windows.amd64.exe
           asset_name: certonid.windows.amd64.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload windows arm binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: certonid.windows.arm.exe
+          asset_name: certonid.windows.arm.exe
           asset_content_type: application/octet-stream
 
       - name: Upload serverless binary
