@@ -38,8 +38,4 @@ $ go build -o certonid main.go
  - [ ] Website and video
  - [ ] Use serverless framework to automate deploy and setup
  - [ ] Support AWS S3 for SSH CA key
- - [ ] Support Google Cloud functions
- - [ ] Support Google Cloud Storage for SSH CA key
- - [ ] Support Azure Functions
- - [ ] Support Apache OpenWhisk
 
