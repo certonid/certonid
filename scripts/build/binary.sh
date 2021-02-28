@@ -14,6 +14,6 @@ cwd=$(pwd)
 echo "Building statically linked certonid"
 export CGO_ENABLED=0
 # cli
-cd ${cwd}/cli && gox -osarch="linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64" -output="build/certonid.{{.OS}}.{{.Arch}}" -ldflags "${LDFLAGS}" -verbose
+cd ${cwd}/cli && gox -osarch="linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64" -output="${cwd}/build/certonid.{{.OS}}.{{.Arch}}" -ldflags "${LDFLAGS}" -verbose
 # serverless
-cd ${cwd}/serverless && gox -osarch="linux/amd64" -output="build/serverless.{{.OS}}.{{.Arch}}" -ldflags "${LDFLAGS}" -verbose
+cd ${cwd}/serverless && gox -osarch="linux/amd64" -output="${cwd}/build/serverless.{{.OS}}.{{.Arch}}" -ldflags "${LDFLAGS}" -verbose
