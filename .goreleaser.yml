@@ -1,0 +1,69 @@
+# This is an example .goreleaser.yml file with some sane defaults.
+# Make sure to check the documentation at http://goreleaser.com
+builds:
+  - id: "certonid-build"
+    dir: cli
+    binary: certonid
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X github.com/certonid/certonid/cli/version.Version={{.Version}}
+      - -X github.com/certonid/certonid/cli/version.GitCommit={{.Commit}}
+      - -X github.com/certonid/certonid/cli/version.BuildTime={{.Date}}
+  - id: "serverless-build"
+    dir: serverless
+    binary: serverless
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X github.com/certonid/certonid/cli/version.Version={{.Version}}
+      - -X github.com/certonid/certonid/cli/version.GitCommit={{.Commit}}
+      - -X github.com/certonid/certonid/cli/version.BuildTime={{.Date}}
+archives:
+  - id: certonid-archive
+    builds:
+      - certonid-build
+    name_template: "certonid_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+    format_overrides:
+      - goos: windows
+        format: zip
+  - id: serverless-archive
+    builds:
+      - serverless-build
+    name_template: "serverless_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'

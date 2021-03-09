@@ -23,7 +23,7 @@ var (
 var rootCmd = &cobra.Command{
 	Use:                   "certonid [OPTIONS] COMMAND [ARG...]",
 	Short:                 "Certonid is a Serverless SSH Certificate Authority",
-	Version:               fmt.Sprintf("%s, build %s", version.Version, version.GitCommit),
+	Version:               fmt.Sprintf("%s, date %s, build %s", version.Version, version.BuildTime, version.GitCommit),
 	SilenceUsage:          true,
 	SilenceErrors:         true,
 	DisableFlagsInUseLine: true,

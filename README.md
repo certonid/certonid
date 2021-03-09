@@ -26,11 +26,9 @@ To simplify setup on AWS, you can use [Certonid AWS Terraform module](https://re
 ## Dev build
 
 ```shell
-$ cd serverless
-$ GOOS=linux go build -o serverless main.go
+$ cd serverless && GOOS=linux go build -o serverless main.go
 $ cd ..
-$ cd cli
-$ go build -o certonid main.go
+$ cd cli && go build -o certonid main.go
 ```
 
 ## Roadmap

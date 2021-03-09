@@ -1,22 +1,26 @@
-name: "Build & Release"
+name: "Build and Release"
 
-on: [push]
+on: push
 
 env:
   GO_VERSION: 1.16
 
 jobs:
-  build:
-    name: "Build"
+  build-and-release:
+    name: "Build and Release"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-      - uses: actions/setup-go@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2
         with:
           go-version: ${{ env.GO_VERSION }}
 
-      - name: Restore go modules cache
+      - name: Cache Go modules
         uses: actions/cache@v1
         with:
           path: ~/go/pkg/mod
@@ -25,107 +29,25 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: CLI tests
-        run: go test ./...
+        run: |
+          go mod tidy
+          go test -v ./...
         working-directory: cli
 
       - name: Serverless tests
-        run: go test ./...
+        run: |
+          go mod tidy
+          go test -v ./...
         working-directory: serverless
 
-      - name: Get gox
-        run: go get github.com/mitchellh/gox
-
-      - name: Get the version
-        run: echo "CERTONID_VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
-
-      - name: Build
-        run: ./scripts/build/binary.sh
-
-      - name: Upload binary
-        uses: actions/upload-artifact@v2
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        if: success() && startsWith(github.ref, 'refs/tags/')
         with:
-          name: binaries
-          path: build/
-          if-no-files-found: error
-
-  release:
-    name: "Release"
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
-    needs: [build]
-    steps:
-      - name: Download linux binary
-        uses: actions/download-artifact@v2
-        with:
-          name: binaries
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+          version: latest
+          args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
 
-      - name: Upload linux amd64 binary
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: certonid.linux.amd64
-          asset_name: certonid.linux.amd64
-          asset_content_type: application/octet-stream
 
-      - name: Upload linux arm64 binary
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: certonid.linux.arm64
-          asset_name: certonid.linux.arm64
-          asset_content_type: application/octet-stream
 
-      - name: Upload darwin amd64 binary
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: certonid.darwin.amd64
-          asset_name: certonid.darwin.amd64
-          asset_content_type: application/octet-stream
-
-      - name: Upload darwin arm64 binary
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: certonid.darwin.arm64
-          asset_name: certonid.darwin.arm64
-          asset_content_type: application/octet-stream
-
-      - name: Upload windows amd64 binary
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: certonid.windows.amd64.exe
-          asset_name: certonid.windows.amd64.exe
-          asset_content_type: application/octet-stream
-
-      - name: Upload serverless binary
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: serverless.linux.amd64
-          asset_name: serverless.linux.amd64
-          asset_content_type: application/octet-stream
