@@ -23,6 +23,17 @@ Consists of two parts: CLI and serverless function.
 
 To simplify setup on AWS, you can use [Certonid AWS Terraform module](https://registry.terraform.io/modules/certonid/certonid/aws/latest)
 
+## Binaries security
+
+All archives signed by gpg key. You can check its by downloading with archive it `.sig` file and verify signature (example with linux x86 cli archive):
+
+```bash
+$ gpg --verify certonid_0.8.2_Linux_x86_64.tar.gz.sig certonid_0.8.2_Linux_x86_64.tar.gz
+gpg: Signature made Wed Mar 10 11:02:40 2021 EET
+gpg:                using RSA key 6894D468143A22469D6603D1E44200219869E71E
+gpg: Good signature from "leopard apps <leopard.not.a+apps@gmail.com>"
+```
+
 ## Dev build
 
 ```shell
