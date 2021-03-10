@@ -61,7 +61,7 @@ checksum:
 snapshot:
   name_template: "{{ .Tag }}"
 signs:
-  - artifacts: checksum
+  - artifacts: all
     args: ["--batch", "-u", "{{ .Env.GPG_FINGERPRINT }}", "--output", "${signature}", "--detach-sign", "${artifact}"]
 changelog:
   sort: asc
