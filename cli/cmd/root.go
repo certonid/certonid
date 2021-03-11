@@ -32,7 +32,12 @@ var rootCmd = &cobra.Command{
 		if len(args) == 0 {
 			return showHelp(cmd, args)
 		}
-		return fmt.Errorf("certonid: '%s' is not a certonid command.\nSee 'certonid --help'", args[0])
+
+		suggestions := cmd.SuggestionsFor(args[0])
+		if len(suggestions) > 0 {
+			return fmt.Errorf("ERROR: unknown command '%s' for '%s'. Did you mean '%s' ?", args[0], cmd.CalledAs(), strings.Join(suggestions, ", "))
+		}
+		return fmt.Errorf("ERROR: unknown command '%s' for '%s'", args[0], cmd.CalledAs())
 	},
 }
 
