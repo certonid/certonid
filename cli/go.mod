@@ -4,8 +4,8 @@ go 1.12
 
 require (
 	github.com/ScaleFT/sshkeys v0.0.0-20200327173127-6142f742bca5
-	github.com/aws/aws-sdk-go v1.41.11 // indirect
-	github.com/certonid/certonid v0.0.0-20210924154530-c86d465bf9df
+	github.com/aws/aws-sdk-go v1.41.13 // indirect
+	github.com/certonid/certonid v0.0.0-20211027175234-48350fa2ce0b
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
@@ -21,8 +21,8 @@ require (
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 )
 
-replace github.com/certonid/certonid/adapters => ./../adapters
-
-replace github.com/certonid/certonid/proto => ./../proto
-
-replace github.com/certonid/certonid/utils => ./../utils
+replace (
+	github.com/certonid/certonid/adapters => ./../adapters
+	github.com/certonid/certonid/proto => ./../proto
+	github.com/certonid/certonid/utils => ./../utils
+)
