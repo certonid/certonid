@@ -185,7 +185,7 @@ func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
 	// extensions
 	setExtensions(cert, req)
 	// use rsa-sha2-256 for sign keys
-	sshAlgorithmSigner, err := newAlgorithmSignerFromSigner(s.ca, ssh.SigAlgoRSASHA2256)
+	sshAlgorithmSigner, err := newAlgorithmSignerFromSigner(s.ca, ssh.KeyAlgoED25519)
 	if err != nil {
 		log.Error().
 			Err(err).
