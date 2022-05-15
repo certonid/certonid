@@ -10,6 +10,12 @@ Consists of two parts: CLI and serverless function.
 
 [Download latest releases](https://github.com/certonid/certonid/releases)
 
+For Mac OS or Linux you can use Homebrew tap:
+
+```bash
+brew install certonid/tap/certonid
+```
+
 ## Documentation
 
 [All information published at Wiki page](https://github.com/certonid/certonid/wiki)
