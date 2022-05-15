@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/lambda"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/lambda"
 )
 
 // LambdaClient store aws info
@@ -19,7 +19,7 @@ func (cl *LambdaClient) LambdaInvoke(funcName string, payload []byte, timeout in
 	ctx, done := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
 	defer done()
 
-	result, err := cl.Client.InvokeWithContext(ctx, &lambda.InvokeInput{
+	result, err := cl.Client.Invoke(ctx, &lambda.InvokeInput{
 		FunctionName: aws.String(funcName),
 		Payload:      payload,
 	})
@@ -33,13 +33,13 @@ func (cl *LambdaClient) LambdaInvoke(funcName string, payload []byte, timeout in
 
 // LambdaClient return AWS Lambda client
 func (client *Client) LambdaClient(region string) *LambdaClient {
-	awsConfig := aws.Config{}
+	lambdaConfig := lambda.Config{}
 
 	if region != "" {
-		awsConfig.Region = aws.String(region)
+		lambdaConfig.Region = aws.String(region)
 	}
 
 	return &LambdaClient{
-		Client: lambda.New(client.Session, &awsConfig),
+		Client: lambda.NewFromConfig(client.Config, &lambdaConfig),
 	}
 }
