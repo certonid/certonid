@@ -1,21 +1,22 @@
 package awscloud
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/kms"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/kms"
 )
 
 // KMSClient store aws info
 type KMSClient struct {
-	Client *kms.KMS
+	Client *kms.Client
 }
 
 // KmsEncrypt allow to encrypt data by AWS KMS
 func (cl *KMSClient) KmsEncrypt(keyID string, ciphertextBlob []byte, encryptionContext map[string]*string) ([]byte, error) {
-	result, err := cl.Client.Encrypt(&kms.EncryptInput{
+	result, err := cl.Client.Encrypt(context.TODO(), &kms.EncryptInput{
 		KeyId:             aws.String(keyID),
 		Plaintext:         ciphertextBlob,
 		EncryptionContext: encryptionContext,
@@ -30,7 +31,7 @@ func (cl *KMSClient) KmsEncrypt(keyID string, ciphertextBlob []byte, encryptionC
 
 // KmsEncryptText allow to encrypt text by AWS KMS
 func (cl *KMSClient) KmsEncryptText(keyID string, text []byte) (string, error) {
-	result, err := cl.Client.Encrypt(&kms.EncryptInput{
+	result, err := cl.Client.Encrypt(context.TODO(), &kms.EncryptInput{
 		KeyId:     aws.String(keyID),
 		Plaintext: text,
 	})
@@ -44,7 +45,7 @@ func (cl *KMSClient) KmsEncryptText(keyID string, text []byte) (string, error) {
 
 // KmsDecrypt allow to decrypt data AWS KMS
 func (cl *KMSClient) KmsDecrypt(ciphertextBlob []byte, encryptionContext map[string]*string) ([]byte, string, error) {
-	result, err := cl.Client.Decrypt(&kms.DecryptInput{
+	result, err := cl.Client.Decrypt(context.TODO(), &kms.DecryptInput{
 		CiphertextBlob:    ciphertextBlob,
 		EncryptionContext: encryptionContext,
 	})
@@ -63,7 +64,7 @@ func (cl *KMSClient) KmsDecryptText(text string) ([]byte, error) {
 		return []byte{}, fmt.Errorf("Error in decode base64 encrypted data: %w", err)
 	}
 
-	result, err := cl.Client.Decrypt(&kms.DecryptInput{CiphertextBlob: blob})
+	result, err := cl.Client.Decrypt(context.TODO(), &kms.DecryptInput{CiphertextBlob: blob})
 
 	if err != nil {
 		return []byte{}, fmt.Errorf("Error in decrypt data by AWS KMS: %w", err)
@@ -74,12 +75,9 @@ func (cl *KMSClient) KmsDecryptText(text string) ([]byte, error) {
 
 // Read method for io.Reader interface
 func (cl *KMSClient) Read(p []byte) (n int, err error) {
-	var nob = int64(len(p))
-	input := &kms.GenerateRandomInput{
-		NumberOfBytes: aws.Int64(nob),
-	}
-
-	result, err := cl.Client.GenerateRandom(input)
+	result, err := cl.Client.GenerateRandom(context.TODO(), &kms.GenerateRandomInput{
+		NumberOfBytes: aws.Int64(int64(len(p))),
+	})
 	if err != nil {
 		n = 0
 		return
@@ -92,13 +90,13 @@ func (cl *KMSClient) Read(p []byte) (n int, err error) {
 
 // KmsClient return kms client
 func (client *Client) KmsClient(region string) *KMSClient {
-	awsConfig := aws.Config{}
+	kmsConfig := kms.Options{}
 
 	if region != "" {
-		awsConfig.Region = aws.String(region)
+		kmsConfig.Region = aws.String(region)
 	}
 
 	return &KMSClient{
-		Client: kms.New(client.Session, &awsConfig),
+		Client: kms.NewFromConfig(client.Config, &kmsConfig),
 	}
 }
