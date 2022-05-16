@@ -13,6 +13,12 @@ Consists of two parts: CLI and serverless function.
 For Mac OS or Linux you can use [Homebrew tap](https://docs.brew.sh/Taps):
 
 ```bash
+brew install certonid/tap/certonid
+```
+
+or another way:
+
+```bash
 brew tap certonid/tap
 brew install certonid
 ```
