@@ -43,7 +43,7 @@ brews:
     # IDs of the archives to use.
     # Defaults to all.
     ids:
-    - certonid-build
+    - certonid-archive
 
     # GOARM to specify which 32-bit arm version to use if there are multiple versions
     # from the build section. Brew formulas support only one 32-bit version.
@@ -76,7 +76,7 @@ brews:
     # to implement the strategy and add it to your tap repository.
     # Example: https://docs.brew.sh/Formula-Cookbook#specifying-the-download-strategy-explicitly
     # Default is empty.
-    download_strategy: CurlDownloadStrategy
+    # download_strategy: CurlDownloadStrategy
 
     # Allows you to add a custom require_relative at the top of the formula template
     # Default is empty
