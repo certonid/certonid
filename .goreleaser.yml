@@ -124,7 +124,7 @@ brews:
 
     # Template of your app's description.
     # Default is empty.
-    description: "Serverless SSH Certificate Authority."
+    description: "Serverless SSH Certificate Authority"
 
     # SPDX identifier of your app's license.
     # Default is empty.
