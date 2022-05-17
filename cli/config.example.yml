@@ -9,7 +9,7 @@ certificates:
     aws:
       profile: example
       region: us-east-1
-      function_name: BressFunction
+      function_name: ServerlessFunction
       kmsauth:
         key_id: arn:aws:kms:key-id
         service_id: some-service
@@ -17,5 +17,5 @@ certificates:
     failover:
     - region: eu-central-1
     - region: eu-west-1
-      function_name: BackupBressFunction
+      function_name: BackupServerlessFunction
 
