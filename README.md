@@ -47,7 +47,7 @@ gpg:                using RSA key 6894D468143A22469D6603D1E44200219869E71E
 gpg: Good signature from "leopard apps <leopard.not.a+apps@gmail.com>"
 ```
 
-Also all archives have SBOMs file.
+Each archive have [SBOM file](https://www.ntia.gov/SBOM).
 
 ## Dev build
 
