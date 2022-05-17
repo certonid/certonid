@@ -41,10 +41,10 @@ To simplify setup on AWS, you can use [Certonid AWS Terraform module](https://re
 `checksum.txt` signed by gpg key. You can check its by downloading with archive it `.sig` file and verify signature:
 
 ```bash
-$ gpg --verify checksum.txt.sig checksum.txt
-gpg: Signature made Wed Mar 10 11:02:40 2021 EET
+$ gpg --verify checksums.txt.sig checksums.txt
+gpg: Signature made Tue May 17 02:35:59 2022 EEST
 gpg:                using RSA key 6894D468143A22469D6603D1E44200219869E71E
-gpg: Good signature from "leopard apps <leopard.not.a+apps@gmail.com>"
+gpg: Good signature from "leopard apps <leopard.not.a+apps@gmail.com>" [ultimate]
 ```
 
 Each archive have [SBOM file](https://www.ntia.gov/SBOM).
