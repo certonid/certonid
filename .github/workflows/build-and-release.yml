@@ -46,7 +46,7 @@ jobs:
         working-directory: serverless
 
       - name: Setup Syft for SBOM
-        uses: anchore/sbom-action@v0
+        uses: anchore/sbom-action/download-syft@v0
         if: success() && startsWith(github.ref, 'refs/tags/')
 
       - name: Import GPG key
