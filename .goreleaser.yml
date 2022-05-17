@@ -18,7 +18,7 @@ builds:
     goarm:
       - "7"
     flags:
-    - -trimpath
+      - -trimpath
     ldflags:
       - -s -w
       - -X github.com/certonid/certonid/cli/version.Version={{.Version}}
@@ -34,12 +34,13 @@ builds:
     goarch:
       - amd64
     flags:
-    - -trimpath
+      - -trimpath
     ldflags:
       - -s -w
       - -X github.com/certonid/certonid/cli/version.Version={{.Version}}
       - -X github.com/certonid/certonid/cli/version.GitCommit={{.Commit}}
       - -X github.com/certonid/certonid/cli/version.BuildTime={{.Date}}
+
 archives:
   - id: certonid-archive
     builds:
@@ -64,13 +65,17 @@ archives:
       windows: Windows
       386: i386
       amd64: x86_64
+
 checksum:
   name_template: 'checksums.txt'
+
 snapshot:
   name_template: "{{ .Tag }}"
+
 signs:
   - artifacts: all
     args: ["--batch", "-u", "{{ .Env.GPG_FINGERPRINT }}", "--output", "${signature}", "--detach-sign", "${artifact}"]
+
 changelog:
   sort: asc
   use: github
@@ -81,29 +86,10 @@ changelog:
 
 brews:
   -
-    # Name template of the recipe
-    # Default to project name
     name: certonid
-
-    # IDs of the archives to use.
-    # Defaults to all.
     ids:
     - certonid-archive
-
-    # GOARM to specify which 32-bit arm version to use if there are multiple versions
-    # from the build section. Brew formulas support only one 32-bit version.
-    # Default is 6 for all artifacts or each id if there a multiple versions.
-    # goarm: 6
     goarm: "7"
-
-    # GOAMD64 to specify which amd64 version to use if there are multiple versions
-    # from the build section.
-    # Default is v1.
-    # goamd64: v3
-
-    # NOTE: make sure the url_template, the token and given repo (github or gitlab) owner and name are from the
-    # same kind. We will probably unify this in the next major version like it is done with scoop.
-
     # GitHub/GitLab repository to push the formula to
     tap:
       owner: certonid
@@ -111,32 +97,12 @@ brews:
       branch: main
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
 
-    # The project name and current git tag are used in the format string.
     commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
-
-    # Folder inside the repository to put the formula.
-    # Default is the root folder.
     folder: Formula
-
-    # Your app's homepage.
-    # Default is empty.
     homepage: "https://github.com/certonid/certonid"
-
-    # Template of your app's description.
-    # Default is empty.
     description: "Serverless SSH Certificate Authority"
-
-    # SPDX identifier of your app's license.
-    # Default is empty.
     license: "MIT"
-
-
-    # So you can `brew test` your formula.
-    # Default is empty.
     test: |
       system "#{bin}/certonid", "--version"
-
-    # Custom install script for brew.
-    # Default is 'bin.install "program"'.
     install: |
       bin.install "certonid"
