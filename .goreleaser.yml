@@ -50,6 +50,7 @@ archives:
       darwin: Darwin
       linux: Linux
       windows: Windows
+      arm: arm32
       386: x86_32
       amd64: x86_64
     format_overrides:
@@ -63,6 +64,7 @@ archives:
       darwin: Darwin
       linux: Linux
       windows: Windows
+      arm: arm32
       386: x86_32
       amd64: x86_64
 
