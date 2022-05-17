@@ -47,9 +47,6 @@ archives:
       - certonid-build
     name_template: "certonid_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
       arm: arm32
       386: x86_32
       amd64: x86_64
@@ -61,9 +58,6 @@ archives:
       - serverless-build
     name_template: "serverless_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
       arm: arm32
       386: x86_32
       amd64: x86_64
