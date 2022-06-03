@@ -8,7 +8,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.15.9 // indirect
 	github.com/aws/aws-sdk-go-v2/service/kms v1.17.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/lambda v1.23.1 // indirect
-	github.com/certonid/certonid v0.0.0-20220517101128-a35039d9400f
+	github.com/certonid/certonid v0.0.0-20220603152012-73fec277514f
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
