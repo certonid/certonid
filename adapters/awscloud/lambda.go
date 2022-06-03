@@ -11,7 +11,7 @@ import (
 
 // LambdaClient store aws info
 type LambdaClient struct {
-	Client lambda.Client
+	Client *lambda.Client
 }
 
 // LambdaInvoke allow to call AWS Lambda

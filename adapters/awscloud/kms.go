@@ -11,7 +11,7 @@ import (
 
 // KMSClient store aws info
 type KMSClient struct {
-	Client kms.Client
+	Client *kms.Client
 }
 
 // KmsEncrypt allow to encrypt data by AWS KMS
