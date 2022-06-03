@@ -11,7 +11,7 @@ import (
 
 // LambdaClient store aws info
 type LambdaClient struct {
-	Client *lambda.Lambda
+	Client lambda.Client
 }
 
 // LambdaInvoke allow to call AWS Lambda
@@ -33,13 +33,13 @@ func (cl *LambdaClient) LambdaInvoke(funcName string, payload []byte, timeout in
 
 // LambdaClient return AWS Lambda client
 func (client *Client) LambdaClient(region string) *LambdaClient {
-	lambdaConfig := lambda.Config{}
+	lambdaOptions := lambda.Options{}
 
 	if region != "" {
-		lambdaConfig.Region = aws.String(region)
+		lambdaOptions.Region = aws.String(region)
 	}
 
 	return &LambdaClient{
-		Client: lambda.NewFromConfig(client.Config, &lambdaConfig),
+		Client: lambda.NewFromConfig(client.Config, &lambdaOptions),
 	}
 }

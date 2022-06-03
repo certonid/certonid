@@ -10,13 +10,13 @@ import (
 
 // Client store aws info
 type Client struct {
-	Config *aws.Config
+	Config aws.Config
 }
 
 // New init aws client session
 func New(profile string) *Client {
 	var (
-		cfg *aws.Config
+		cfg aws.Config
 		err error
 	)
 

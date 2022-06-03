@@ -11,11 +11,11 @@ import (
 
 // KMSClient store aws info
 type KMSClient struct {
-	Client *kms.Client
+	Client kms.Client
 }
 
 // KmsEncrypt allow to encrypt data by AWS KMS
-func (cl *KMSClient) KmsEncrypt(keyID string, ciphertextBlob []byte, encryptionContext map[string]*string) ([]byte, error) {
+func (cl *KMSClient) KmsEncrypt(keyID string, ciphertextBlob []byte, encryptionContext map[string]string) ([]byte, error) {
 	result, err := cl.Client.Encrypt(context.TODO(), &kms.EncryptInput{
 		KeyId:             aws.String(keyID),
 		Plaintext:         ciphertextBlob,
@@ -44,7 +44,7 @@ func (cl *KMSClient) KmsEncryptText(keyID string, text []byte) (string, error) {
 }
 
 // KmsDecrypt allow to decrypt data AWS KMS
-func (cl *KMSClient) KmsDecrypt(ciphertextBlob []byte, encryptionContext map[string]*string) ([]byte, string, error) {
+func (cl *KMSClient) KmsDecrypt(ciphertextBlob []byte, encryptionContext map[string]string) ([]byte, string, error) {
 	result, err := cl.Client.Decrypt(context.TODO(), &kms.DecryptInput{
 		CiphertextBlob:    ciphertextBlob,
 		EncryptionContext: encryptionContext,

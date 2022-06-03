@@ -3,9 +3,12 @@ module github.com/certonid/certonid/serverless
 go 1.12
 
 require (
-	github.com/aws/aws-lambda-go v1.31.1
-	github.com/aws/aws-sdk-go v1.44.14 // indirect
-	github.com/certonid/certonid v0.0.0-20220414092445-05f6274df14b
+	github.com/aws/aws-lambda-go v1.32.0
+	github.com/aws/aws-sdk-go v1.44.27 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.15.9 // indirect
+	github.com/aws/aws-sdk-go-v2/service/kms v1.17.2 // indirect
+	github.com/aws/aws-sdk-go-v2/service/lambda v1.23.1 // indirect
+	github.com/certonid/certonid v0.0.0-20220517101128-a35039d9400f
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
@@ -15,12 +18,12 @@ require (
 	github.com/rs/zerolog v1.26.1
 	github.com/sethvargo/go-password v0.2.0 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
-	github.com/spf13/viper v1.11.0
-	golang.org/x/crypto v0.0.0-20220513210258-46612604a0f9
-	golang.org/x/sys v0.0.0-20220513210249-45d2b4557a2a // indirect
+	github.com/spf13/viper v1.12.0
+	github.com/subosito/gotenv v1.4.0 // indirect
+	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20220512140231-539c8e751b99 // indirect
+	gopkg.in/ini.v1 v1.66.6 // indirect
 )
 
 replace (
