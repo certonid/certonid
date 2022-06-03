@@ -90,13 +90,11 @@ func (cl *KMSClient) Read(p []byte) (n int, err error) {
 
 // KmsClient return kms client
 func (client *Client) KmsClient(region string) *KMSClient {
-	kmsOptions := kms.Options{}
-
-	if region != "" {
-		kmsOptions.Region = region
-	}
-
 	return &KMSClient{
-		Client: kms.NewFromConfig(client.Config, &kmsOptions),
+		Client: kms.NewFromConfig(client.Config, func(o *kms.Options) {
+			if region != "" {
+				o.Region = region
+			}
+		}),
 	}
 }

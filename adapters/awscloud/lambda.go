@@ -33,13 +33,11 @@ func (cl *LambdaClient) LambdaInvoke(funcName string, payload []byte, timeout in
 
 // LambdaClient return AWS Lambda client
 func (client *Client) LambdaClient(region string) *LambdaClient {
-	lambdaOptions := lambda.Options{}
-
-	if region != "" {
-		lambdaOptions.Region = region
-	}
-
 	return &LambdaClient{
-		Client: lambda.NewFromConfig(client.Config, &lambdaOptions),
+		Client: lambda.NewFromConfig(client.Config, func(o *lambda.Options) {
+			if region != "" {
+				o.Region = region
+			}
+		}),
 	}
 }
