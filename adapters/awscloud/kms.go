@@ -76,7 +76,7 @@ func (cl *KMSClient) KmsDecryptText(text string) ([]byte, error) {
 // Read method for io.Reader interface
 func (cl *KMSClient) Read(p []byte) (n int, err error) {
 	result, err := cl.Client.GenerateRandom(context.TODO(), &kms.GenerateRandomInput{
-		NumberOfBytes: aws.Int64(int64(len(p))),
+		NumberOfBytes: aws.Int32(int32(len(p))),
 	})
 	if err != nil {
 		n = 0
@@ -90,13 +90,13 @@ func (cl *KMSClient) Read(p []byte) (n int, err error) {
 
 // KmsClient return kms client
 func (client *Client) KmsClient(region string) *KMSClient {
-	kmsConfig := kms.Options{}
+	kmsOptions := kms.Options{}
 
 	if region != "" {
-		kmsConfig.Region = aws.String(region)
+		kmsOptions.Region = region
 	}
 
 	return &KMSClient{
-		Client: kms.NewFromConfig(client.Config, &kmsConfig),
+		Client: kms.NewFromConfig(client.Config, &kmsOptions),
 	}
 }

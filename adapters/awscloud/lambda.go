@@ -36,7 +36,7 @@ func (client *Client) LambdaClient(region string) *LambdaClient {
 	lambdaOptions := lambda.Options{}
 
 	if region != "" {
-		lambdaOptions.Region = aws.String(region)
+		lambdaOptions.Region = region
 	}
 
 	return &LambdaClient{
