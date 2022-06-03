@@ -108,6 +108,8 @@ github.com/certonid/certonid v0.0.0-20220603151313-fc41bb1b5128 h1:Iu+RDy52Y6v6a
 github.com/certonid/certonid v0.0.0-20220603151313-fc41bb1b5128/go.mod h1:vHMhJuF4cNBB4bf+zg0RVmHpJVyhSxCbGsJ5eE1Mq/k=
 github.com/certonid/certonid v0.0.0-20220603151446-afecd95b0b5c h1:vKOy8kouvoEFxAzMrT+isWpmq3RGRy7bVn3ymohqiBE=
 github.com/certonid/certonid v0.0.0-20220603151446-afecd95b0b5c/go.mod h1:vHMhJuF4cNBB4bf+zg0RVmHpJVyhSxCbGsJ5eE1Mq/k=
+github.com/certonid/certonid v0.0.0-20220603151810-735b4287eb57 h1:Y2JZF+AkAZsqEmJtFGLEM+sgus8hEl6cE0jTtboD4M4=
+github.com/certonid/certonid v0.0.0-20220603151810-735b4287eb57/go.mod h1:vHMhJuF4cNBB4bf+zg0RVmHpJVyhSxCbGsJ5eE1Mq/k=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
 github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=

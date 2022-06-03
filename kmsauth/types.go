@@ -16,7 +16,7 @@ import (
 type AuthContext interface {
 	Validate() error
 	GetUsername() string
-	GetKMSContext() map[string]*string
+	GetKMSContext() map[string]string
 }
 
 // AuthContextV1 is a kms encryption context used to ascertain a user's identiy
@@ -40,10 +40,10 @@ func (ac *AuthContextV1) GetUsername() string {
 }
 
 // GetKMSContext gets the kms context
-func (ac *AuthContextV1) GetKMSContext() map[string]*string {
-	return map[string]*string{
-		"from": &ac.From,
-		"to":   &ac.To,
+func (ac *AuthContextV1) GetKMSContext() map[string]string {
+	return map[string]string{
+		"from": ac.From,
+		"to":   ac.To,
 	}
 }
 
@@ -69,11 +69,11 @@ func (ac *AuthContextV2) GetUsername() string {
 }
 
 // GetKMSContext gets the kms context
-func (ac *AuthContextV2) GetKMSContext() map[string]*string {
-	context := map[string]*string{
-		"from":      &ac.From,
-		"to":        &ac.To,
-		"user_type": &ac.UserType,
+func (ac *AuthContextV2) GetKMSContext() map[string]string {
+	context := map[string]string{
+		"from":      ac.From,
+		"to":        ac.To,
+		"user_type": ac.UserType,
 	}
 
 	return context
@@ -152,7 +152,7 @@ func (e EncryptedToken) String() string {
 
 // TokenCache is a cached token, consists of a token and an encryptedToken
 type TokenCache struct {
-	Token          Token              `json:"token,omitempty"`
-	EncryptedToken EncryptedToken     `json:"encrypted_token,omitempty"`
-	AuthContext    map[string]*string `json:"auth_context,omitempty"`
+	Token          Token             `json:"token,omitempty"`
+	EncryptedToken EncryptedToken    `json:"encrypted_token,omitempty"`
+	AuthContext    map[string]string `json:"auth_context,omitempty"`
 }

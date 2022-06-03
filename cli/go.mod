@@ -7,7 +7,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.15.9 // indirect
 	github.com/aws/aws-sdk-go-v2/service/kms v1.17.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/lambda v1.23.1 // indirect
-	github.com/certonid/certonid v0.0.0-20220603151446-afecd95b0b5c
+	github.com/certonid/certonid v0.0.0-20220603151810-735b4287eb57
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
