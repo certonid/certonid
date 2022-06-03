@@ -4,20 +4,14 @@ go 1.12
 
 require (
 	github.com/aws/aws-lambda-go v1.32.0
-	github.com/aws/aws-sdk-go v1.44.27 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.15.9 // indirect
 	github.com/aws/aws-sdk-go-v2/service/kms v1.17.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/lambda v1.23.1 // indirect
-	github.com/certonid/certonid v0.0.0-20220603152012-73fec277514f
-	github.com/fsnotify/fsnotify v1.5.4 // indirect
+	github.com/certonid/certonid v0.0.0-20220603152312-1ebf1f6f68b7
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
-	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	github.com/pelletier/go-toml v1.9.5 // indirect
-	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
 	github.com/rs/zerolog v1.26.1
 	github.com/sethvargo/go-password v0.2.0 // indirect
-	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/viper v1.12.0
 	github.com/subosito/gotenv v1.4.0 // indirect
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
