@@ -42,9 +42,9 @@ To simplify setup on AWS, you can use [Certonid AWS Terraform module](https://re
 
 ```bash
 $ gpg --verify checksums.txt.sig checksums.txt
-gpg: Signature made Tue May 17 02:35:59 2022 EEST
-gpg:                using RSA key 6894D468143A22469D6603D1E44200219869E71E
-gpg: Good signature from "leopard apps <leopard.not.a+apps@gmail.com>" [ultimate]
+gpg: Signature made Fri Jul 22 17:24:40 2022 EEST
+gpg:                using RSA key 36E7986334C6DE2B41A29537A77A9969BEFF93AE
+gpg: Good signature from "Certonid Sign Key (Certonid Sign Key) <leopard.not.a+certonid@gmail.com>"
 ```
 
 Each archive have [SBOM file](https://www.ntia.gov/SBOM).
