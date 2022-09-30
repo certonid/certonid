@@ -184,13 +184,13 @@ func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
 	setCriticalOptions(cert, req)
 	// extensions
 	setExtensions(cert, req)
-	// use rsa-sha2-256 for sign keys
-	sshAlgorithmSigner, err := newAlgorithmSignerFromSigner(s.ca, ssh.SigAlgoRSASHA2256)
+	// use rsa-sha2-512 for sign keys
+	sshAlgorithmSigner, err := newAlgorithmSignerFromSigner(s.ca, ssh.SigAlgoRSASHA2512)
 	if err != nil {
 		log.Error().
 			Err(err).
-			Msg("Error to initialize rsa-sha2-256 signer")
-		return nil, fmt.Errorf("Error to initialize rsa-sha2-256 signer: %w", err)
+			Msg("Error to initialize rsa-sha2-512 signer")
+		return nil, fmt.Errorf("Error to initialize rsa-sha2-512 signer: %w", err)
 	}
 	// sign client key
 	if err := cert.SignCert(certRandomReader(), sshAlgorithmSigner); err != nil {
