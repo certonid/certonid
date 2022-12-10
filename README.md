@@ -1,4 +1,4 @@
-# Certonid ![Build & Release](https://github.com/certonid/certonid/workflows/Build%20&%20Release/badge.svg)
+# Certonid [![Build and Release](https://github.com/certonid/certonid/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/certonid/certonid/actions/workflows/build-and-release.yml)
 
 Certonid is a Serverless SSH Certificate Authority.
 
