@@ -4,10 +4,10 @@ go 1.12
 
 require (
 	github.com/ScaleFT/sshkeys v1.2.0
-	github.com/aws/aws-sdk-go-v2/config v1.18.25 // indirect
-	github.com/aws/aws-sdk-go-v2/service/kms v1.22.0 // indirect
-	github.com/aws/aws-sdk-go-v2/service/lambda v1.35.0 // indirect
-	github.com/certonid/certonid v0.0.0-20230214232501-85daa6c0e128
+	github.com/aws/aws-sdk-go-v2/config v1.18.27 // indirect
+	github.com/aws/aws-sdk-go-v2/service/kms v1.23.0 // indirect
+	github.com/aws/aws-sdk-go-v2/service/lambda v1.37.0 // indirect
+	github.com/certonid/certonid v0.0.0-20230609102143-4e2d45cf5237
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
@@ -17,7 +17,7 @@ require (
 	github.com/sethvargo/go-password v0.2.0 // indirect
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
-	golang.org/x/crypto v0.9.0
+	golang.org/x/crypto v0.11.0
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 )
