@@ -4,10 +4,10 @@ go 1.12
 
 require (
 	github.com/ScaleFT/sshkeys v1.2.0
-	github.com/aws/aws-sdk-go-v2/config v1.18.32 // indirect
-	github.com/aws/aws-sdk-go-v2/service/kms v1.24.1 // indirect
-	github.com/aws/aws-sdk-go-v2/service/lambda v1.39.1 // indirect
-	github.com/certonid/certonid v0.0.0-20230713233426-6bbcd8d36363
+	github.com/aws/aws-sdk-go-v2/config v1.18.33 // indirect
+	github.com/aws/aws-sdk-go-v2/service/kms v1.24.2 // indirect
+	github.com/aws/aws-sdk-go-v2/service/lambda v1.39.2 // indirect
+	github.com/certonid/certonid v0.0.0-20230806031142-0cae3e632a8f
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
