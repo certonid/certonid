@@ -3,11 +3,11 @@ module github.com/certonid/certonid/serverless
 go 1.12
 
 require (
-	github.com/aws/aws-lambda-go v1.43.0
-	github.com/aws/aws-sdk-go-v2/config v1.26.2 // indirect
-	github.com/aws/aws-sdk-go-v2/service/kms v1.27.7 // indirect
-	github.com/aws/aws-sdk-go-v2/service/lambda v1.49.6 // indirect
-	github.com/certonid/certonid v0.0.0-20231219114008-76689d2e7b19
+	github.com/aws/aws-lambda-go v1.45.0
+	github.com/aws/aws-sdk-go-v2/config v1.26.5 // indirect
+	github.com/aws/aws-sdk-go-v2/service/kms v1.27.9 // indirect
+	github.com/aws/aws-sdk-go-v2/service/lambda v1.49.7 // indirect
+	github.com/certonid/certonid v0.0.0-20240103131827-ebb1606f5c53
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
@@ -17,8 +17,8 @@ require (
 	github.com/sethvargo/go-password v0.2.0 // indirect
 	github.com/spf13/viper v1.18.2
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/crypto v0.17.0
-	golang.org/x/exp v0.0.0-20231226003508-02704c960a9b // indirect
+	golang.org/x/crypto v0.18.0
+	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 )
