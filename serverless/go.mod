@@ -3,22 +3,22 @@ module github.com/certonid/certonid/serverless
 go 1.12
 
 require (
-	github.com/aws/aws-lambda-go v1.45.0
-	github.com/aws/aws-sdk-go-v2/config v1.26.5 // indirect
-	github.com/aws/aws-sdk-go-v2/service/kms v1.27.9 // indirect
-	github.com/aws/aws-sdk-go-v2/service/lambda v1.49.7 // indirect
-	github.com/certonid/certonid v0.0.0-20240103131827-ebb1606f5c53
+	github.com/aws/aws-lambda-go v1.46.0
+	github.com/aws/aws-sdk-go-v2/config v1.27.9 // indirect
+	github.com/aws/aws-sdk-go-v2/service/kms v1.30.0 // indirect
+	github.com/aws/aws-sdk-go-v2/service/lambda v1.53.3 // indirect
+	github.com/certonid/certonid v0.0.0-20240121205526-99393e80ed9a
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/leodido/go-urn v1.2.4 // indirect
+	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
+	github.com/pelletier/go-toml/v2 v2.2.0 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
-	github.com/rs/zerolog v1.31.0
+	github.com/rs/zerolog v1.32.0
 	github.com/sethvargo/go-password v0.2.0 // indirect
 	github.com/spf13/viper v1.18.2
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/crypto v0.18.0
-	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a // indirect
+	golang.org/x/crypto v0.21.0
+	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 )
