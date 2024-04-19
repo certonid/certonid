@@ -1,6 +1,6 @@
 module github.com/certonid/certonid/cli
 
-go 1.22
+go 1.22.0
 
 require (
 	github.com/ScaleFT/sshkeys v1.2.0
