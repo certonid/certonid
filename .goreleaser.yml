@@ -18,6 +18,9 @@ builds:
       - arm64
     goarm:
       - "7"
+    ignore:
+      - goos: windows
+        goarch: arm
     flags:
       - -trimpath
     ldflags:
@@ -55,7 +58,8 @@ archives:
       {{- else }}{{ .Arch }}{{ end }}
     format_overrides:
       - goos: windows
-        format: ["zip"]
+        formats:
+          - zip
   - id: serverless-archive
     ids:
       - serverless-build
@@ -88,11 +92,9 @@ changelog:
       - '^test:'
 
 homebrew_casks:
-  -
-    name: certonid
+  - name: certonid
     ids:
-    - certonid-archive
-    goarm: "7"
+      - certonid-archive
     # GitHub/GitLab repository to push the formula to
     repository:
       owner: certonid
@@ -101,11 +103,17 @@ homebrew_casks:
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
 
     commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
-    directory: Formula
+    directory: Casks
     homepage: "https://github.com/certonid/certonid"
     description: "Serverless SSH Certificate Authority"
     license: "MIT"
-    test: |
-      system "#{bin}/certonid", "--version"
-    install: |
-      bin.install "certonid"
+
+    binaries:
+      - certonid
+
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/certonid"]
+          end
