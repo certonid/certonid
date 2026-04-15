@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	defaultEntensions = []string{
+	defaultExtensions = []string{
 		"permit-X11-forwarding",
 		"permit-agent-forwarding",
 		"permit-port-forwarding",
@@ -105,6 +105,8 @@ func setCriticalOptions(cert *ssh.Certificate, req *SignRequest) {
 				}
 
 				cert.CriticalOptions[strings.TrimSpace(opt[0])] = strings.TrimSpace(opt[1])
+			} else {
+				cert.CriticalOptions[strings.TrimSpace(perm)] = ""
 			}
 		}
 	}
@@ -142,7 +144,7 @@ func certRandomReader() (io.Reader, error) {
 
 func setExtensions(cert *ssh.Certificate, req *SignRequest) {
 	cert.Extensions = make(map[string]string)
-	extensions := defaultEntensions
+	extensions := defaultExtensions
 
 	configKey := fmt.Sprintf("certificates.%s.extensions", req.CertType)
 	if len(viper.GetStringSlice(configKey)) > 0 {
@@ -183,11 +185,19 @@ func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
 	if req.CertType == utils.HostCertType {
 		certType = ssh.HostCert
 	}
+
+	var keyIdName string
+	if req.CertType == utils.HostCertType {
+		keyIdName = strings.TrimSpace(strings.Split(req.Hostnames, ",")[0])
+	} else {
+		keyIdName = strings.TrimSpace(req.Username)
+	}
+
 	// init certificate
 	cert := &ssh.Certificate{
 		CertType:    certType,
 		Key:         pubkey,
-		KeyId:       fmt.Sprintf("%s_%d", req.Username, time.Now().UTC().Unix()),
+		KeyId:       fmt.Sprintf("%s_%d", keyIdName, time.Now().UTC().Unix()),
 		ValidAfter:  uint64(time.Now().UTC().Add(-1 * timeSkew).Unix()),
 		ValidBefore: uint64(req.ValidUntil.Unix()),
 	}

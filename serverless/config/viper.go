@@ -48,4 +48,5 @@ func InitConfig() {
 	viper.SetDefault("certificates.host.extensions", []string{})
 	// random seed
 	viper.SetDefault("certificates.random_seed.source", "urandom")
+	viper.SetDefault("kmsauth.max_valid_until", "24h")
 }

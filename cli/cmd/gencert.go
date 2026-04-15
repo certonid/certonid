@@ -60,9 +60,9 @@ var (
 			}
 
 			if genCertType == utils.HostCertType && len(genHostnames) == 0 {
-				er("You need to hostnames for certificate")
-			} else if len(genUsername) == 0 {
-				er("You need to username for certificate")
+				er("You must provide hostnames for the host certificate")
+			} else if genCertType == utils.UserCertType && len(genUsername) == 0 {
+				er("You must provide a username for the user certificate")
 			}
 
 			isFresh, cachedCert := genIsCertValidInCache()

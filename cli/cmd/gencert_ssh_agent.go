@@ -103,6 +103,10 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 
 	t := time.Unix(int64(cert.ValidBefore), 0)
 	lifetime := t.Sub(time.Now()).Seconds()
+	if lifetime <= 0 {
+		log.Error().Msg("Certificate is already expired, cannot add to ssh-agent")
+		return errors.New("Certificate is already expired")
+	}
 
 	if privateKey == nil {
 		log.Error().
