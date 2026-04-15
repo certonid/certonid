@@ -59,9 +59,14 @@ var (
 				er(err)
 			}
 
-			err = os.WriteFile(origFilepath, results, 0600)
+			f, err := os.OpenFile(origFilepath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
 			if err != nil {
-				er(fmt.Errorf("Error to write file %s: %w", origFilepath, err))
+				er(fmt.Errorf("Error creating file (it may already exist): %w", err))
+			}
+			_, err = f.Write(results)
+			f.Close()
+			if err != nil {
+				er(fmt.Errorf("Error writing to file %s: %w", origFilepath, err))
 			}
 
 			log.Info().

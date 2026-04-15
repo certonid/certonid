@@ -31,8 +31,8 @@ jobs:
       - name: Tests
         run: |
           go work init
-          go work use ./adapters ./proto ./cli ./serverless ./utils
-          go test ./cli/... ./serverless/... ./utils/...
+          go work use ./adapters ./proto ./cli ./serverless ./utils ./kmsauth
+          go test ./cli/... ./serverless/... ./utils/... ./kmsauth/...
 
       - name: Setup Syft for SBOM
         uses: anchore/sbom-action/download-syft@v0

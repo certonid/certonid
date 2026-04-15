@@ -110,7 +110,7 @@ func setCriticalOptions(cert *ssh.Certificate, req *SignRequest) {
 	}
 }
 
-func certRandomReader() io.Reader {
+func certRandomReader() (io.Reader, error) {
 	switch strings.ToLower(viper.GetString("certificates.random_seed.source")) {
 	case "aws_kms":
 		var (
@@ -131,12 +131,12 @@ func certRandomReader() io.Reader {
 
 		awsclient, err := awscloud.New(profile)
 		if err != nil {
-			panic("error to init aws client")
+			return nil, fmt.Errorf("error to init aws client for random seed: %w", err)
 		}
 
-		return awsclient.KmsClient(region)
+		return awsclient.KmsClient(region), nil
 	default: // urandom
-		return rand.Reader
+		return rand.Reader, nil
 	}
 }
 
@@ -206,7 +206,12 @@ func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
 		return nil, fmt.Errorf("Error to initialize rsa-sha2-512 signer: %w", err)
 	}
 	// sign client key
-	if err := cert.SignCert(certRandomReader(), sshAlgorithmSigner); err != nil {
+	certReader, err := certRandomReader()
+	if err != nil {
+		return nil, fmt.Errorf("Error to initialize random reader: %w", err)
+	}
+
+	if err := cert.SignCert(certReader, sshAlgorithmSigner); err != nil {
 		return nil, fmt.Errorf("Error sign public key: %w", err)
 	}
 
