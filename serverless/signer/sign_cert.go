@@ -25,10 +25,6 @@ var (
 	}
 )
 
-const (
-	timeSkew = time.Duration(5) * time.Minute // to protect against time-skew issues we potentially generate a certificate timeSkew duration
-)
-
 type sshAlgorithmSigner struct {
 	algorithm string
 	signer    ssh.AlgorithmSigner
@@ -198,7 +194,7 @@ func (s *KeySigner) signPublicKey(req *SignRequest) (*ssh.Certificate, error) {
 		CertType:    certType,
 		Key:         pubkey,
 		KeyId:       fmt.Sprintf("%s_%d", keyIdName, time.Now().UTC().Unix()),
-		ValidAfter:  uint64(time.Now().UTC().Add(-1 * timeSkew).Unix()),
+		ValidAfter:  uint64(time.Now().UTC().Add(-1 * utils.TimeSkew).Unix()),
 		ValidBefore: uint64(req.ValidUntil.Unix()),
 	}
 	// principals

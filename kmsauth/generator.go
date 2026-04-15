@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/certonid/certonid/adapters/awscloud"
+	"github.com/certonid/certonid/utils"
 
 	"github.com/rs/zerolog/log"
 )
@@ -93,7 +94,7 @@ func (tg *TokenGenerator) readCacheFile() (*TokenCache, error) {
 
 	now := time.Now().UTC()
 	// subtract timeSkew to account for clock skew
-	notAfter := tokenCache.Token.NotAfter.Add(-1 * timeSkew)
+	notAfter := tokenCache.Token.NotAfter.Add(-1 * utils.TimeSkew)
 	if now.After(notAfter) { // expired, need new token
 		return nil, nil
 	}
@@ -165,7 +166,7 @@ func (tg *TokenGenerator) GetEncryptedToken(skipCache bool) (*EncryptedToken, er
 
 		// Write the cache out securely
 		dir := path.Dir(tg.TokenCacheFile)
-		if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+		if err := os.MkdirAll(dir, 0700); err != nil {
 			return nil, err
 		}
 

@@ -6,12 +6,9 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/certonid/certonid/utils"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/crypto/ssh"
-)
-
-const (
-	timeSkew = time.Duration(5) * time.Minute // to protect against time-skew issues we potentially generate a certificate timeSkew duration
 )
 
 func genParseCertificate(bytes []byte) (*ssh.Certificate, error) {
@@ -53,7 +50,7 @@ func genIsCertStillFresh(cert *ssh.Certificate) bool {
 	}
 
 	now := time.Now()
-	validBefore := time.Unix(int64(cert.ValidBefore), 0).Add(-1 * timeSkew) // upper bound
+	validBefore := time.Unix(int64(cert.ValidBefore), 0).Add(-1 * utils.TimeSkew) // upper bound
 
 	return now.Before(validBefore)
 }

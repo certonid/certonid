@@ -7,6 +7,7 @@ import (
 
 	"errors"
 
+	"github.com/certonid/certonid/utils"
 	validator "github.com/go-playground/validator/v10"
 )
 
@@ -129,9 +130,9 @@ func (t *Token) IsValid(tokenLifetime time.Duration) error {
 func NewToken(tokenLifetime time.Duration) *Token {
 	now := time.Now().UTC()
 	// Start the notBefore x time in the past to avoid clock skew
-	notBefore := now.Add(-1 * timeSkew)
+	notBefore := now.Add(-1 * utils.TimeSkew)
 	// Set the notAfter x time in the future but account for timeSkew
-	notAfter := now.Add(tokenLifetime - timeSkew)
+	notAfter := now.Add(tokenLifetime - utils.TimeSkew)
 	return &Token{
 		NotBefore: TokenTime{notBefore},
 		NotAfter:  TokenTime{notAfter},
