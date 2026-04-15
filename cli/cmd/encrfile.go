@@ -43,7 +43,12 @@ var (
 
 			switch strings.ToLower(encrfileType) {
 			case "aws_kms":
-				kmsClient := awscloud.New(encrfileAwsKmsProfile).KmsClient(encrfileAwsKmsRegion)
+				awsclient, err := awscloud.New(encrfileAwsKmsProfile)
+				if err != nil {
+					er(err)
+				}
+
+				kmsClient := awsclient.KmsClient(encrfileAwsKmsRegion)
 				encText, err = kmsClient.KmsEncryptText(encrfileAwsKmsKeyID, fileBytes)
 			default: // symmetric
 				encText, err = utils.SymmetricEncrypt(fileBytes)
@@ -53,9 +58,14 @@ var (
 				er(err)
 			}
 
-			err = os.WriteFile(encrFilepath, []byte(encText), 0600)
+			f, err := os.OpenFile(encrFilepath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
 			if err != nil {
-				er(fmt.Errorf("Error to write file %s: %w", encrFilepath, err))
+					er(fmt.Errorf("Error creating file (it may already exist): %w", err))
+			}
+			_, err = f.Write([]byte(encText))
+			f.Close() // Ensure the file is closed
+			if err != nil {
+					er(fmt.Errorf("Error writing to file %s: %w", encrFilepath, err))
 			}
 
 			log.Info().

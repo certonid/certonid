@@ -62,15 +62,12 @@ func (tg *TokenGenerator) Validate() error {
 	return tg.AuthContext.Validate()
 }
 
-// getCachedToken tries to fetch a token from the cache
-func (tg *TokenGenerator) getCachedToken() (*Token, error) {
-	// lock for reading
-	tg.mutex.RLock()
-	defer tg.mutex.RUnlock()
-
+// readCacheFile tries to fetch a token from the cache without locking.
+// The caller is responsible for acquiring the necessary RLock or Lock.
+func (tg *TokenGenerator) readCacheFile() (*TokenCache, error) {
 	_, err := os.Stat(tg.TokenCacheFile)
 	if os.IsNotExist(err) {
-		// token cache file does not exist
+		// token cache file does not exist yet
 		return nil, nil
 	}
 	if err != nil {
@@ -86,69 +83,67 @@ func (tg *TokenGenerator) getCachedToken() (*Token, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Could not unmarshal token cache: %w", err)
 	}
+
 	// Compare token cache with current params
 	ok := reflect.DeepEqual(tokenCache.AuthContext, tg.AuthContext.GetKMSContext())
 	if !ok {
-		log.Debug().Msg("Cached token invalid")
+		log.Debug().Msg("Cached token context invalid")
 		return nil, nil
 	}
+
 	now := time.Now().UTC()
 	// subtract timeSkew to account for clock skew
 	notAfter := tokenCache.Token.NotAfter.Add(-1 * timeSkew)
 	if now.After(notAfter) { // expired, need new token
 		return nil, nil
 	}
-	return &tokenCache.Token, nil
+
+	return tokenCache, nil
 }
 
-// cacheToken caches a token
-func (tg *TokenGenerator) cacheToken(tokenCache *TokenCache) error {
-	// lock for writing
-	tg.mutex.Lock()
-	defer tg.mutex.Unlock()
-
-	dir := path.Dir(tg.TokenCacheFile)
-	err := os.MkdirAll(dir, os.ModePerm)
-	if err != nil {
-		return err
-	}
-
-	data, err := json.Marshal(tokenCache)
-	if err != nil {
-		return err
-	}
-
-	err = os.WriteFile(tg.TokenCacheFile, data, 0600)
-	return err
-}
-
-// getToken gets a token
-func (tg *TokenGenerator) getToken(skipCache bool) (*Token, error) {
+// GetEncryptedToken returns the encrypted kmsauth token safely handling concurrency
+func (tg *TokenGenerator) GetEncryptedToken(skipCache bool) (*EncryptedToken, error) {
 	if !skipCache {
-		token, err := tg.getCachedToken()
+		// First pass: Acquire read lock to check if a valid token already exists
+		tg.mutex.RLock()
+		cached, err := tg.readCacheFile()
+		tg.mutex.RUnlock()
+
 		if err != nil {
 			return nil, err
 		}
-		// If we could not find a token then return a new one
-		if token != nil {
-			return token, err
+		// If we found a valid cache, return the ALREADY encrypted token!
+		if cached != nil && cached.EncryptedToken != "" {
+			return &cached.EncryptedToken, nil
 		}
 	}
-	return NewToken(tg.TokenLifetime), nil
-}
 
-// GetEncryptedToken returns the encrypted kmsauth token
-func (tg *TokenGenerator) GetEncryptedToken(skipCache bool) (*EncryptedToken, error) {
-	token, err := tg.getToken(skipCache)
-	if err != nil {
-		return nil, err
+	// Wait for the write lock. If multiple concurrent requests arrived,
+	// they will queue up here.
+	tg.mutex.Lock()
+	defer tg.mutex.Unlock()
+
+	// Double-Check: Once we have the lock, check the cache one more time.
+	// Another goroutine might have just generated and cached the token while we were waiting!
+	if !skipCache {
+		cached, err := tg.readCacheFile()
+		if err != nil {
+			return nil, err
+		}
+		if cached != nil && cached.EncryptedToken != "" {
+			return &cached.EncryptedToken, nil
+		}
 	}
+
+	// Generate a fresh token
+	token := NewToken(tg.TokenLifetime)
 
 	tokenBytes, err := json.Marshal(token)
 	if err != nil {
 		return nil, err
 	}
 
+	// Only 1 goroutine makes the AWS KMS Network call
 	encryptedData, err := tg.KMSClient.KmsEncrypt(
 		tg.AuthKey,
 		tokenBytes,
@@ -164,14 +159,25 @@ func (tg *TokenGenerator) GetEncryptedToken(skipCache bool) (*EncryptedToken, er
 	if !skipCache {
 		tokenCache := &TokenCache{
 			Token:          *token,
-			EncryptedToken: encryptedToken,
+			EncryptedToken: encryptedToken, // Store the encrypted token for future requests
 			AuthContext:    tg.AuthContext.GetKMSContext(),
 		}
-		err = tg.cacheToken(tokenCache)
+
+		// Write the cache out securely
+		dir := path.Dir(tg.TokenCacheFile)
+		if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+			return nil, err
+		}
+
+		data, err := json.Marshal(tokenCache)
 		if err != nil {
+			return nil, err
+		}
+
+		if err := os.WriteFile(tg.TokenCacheFile, data, 0600); err != nil {
 			return nil, err
 		}
 	}
 
-	return &encryptedToken, err
+	return &encryptedToken, nil
 }

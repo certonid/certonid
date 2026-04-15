@@ -129,7 +129,12 @@ func certRandomReader() io.Reader {
 			region = viper.GetString("ca.passphrase.region")
 		}
 
-		return awscloud.New(profile).KmsClient(region)
+		awsclient, err := awscloud.New(profile)
+		if err != nil {
+			panic("error to init aws client")
+		}
+
+		return awsclient.KmsClient(region)
 	default: // urandom
 		return rand.Reader
 	}

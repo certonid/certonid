@@ -49,7 +49,12 @@ func getCAPassphrase() ([]byte, error) {
 		if viper.IsSet("ca.passphrase.region") {
 			region = viper.GetString("ca.passphrase.region")
 		}
-		kmsClient := awscloud.New(profile).KmsClient(region)
+		awsclient, err := awscloud.New(profile)
+		if err != nil {
+			return []byte{}, err
+		}
+
+		kmsClient := awsclient.KmsClient(region)
 		passphrase, err = kmsClient.KmsDecryptText(encryptedPassphrase)
 	default: // symmetric
 		passphrase, err = utils.SymmetricDecrypt(encryptedPassphrase)
@@ -95,7 +100,12 @@ func decryptCAContent(data []byte) ([]byte, error) {
 		if viper.IsSet("ca.encrypted.region") {
 			region = viper.GetString("ca.encrypted.region")
 		}
-		kmsClient := awscloud.New(profile).KmsClient(region)
+		awsclient, err := awscloud.New(profile)
+		if err != nil {
+			return []byte{}, err
+		}
+
+		kmsClient := awsclient.KmsClient(region)
 		decryptedContent, decryptedErr = kmsClient.KmsDecryptText(encryptedContent)
 	default: // symmetric
 		decryptedContent, decryptedErr = utils.SymmetricDecrypt(encryptedContent)
@@ -156,7 +166,11 @@ func validateKMSAuthToken(token, username string) error {
 		region = viper.GetString("kmsauth.region")
 	}
 
-	kmsClient := awscloud.New("").KmsClient(region)
+	awsclient, err := awscloud.New("")
+	if err != nil {
+		return err
+	}
+	kmsClient := awsclient.KmsClient(region)
 
 	kmsauthContext := &kmsauth.AuthContextV2{
 		From:     username,

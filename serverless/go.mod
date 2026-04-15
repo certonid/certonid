@@ -1,10 +1,11 @@
 module github.com/certonid/certonid/serverless
 
-go 1.25.0
+go 1.26.2
 
 require (
 	github.com/aws/aws-lambda-go v1.54.0
-	github.com/certonid/certonid v0.0.0-20260326100648-172409036a33
+	github.com/certonid/certonid v0.0.0-20260415213549-682af70aa3b9
+	github.com/certonid/certonid/utils v0.0.0-20260415215656-a8b9ecf95bce
 	github.com/rs/zerolog v1.35.0
 	github.com/spf13/viper v1.21.0
 	golang.org/x/crypto v0.50.0

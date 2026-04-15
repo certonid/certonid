@@ -31,7 +31,7 @@ jobs:
       - name: Tests
         run: |
           go work init
-          go work use ./cli ./serverless ./utils
+          go work use ./adapters ./proto ./cli ./serverless ./utils
           go test ./cli/... ./serverless/... ./utils/...
 
       - name: Setup Syft for SBOM

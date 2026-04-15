@@ -28,8 +28,12 @@ func genCertFromAws(awsProfile, awsRegion, awsFuncName string, keyData []byte, k
 		return []byte{}, fmt.Errorf("Error to marshal data in json: %w", err)
 	}
 
-	lambdaClient := awscloud.New(awsProfile).LambdaClient(awsRegion)
+	awsclient, err := awscloud.New(awsProfile)
+	if err != nil {
+		return []byte{}, err
+	}
 
+	lambdaClient := awsclient.LambdaClient(awsRegion)
 	invokePayload, err := lambdaClient.LambdaInvoke(awsFuncName, awsSignRequest, timeout)
 
 	if err != nil {

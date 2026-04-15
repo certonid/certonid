@@ -27,7 +27,12 @@ var (
 
 			switch strings.ToLower(decrstrType) {
 			case "aws_kms":
-				kmsClient := awscloud.New(decrstrAwsKmsProfile).KmsClient(decrstrAwsKmsRegion)
+				awsclient, err := awscloud.New(decrstrAwsKmsProfile)
+				if err != nil {
+					er(err)
+				}
+
+				kmsClient := awsclient.KmsClient(decrstrAwsKmsRegion)
 				text, err = kmsClient.KmsDecryptText(args[0])
 			default: // symmetric
 				text, err = utils.SymmetricDecrypt(args[0])

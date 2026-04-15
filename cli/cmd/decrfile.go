@@ -44,7 +44,12 @@ var (
 
 			switch strings.ToLower(decrfileType) {
 			case "aws_kms":
-				kmsClient := awscloud.New(decrfileAwsKmsProfile).KmsClient(decrfileAwsKmsRegion)
+				awsclient, err := awscloud.New(decrfileAwsKmsProfile)
+				if err != nil {
+					er(err)
+				}
+
+				kmsClient := awsclient.KmsClient(decrfileAwsKmsRegion)
 				results, err = kmsClient.KmsDecryptText(fileContent)
 			default: // symmetric
 				results, err = utils.SymmetricDecrypt(fileContent)

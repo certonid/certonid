@@ -14,7 +14,7 @@ type Client struct {
 }
 
 // New init aws client session
-func New(profile string) *Client {
+func New(profile string) (*Client, error) {
 	var (
 		cfg aws.Config
 		err error
@@ -27,12 +27,12 @@ func New(profile string) *Client {
 	} else {
 		cfg, err = config.LoadDefaultConfig(context.TODO())
 	}
-	// like session.Must in v1
+
 	if err != nil {
-		panic(fmt.Sprintf("failed loading config, %v", err))
+		return nil, fmt.Errorf("failed loading aws config: %w", err)
 	}
 
 	return &Client{
 		Config: cfg,
-	}
+	}, nil
 }

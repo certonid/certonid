@@ -1,10 +1,11 @@
 module github.com/certonid/certonid/cli
 
-go 1.25.0
+go 1.26.2
 
 require (
 	github.com/ScaleFT/sshkeys v1.4.0
-	github.com/certonid/certonid v0.0.0-20260326100648-172409036a33
+	github.com/certonid/certonid v0.0.0-20260415213549-682af70aa3b9
+	github.com/certonid/certonid/utils v0.0.0-20260415215656-a8b9ecf95bce
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/rs/zerolog v1.35.0
 	github.com/spf13/cobra v1.10.2

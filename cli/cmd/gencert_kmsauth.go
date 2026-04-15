@@ -20,7 +20,12 @@ func GenerateAwsKMSAuthToken(kmsAuthKeyID, kmsAuthServiceID, kmsAuthTokenValidUn
 		return "", fmt.Errorf("Invalid KMSAuth ValidUntil value: %w", err)
 	}
 
-	kmsClient := awscloud.New(awsProfile).KmsClient(awsRegion)
+	awsclient, err := awscloud.New(awsProfile)
+	if err != nil {
+		return "", err
+	}
+
+	kmsClient := awsclient.KmsClient(awsRegion)
 
 	kmsauthContext := &kmsauth.AuthContextV2{
 		From:     genUsername,

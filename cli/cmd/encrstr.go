@@ -28,7 +28,11 @@ var (
 
 			switch strings.ToLower(encrstrType) {
 			case "aws_kms":
-				kmsClient := awscloud.New(encrstrAwsKmsProfile).KmsClient(encrstrAwsKmsRegion)
+				awsclient, err := awscloud.New(encrstrAwsKmsProfile)
+				if err != nil {
+					er(err)
+				}
+				kmsClient := awsclient.KmsClient(encrstrAwsKmsRegion)
 				encText, err = kmsClient.KmsEncryptText(encrstrAwsKmsKeyID, []byte(args[0]))
 			default: // symmetric
 				encText, err = utils.SymmetricEncrypt([]byte(args[0]))
