@@ -13,3 +13,6 @@
 
 .DS_Store
 dist/
+
+/go.work
+/go.work.sum
