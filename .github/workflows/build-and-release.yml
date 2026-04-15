@@ -30,7 +30,6 @@ jobs:
 
       - name: Tests
         run: |
-          go mod tidy
           go test ./cli/... ./serverless/... ./utils/...
 
       - name: Setup Syft for SBOM
