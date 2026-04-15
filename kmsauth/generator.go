@@ -118,7 +118,7 @@ func (tg *TokenGenerator) cacheToken(tokenCache *TokenCache) error {
 		return err
 	}
 
-	err = os.WriteFile(tg.TokenCacheFile, data, 0644)
+	err = os.WriteFile(tg.TokenCacheFile, data, 0600)
 	return err
 }
 

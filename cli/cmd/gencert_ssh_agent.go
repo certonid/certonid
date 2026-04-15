@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"crypto/x509"
-	"encoding/pem"
 	"errors"
 	"fmt"
 	"net"
@@ -18,38 +16,27 @@ import (
 )
 
 func genGetPrivateKeyPassphrase(data []byte) ([]byte, error) {
-	var (
-		isEncryptedByPass bool
-		passPhrase        []byte
-		passPhraseErr     error
-	)
+	// Attempt to parse the raw key without a passphrase
+	_, err := ssh.ParseRawPrivateKey(data)
 
-	block, _ := pem.Decode(data)
-
-	if block != nil {
-		isEncryptedByPass = x509.IsEncryptedPEMBlock(block)
-
-		if !isEncryptedByPass {
-			_, err := x509.DecryptPEMBlock(block, []byte{})
-			if err != nil {
-				isEncryptedByPass = true
-			}
+	// If the key is encrypted, ssh package will return this specific error
+	var passErr *ssh.PassphraseMissingError
+	if errors.As(err, &passErr) {
+		fmt.Print("SSH Key Passphrase [none]: ")
+		passPhrase, passPhraseErr := term.ReadPassword(int(os.Stdin.Fd()))
+		fmt.Print("\n")
+		if passPhraseErr != nil {
+			log.Error().
+				Err(passPhraseErr).
+				Msg("Not provided passphrase for private key")
+			return nil, passPhraseErr
 		}
-
-		if isEncryptedByPass {
-			fmt.Print("SSH Key Passphrase [none]: ")
-			passPhrase, passPhraseErr = term.ReadPassword(int(os.Stdin.Fd()))
-			fmt.Print("\n")
-			if passPhraseErr != nil {
-				log.Error().
-					Err(passPhraseErr).
-					Msg("Not provided passphrase for private key")
-				return nil, passPhraseErr
-			}
-		}
+		return passPhrase, nil
 	}
 
-	return passPhrase, nil
+	// If there's no error (key isn't encrypted) or a different error occurs
+	// (malformed key), return nil and let the downstream sshkeys parser handle it.
+	return nil, nil
 }
 
 func genAddCertToAgent(cert *ssh.Certificate) error {

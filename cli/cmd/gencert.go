@@ -156,7 +156,10 @@ var (
 
 func genPostScripts(cert *ssh.Certificate) {
 	if len(genAddToSSHAgent) > 0 {
-		genAddCertToAgent(cert)
+		err := genAddCertToAgent(cert)
+		if err != nil {
+			log.Warn().Err(err).Msg("Failed to add certificate to ssh-agent")
+		}
 	}
 }
 

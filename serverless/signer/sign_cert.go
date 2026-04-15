@@ -72,10 +72,14 @@ func setPrincipals(cert *ssh.Certificate, req *SignRequest) {
 	if req.CertType == utils.HostCertType {
 		if strings.TrimSpace(req.Hostnames) != "" {
 			hosts := strings.Split(req.Hostnames, ",")
+			var validHosts []string
 			for i := range hosts {
-				hosts[i] = strings.TrimSpace(hosts[i])
+				host := strings.TrimSpace(hosts[i])
+				if host != "" {
+					validHosts = append(validHosts, host)
+				}
 			}
-			cert.ValidPrincipals = hosts
+			cert.ValidPrincipals = validHosts
 		}
 	} else {
 		if strings.TrimSpace(req.Username) != "" {

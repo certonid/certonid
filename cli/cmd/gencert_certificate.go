@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	timeSkew = time.Duration(5) * time.Second // to protect against time-skew issues we potentially generate a certificate timeSkew duration
+	timeSkew = time.Duration(5) * time.Minute // to protect against time-skew issues we potentially generate a certificate timeSkew duration
 )
 
 func genParseCertificate(bytes []byte) (*ssh.Certificate, error) {
