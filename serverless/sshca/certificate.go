@@ -133,6 +133,7 @@ func getCAFromStorage() ([]byte, error) {
 	switch strings.ToLower(viper.GetString("ca.storage")) {
 	case "aws_s3":
 		// empty
+		return []byte{}, fmt.Errorf("aws_s3 storage backend is not yet implemented")
 	default: // file
 		certData, err = os.ReadFile(viper.GetString("ca.path"))
 	}
@@ -194,8 +195,8 @@ func validateKMSAuthToken(token, username string) error {
 	return tv.ValidateToken(token)
 }
 
-// GenerateCetrificate main function to get user of host cert
-func GenerateCetrificate(req *CertificateRequest) (string, error) {
+// GenerateCertificate main function to get user of host cert
+func GenerateCertificate(req *CertificateRequest) (string, error) {
 	var (
 		err        error
 		certData   []byte

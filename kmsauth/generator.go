@@ -174,7 +174,18 @@ func (tg *TokenGenerator) GetEncryptedToken(skipCache bool) (*EncryptedToken, er
 			return nil, err
 		}
 
-		if err := os.WriteFile(tg.TokenCacheFile, data, 0600); err != nil {
+		tmpFilename := tg.TokenCacheFile + ".tmp"
+		f, err := os.OpenFile(tmpFilename, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+		if err != nil {
+			return nil, err
+		}
+		_, err = f.Write(data)
+		f.Close()
+		if err != nil {
+			return nil, err
+		}
+
+		if err := os.Rename(tmpFilename, tg.TokenCacheFile); err != nil {
 			return nil, err
 		}
 	}

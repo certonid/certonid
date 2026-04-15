@@ -81,5 +81,19 @@ func genStoreCertAtFile(filename string, cert []byte) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(filename, cert, 0600)
+
+	// Write to a temporary file securely
+	tmpFilename := filename + ".tmp"
+	f, err := os.OpenFile(tmpFilename, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if err != nil {
+		return err
+	}
+	_, err = f.Write(cert)
+	f.Close()
+	if err != nil {
+		return err
+	}
+
+	// Atomically swap it into place
+	return os.Rename(tmpFilename, filename)
 }
