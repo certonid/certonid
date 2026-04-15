@@ -31,7 +31,7 @@ jobs:
       - name: Tests
         run: |
           go mod tidy
-          go test ./cli/... ./serverless/...
+          go test ./cli/... ./serverless/... ./utils/...
 
       - name: Setup Syft for SBOM
         uses: anchore/sbom-action/download-syft@v0

@@ -3,4 +3,5 @@ go 1.26.2
 use (
 	./cli
 	./serverless
+	./utils
 )
