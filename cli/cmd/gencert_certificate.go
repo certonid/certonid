@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"time"
@@ -36,7 +35,7 @@ func genParseCertificate(bytes []byte) (*ssh.Certificate, error) {
 }
 
 func genCertFromFile() (*ssh.Certificate, error) {
-	bytes, err := ioutil.ReadFile(genCertPath)
+	bytes, err := os.ReadFile(genCertPath)
 	if err != nil {
 		log.Warn().
 			Err(err).
@@ -82,5 +81,5 @@ func genStoreCertAtFile(filename string, cert []byte) error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(filename, cert, 0600)
+	return os.WriteFile(filename, cert, 0600)
 }

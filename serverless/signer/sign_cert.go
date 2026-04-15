@@ -70,13 +70,17 @@ type SignRequest struct {
 
 func setPrincipals(cert *ssh.Certificate, req *SignRequest) {
 	if req.CertType == utils.HostCertType {
-		hosts := strings.Split(req.Hostnames, ",")
-		for i := range hosts {
-			hosts[i] = strings.TrimSpace(hosts[i])
+		if strings.TrimSpace(req.Hostnames) != "" {
+			hosts := strings.Split(req.Hostnames, ",")
+			for i := range hosts {
+				hosts[i] = strings.TrimSpace(hosts[i])
+			}
+			cert.ValidPrincipals = hosts
 		}
-		cert.ValidPrincipals = hosts
 	} else {
-		cert.ValidPrincipals = []string{req.Username}
+		if strings.TrimSpace(req.Username) != "" {
+			cert.ValidPrincipals = []string{strings.TrimSpace(req.Username)}
+		}
 	}
 	configKey := fmt.Sprintf("certificates.%s.additional_principals", req.CertType)
 	cert.ValidPrincipals = append(cert.ValidPrincipals, viper.GetStringSlice(configKey)...)
@@ -221,7 +225,15 @@ func (s *KeySigner) SignKey(req *SignRequest) (string, error) {
 
 // New unseal CA key by passphrase
 func New(pemBytes, passPhrase []byte) (*KeySigner, error) {
-	key, err := ssh.ParsePrivateKeyWithPassphrase(pemBytes, passPhrase)
+	var key ssh.Signer
+	var err error
+
+	if len(passPhrase) > 0 {
+		key, err = ssh.ParsePrivateKeyWithPassphrase(pemBytes, passPhrase)
+	} else {
+		key, err = ssh.ParsePrivateKey(pemBytes)
+	}
+
 	if err != nil {
 		return nil, fmt.Errorf("Error parse private key: %w", err)
 	}

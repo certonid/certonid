@@ -5,7 +5,6 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"os"
 	"time"
@@ -15,7 +14,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 )
 
 func genGetPrivateKeyPassphrase(data []byte) ([]byte, error) {
@@ -39,7 +38,7 @@ func genGetPrivateKeyPassphrase(data []byte) ([]byte, error) {
 
 		if isEncryptedByPass {
 			fmt.Print("SSH Key Passphrase [none]: ")
-			passPhrase, passPhraseErr = terminal.ReadPassword(int(os.Stdin.Fd()))
+			passPhrase, passPhraseErr = term.ReadPassword(int(os.Stdin.Fd()))
 			fmt.Print("\n")
 			if passPhraseErr != nil {
 				log.Error().
@@ -67,7 +66,7 @@ func genAddCertToAgent(cert *ssh.Certificate) error {
 		return fmt.Errorf("Could not expand path: %w", err)
 	}
 
-	privatKeyBytes, err := ioutil.ReadFile(expandedPrivateKey)
+	privatKeyBytes, err := os.ReadFile(expandedPrivateKey)
 	if err != nil {
 		log.Error().
 			Err(err).

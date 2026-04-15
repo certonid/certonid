@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"reflect"
@@ -77,7 +76,7 @@ func (tg *TokenGenerator) getCachedToken() (*Token, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Error os.Stat token cache: %w", err)
 	}
-	cacheBytes, err := ioutil.ReadFile(tg.TokenCacheFile)
+	cacheBytes, err := os.ReadFile(tg.TokenCacheFile)
 	if err != nil {
 		return nil, fmt.Errorf("Could not open token cache file: %w", err)
 	}
@@ -119,7 +118,7 @@ func (tg *TokenGenerator) cacheToken(tokenCache *TokenCache) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(tg.TokenCacheFile, data, 0644)
+	err = os.WriteFile(tg.TokenCacheFile, data, 0644)
 	return err
 }
 

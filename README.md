@@ -57,11 +57,3 @@ $ cd ..
 $ cd cli && go build -o certonid main.go
 ```
 
-## Roadmap
-
- - [ ] Add tests
- - [ ] Improve documentation
- - [ ] Website and video
- - [ ] Use serverless framework to automate deploy and setup
- - [ ] Support AWS S3 for SSH CA key
-

@@ -2,7 +2,7 @@ package sshca
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 	"time"
 
@@ -124,7 +124,7 @@ func getCAFromStorage() ([]byte, error) {
 	case "aws_s3":
 		// empty
 	default: // file
-		certData, err = ioutil.ReadFile(viper.GetString("ca.path"))
+		certData, err = os.ReadFile(viper.GetString("ca.path"))
 	}
 
 	if err != nil {

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 	"time"
@@ -80,7 +79,7 @@ var (
 				Str("certificate", genCertPath).
 				Msg("Signing public key")
 
-			publicKeyData, err := ioutil.ReadFile(genPublicKeyPath)
+			publicKeyData, err := os.ReadFile(genPublicKeyPath)
 
 			if err != nil {
 				er(fmt.Errorf("Error to read public key: %w", err))

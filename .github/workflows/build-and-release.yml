@@ -28,17 +28,10 @@ jobs:
             cli/go.sum
             serverless/go.sum
 
-      - name: CLI tests
+      - name: Tests
         run: |
           go mod tidy
-          go test -v ./...
-        working-directory: cli
-
-      - name: Serverless tests
-        run: |
-          go mod tidy
-          go test -v ./...
-        working-directory: serverless
+          go test ./cli/... ./serverless/...
 
       - name: Setup Syft for SBOM
         uses: anchore/sbom-action/download-syft@v0

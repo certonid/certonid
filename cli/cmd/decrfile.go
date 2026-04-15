@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/certonid/certonid/adapters/awscloud"
@@ -35,7 +35,7 @@ var (
 
 			origFilepath := fmt.Sprintf("%s.orig", encrFilepath)
 
-			fileBytes, err := ioutil.ReadFile(encrFilepath)
+			fileBytes, err := os.ReadFile(encrFilepath)
 			if err != nil {
 				er(fmt.Errorf("Error to read file %s: %w", encrFilepath, err))
 			}
@@ -54,7 +54,7 @@ var (
 				er(err)
 			}
 
-			err = ioutil.WriteFile(origFilepath, results, 0600)
+			err = os.WriteFile(origFilepath, results, 0600)
 			if err != nil {
 				er(fmt.Errorf("Error to write file %s: %w", origFilepath, err))
 			}
