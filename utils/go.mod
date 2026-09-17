@@ -1,6 +1,6 @@
 module github.com/certonid/certonid/utils
 
-go 1.26.2
+go 1.27
 
 require (
 	github.com/sethvargo/go-password v0.3.1

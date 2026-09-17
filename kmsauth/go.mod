@@ -1,6 +1,6 @@
 module github.com/certonid/certonid/kmsauth
 
-go 1.26.2
+go 1.27
 
 replace github.com/certonid/certonid/adapters => ./../adapters
 

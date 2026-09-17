@@ -1,6 +1,6 @@
 module github.com/certonid/certonid/adapters
 
-go 1.26.2
+go 1.27
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.41.5
