@@ -3,7 +3,7 @@ module github.com/certonid/certonid/utils
 go 1.27
 
 require (
-	github.com/sethvargo/go-password v0.3.1
+	github.com/sethvargo/go-password v0.4.0
 	github.com/stretchr/testify v1.11.1
 )
 
